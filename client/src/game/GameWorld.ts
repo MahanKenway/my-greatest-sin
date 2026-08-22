@@ -3,9 +3,12 @@ import type { Scene } from "@babylonjs/core/scene";
 import { createSyntheticFixture } from "@/game/connectome/fixture";
 import { estimateColumnMemoryMiB } from "@/game/connectome/manifest";
 import { FlyBody } from "@/game/body/FlyBody";
+import { WormBody } from "@/game/body/WormBody";
+import type { BodyController } from "@/game/body/types";
 import { Arena } from "@/game/environment/Arena";
 import { NeuralEngine } from "@/game/neural/engine";
-import type { MotorFrame, SensorFrame, SimulationCommand, SimulationSnapshot } from "@/game/shared/types";
+import { SPECIES_PROFILES } from "@/game/species/profiles";
+import type { MotorFrame, SensorFrame, SimulationCommand, SimulationSnapshot, SpeciesId } from "@/game/shared/types";
 import { BrainView } from "@/game/visualization/BrainView";
 
 const DT = 0.005;
@@ -15,6 +18,8 @@ export class GameWorld {
   private readonly arena: Arena;
   private readonly neural: NeuralEngine;
   private readonly fly: FlyBody;
+  private readonly worm: WormBody;
+  private activeBody: BodyController;
   private readonly brain: BrainView;
   private readonly timeline = new Float32Array(64);
   private readonly listeners = new Set<(snapshot: SimulationSnapshot) => void>();
@@ -27,6 +32,7 @@ export class GameWorld {
   private spikes = 0;
   private active = 0;
   private fps = 60;
+  private species: SpeciesId = "DROSOPHILA";
   private lastSensor: SensorFrame = { food: 0, odor: 0, light: 0, leftCue: 0, rightCue: 0, wind: 0, touch: 0, temperature: 0, taste: 0, provenance: "MODELLED MAPPING" };
   private lastMotor: MotorFrame = { forward: 0, turn: 0, wingLift: 0, gait: 0, provenance: "MODELLED MAPPING" };
 
@@ -34,6 +40,9 @@ export class GameWorld {
     this.arena = new Arena(scene);
     this.neural = new NeuralEngine(this.fixture);
     this.fly = new FlyBody(scene);
+    this.worm = new WormBody(scene);
+    this.worm.setEnabled(false);
+    this.activeBody = this.fly;
     this.brain = new BrainView(scene, this.fixture);
   }
 
@@ -63,6 +72,7 @@ export class GameWorld {
     if (command.type === "reset") this.reset();
     if (command.type === "demo") this.demo = !this.demo;
     if (command.type === "stimulus") this.arena.apply(command.stimulus, command.amount);
+    if (command.type === "species") this.selectSpecies(command.species);
     this.emit();
   }
 
@@ -79,10 +89,10 @@ export class GameWorld {
   private step(dt: number): void {
     this.simTime += dt;
     if (this.demo) this.runDemoSchedule();
-    this.lastSensor = this.arena.sample(this.fly.getPosition(), this.fly.getHeading(), dt);
+    this.lastSensor = this.arena.sample(this.activeBody.getPosition(), this.activeBody.getHeading(), dt);
     this.spikes = this.neural.step(dt, this.lastSensor);
     this.lastMotor = this.decodeMotor();
-    this.fly.update(this.lastMotor, dt);
+    this.activeBody.update(this.lastMotor, dt);
     this.timeline.copyWithin(0, 1);
     this.timeline[this.timeline.length - 1] = Math.min(1, this.spikes / 18);
     this.active = 0;
@@ -101,11 +111,12 @@ export class GameWorld {
     const left = mean(72, 80) * 10;
     const right = mean(80, 88) * 10;
     const reactive = mean(88, 96) * 8;
+    const bodyWave = Math.min(1, forward + reactive * 0.3);
     return {
       forward: Math.max(0.08, forward),
       turn: Math.max(-1, Math.min(1, left - right + (this.lastSensor.wind - 0.25) * 0.2)),
-      wingLift: Math.min(1, reactive),
-      gait: Math.min(1, forward + reactive * 0.3),
+      wingLift: this.species === "DROSOPHILA" ? Math.min(1, reactive) : bodyWave,
+      gait: bodyWave,
       provenance: "MODELLED MAPPING",
     };
   }
@@ -126,6 +137,7 @@ export class GameWorld {
     this.timeline.fill(0);
     this.neural.reset();
     this.fly.reset();
+    this.worm.reset();
     this.demo = false;
   }
 
@@ -150,11 +162,21 @@ export class GameWorld {
       averageRate,
       fps: this.fps,
       memoryEstimateMiB: estimateColumnMemoryMiB(this.fixture.synapseCount),
+      species: SPECIES_PROFILES[this.species],
       sensor: this.lastSensor,
       motor: this.lastMotor,
       behavior,
       neuronActivity: this.neural.cpu.firingRate,
       timeline: this.timeline,
     };
+  }
+
+  private selectSpecies(species: SpeciesId): void {
+    if (this.species === species) return;
+    this.species = species;
+    const flyActive = species === "DROSOPHILA";
+    this.fly.setEnabled(flyActive);
+    this.worm.setEnabled(!flyActive);
+    this.activeBody = flyActive ? this.fly : this.worm;
   }
 }

@@ -30,10 +30,10 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
     <div className="lab-hud" aria-live="polite">
       <header className="lab-header">
         <div className="brand-lockup">
-          <img className="brand-mark" src={MARK_URL} alt="Digital Fly aperture mark" />
+          <img className="brand-mark" src={MARK_URL} alt="My Greatest Sin aperture mark" />
           <div>
-            <p className="micro-label">CONNECTOME OBSERVATION BENCH</p>
-            <h1>DIGITAL FLY</h1>
+            <p className="micro-label">DUAL-SPECIES / CONNECTOME OBSERVATION BENCH</p>
+            <h1>MY GREATEST SIN</h1>
           </div>
         </div>
         <div className="header-status">
@@ -65,13 +65,14 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
           <div className="readout-line"><span>ACTIVE CELLS</span><strong>{snapshot?.activeNeurons ?? 0}</strong></div>
           <div className="readout-line"><span>SPIKES / STEP</span><strong>{snapshot?.spikeCount ?? 0}</strong></div>
           <div className="readout-line"><span>MEAN RATE</span><strong>{numeric(snapshot?.averageRate ?? 0, 3)}</strong></div>
-          <p className="pane-note">Rendering is sampled. The fixture remains a software test network, not FlyWire biology.</p>
+          <p className="pane-note">Rendering is sampled. The 96-neuron fixture remains a software test network, not FlyWire or C. elegans source biology.</p>
         </section>
 
         <section className="lab-pane provenance-pane">
           <p className="micro-label">DATA STATUS</p>
           <div className="provenance-row"><span className="provenance fixture">SYNTHETIC TEST FIXTURE</span><span>96 N / {snapshot?.synapseCount ?? 0} E</span></div>
-          <p>Full release execution is locked until a validated, cited `DFLY` manifest is loaded.</p>
+          <p>{snapshot?.species.bodyLabel ?? "SPECIMEN BODY"}: modelled presentation. Network execution stays locked until a validated, cited `DFLY` manifest is loaded.</p>
+          <div className="source-readout"><span>BODY REFERENCE</span><strong>{snapshot?.species.sourceLicense ?? "—"}</strong></div>
           <div className="memory-readout"><span>EDGE COLUMNS</span><strong>{numeric(snapshot?.memoryEstimateMiB ?? 0)} MiB</strong></div>
           <div className="pack-control-row"><button className={packStatus.state === "ERROR" || packStatus.state === "BLOCKED" ? "pack-action pack-warning" : "pack-action"} title={packStatus.message} onClick={onConfigurePack}>{packStatus.state === "CACHED" ? "PACK CACHED" : packStatus.state === "VALIDATED" ? "PACK READY" : packStatus.state === "ERROR" ? "PACK ERROR" : "VERIFY DFLY PACK"}</button>{(packStatus.state === "VALIDATED" || packStatus.state === "CACHED") && <button className="pack-action cache-action" onClick={onCachePack}>{cacheProgress ? `CACHE ${cacheProgress.completed}/${cacheProgress.total}` : "CACHE"}</button>}</div>
           {packStatus.state !== "UNCONFIGURED" && <div className={`pack-state ${packStatus.state.toLowerCase()}`}><span>DFLY</span><strong>{packStatus.state.replace("_", " ")}</strong></div>}
@@ -82,7 +83,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
       <section className="world-caption">
         <p className="micro-label">CLOSED LOOP / ENVIRONMENT → SENSORS → NETWORK → MOTOR → BODY</p>
         <div className="behavior-title"><span className="state-hash">//</span><strong>{snapshot?.behavior ?? "INITIALIZING"}</strong></div>
-        <p>Body motion is modelled from the live motor decoder; it is not a pre-recorded walk cycle.</p>
+        <p>{snapshot?.species.commonName ?? "SPECIMEN"} motion is modelled from the live motor decoder; it is not a pre-recorded walk cycle.</p>
       </section>
 
       <aside className="observation-rail right-rail">
@@ -96,6 +97,10 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
             <button onClick={() => onCommand({ type: "reset" })}>RESET</button>
             <button className="demo-button" onClick={() => onCommand({ type: "demo" })}>AUTO DEMO</button>
           </div>
+          <div className="species-selector" role="group" aria-label="Select a modelled specimen body">
+            <button className={snapshot?.species.id === "DROSOPHILA" ? "selected" : ""} onClick={() => onCommand({ type: "species", species: "DROSOPHILA" })}>FLY</button>
+            <button className={snapshot?.species.id === "C_ELEGANS" ? "selected" : ""} onClick={() => onCommand({ type: "species", species: "C_ELEGANS" })}>C. ELEGANS</button>
+          </div>
           <Stimulus label="FOOD / ODOR" value={sensor?.odor ?? 0} color="gold" onChange={(amount) => onCommand({ type: "stimulus", stimulus: "food", amount })} />
           <Stimulus label="LIGHT FIELD" value={sensor?.light ?? 0} color="gold" onChange={(amount) => onCommand({ type: "stimulus", stimulus: "light", amount })} />
           <Stimulus label="WIND VECTOR" value={sensor?.wind ?? 0} color="cyan" onChange={(amount) => onCommand({ type: "stimulus", stimulus: "wind", amount })} />
@@ -108,7 +113,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
           <h2>Motor decode</h2>
           <DecodeBar label="FORWARD" value={motor?.forward ?? 0} />
           <DecodeBar label="TURN" value={Math.abs(motor?.turn ?? 0)} />
-          <DecodeBar label="WING LIFT" value={motor?.wingLift ?? 0} />
+          <DecodeBar label={snapshot?.species.id === "C_ELEGANS" ? "BODY WAVE" : "WING LIFT"} value={motor?.wingLift ?? 0} />
           <p className="pane-note">Motor grouping and actuator transfer are labelled modelled mappings.</p>
         </section>
       </aside>

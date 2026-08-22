@@ -26,9 +26,15 @@
 - **Approach:** Use Babylon thin instances for sampled neurons and one batched line system for sampled active pathways. Add a region aggregate view and a programmatic spike raster. Level-of-detail switches from region summaries to sampled cells only when the inspector is open; no neuron maps are constructed with DOM elements.
 - **Verify:** The left rail shows active clusters and a current selected-region summary; the number of rendered markers is capped and stated; increasing simulated population does not create additional DOM nodes per neuron.
 
+### 5. Dual-Species Embodiment and Selection
+
+- **Why isolated:** The project must show a fly and a C. elegans side by side as independent modelled organisms without treating either body, fixture, or motion as biological source data. Switching bodies must not create a second Babylon engine or leave hidden meshes updating.
+- **Approach:** Add a typed `SpeciesId` command and profile, retain one `GameWorld`, and activate exactly one body at a time. The fly uses the existing causal six-legged body while the worm uses a low-allocation segmented body with a motor-driven travelling wave. The reference source for a future optimized fly mesh is NeuroMechFly (Apache-2.0); the source for worm anatomy/layers is OpenWorm Worm Browser (MIT).
+- **Verify:** A visible HUD selector changes the active specimen, movement readout and contextual label; both bodies respond to the same decoder contract but with species-appropriate modelled motion; reset restores the active specimen without resource leaks.
+
 ## Main Build
 
-Digital Fly will ship as a browser-first, static React/Babylon application where React supplies a single full-screen laboratory frame and framework-independent TypeScript modules under `client/src/game/` own the simulation. The first visible build uses a deterministic `SYNTHETIC TEST FIXTURE` for proof of a closed loop while the data loader is designed to accept a real release manifest from a permitted host. This is not a substitute for FlyWire data and will say so in every relevant panel.
+My Greatest Sin will ship as a browser-first, static React/Babylon application where React supplies a single full-screen laboratory frame and framework-independent TypeScript modules under `client/src/game/` own the simulation. The first visible build uses a deterministic `SYNTHETIC TEST FIXTURE` for proof of a closed loop while the data loader is designed to accept a real release manifest from a permitted host. The observation bench supports both a fly and a C. elegans body; this is not a substitute for FlyWire or C. elegans source data and will say so in every relevant panel.
 
 The interface follows the visual target: a central specimen arena, a left brain observation rail, a right experimental control rail, and a bottom neural timeline. Controls include pause/resume, reset, one-step, deterministic demo, food, wind, light, touch, and temperature inputs. The release includes file import/export for small experiment descriptions, browser capability reporting, a benchmark page/panel, and source/model provenance labels.
 

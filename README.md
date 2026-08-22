@@ -1,4 +1,6 @@
-# Digital Fly
+# My Greatest Sin
+
+> **My Greatest Sin** is the public identity of the Digital Fly connectome simulation foundation.
 
 > **A browser-first observation bench for testing an explicitly modelled sensory → network → motor → body loop around a scalable adult *Drosophila* connectome data architecture.**
 

@@ -1,4 +1,4 @@
-name: Deploy static Digital Fly site
+name: Deploy static My Greatest Sin site
 
 on:
   push:

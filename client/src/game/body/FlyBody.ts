@@ -6,8 +6,9 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import type { Scene } from "@babylonjs/core/scene";
 import type { MotorFrame } from "@/game/shared/types";
+import type { BodyController } from "./types";
 
-export class FlyBody {
+export class FlyBody implements BodyController {
   private readonly root: TransformNode;
   private readonly wings: readonly [TransformNode, TransformNode];
   private readonly legLines = [] as ReturnType<typeof MeshBuilder.CreateLines>[];
@@ -104,6 +105,8 @@ export class FlyBody {
     this.heading = 0.2;
     this.gaitPhase = 0;
   }
+
+  setEnabled(enabled: boolean): void { this.root.setEnabled(enabled); }
 
   private makeWing(scene: Scene, side: number, material: StandardMaterial): TransformNode {
     const pivot = new TransformNode("fly-wing-pivot", scene);

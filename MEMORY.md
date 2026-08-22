@@ -13,6 +13,9 @@
 - Static React project initialized at `/home/ubuntu/digital-fly`.
 - Babylon.js core installed; `GameCanvas` guards React StrictMode double initialization and `scene.ts` provides the initial dark calibration scene.
 - Generated assets use Manus storage URLs and are listed in `ASSETS.md`.
+- Dual-species embodiment was requested: a fly remains available and a C. elegans body is added as a separate modelled specimen.
+- Sketchfab download was abandoned because Google sign-in control was unavailable to the user; no password was collected or used.
+- The selected no-login source references are `NeLy-EPFL/NeuroMechFly` (Apache-2.0 STL body parts) and `openworm/wormbrowser` (MIT Virtual Worm model/layers).
 
 ## Outstanding Constraints
 
@@ -20,3 +23,4 @@
 - No large data, generated images, or external reference source is committed inside the web project tree.
 - Do not claim consciousness, literal life, or biologically validated behavior without evidence.
 - The project may only support non-commercial uses while it depends on public FlyWire release data, unless independent rights are established.
+- Body assets and a `C. elegans` display do not establish that the current 96-neuron fixture is real C. elegans data.

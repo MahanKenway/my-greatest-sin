@@ -12,7 +12,9 @@ React frame (one full-screen GameCanvas)
        ├── NeuralEngine (selects WebGPU LIF or deterministic typed-array fallback)
        ├── SensorSuite (environment fields → labelled input drives)
        ├── MotorDecoder (labelled readout groups → body commands)
+       ├── SpeciesProfile (labelled fixtures, body label, source/licence context)
        ├── FlyBody (procedural mesh + modelled kinematics/dynamics)
+       ├── WormBody (segmented procedural mesh + modelled undulation)
        ├── Arena (food, light, wind, wall, touch, temperature, odor fields)
        ├── BrainView (sampled thin instances, region summaries, selection)
        └── ExperimentStore (commands, seeded events, export/replay metadata)
@@ -27,6 +29,7 @@ React frame (one full-screen GameCanvas)
 | `NeuralState` | membrane voltage, refractory clock, input, spikes, original/learned weight delta | Dense preallocated runtime layer; no object-per-neuron state. |
 | `SensorFrame` | visual, touch, proprioception, odor, taste, temperature, wind, light values | Every channel carries `SOURCE`, `MODELLED`, or `SYNTHETIC` status. |
 | `MotorFrame` | gait phase, stride, turn, wing lift, head pose, proboscis amount | A decoder output, explicitly modelled until source mapping is curated. |
+| `SpeciesProfile` | species ID, display label, context, source summary, body characteristics | Selects presentation/modelled body only; it does not assert a real neural-data pack is executing. |
 | `ExperimentRecord` | seed, environmental events, metadata, small UI settings, optional binary state reference | Text JSON only for small metadata; binary chunks for large state. |
 
 ## Planned Directory Map
@@ -54,6 +57,8 @@ client/src/
       SensorSuite.ts        field sampling and input encoding
     body/
       FlyBody.ts            procedural geometry and causal body update
+      WormBody.ts           segmented body and causal undulation update
+      types.ts               common BodyController interface
       MotorDecoder.ts       sampled/annotated output → actuator command
     environment/
       Arena.ts              stimulus fields and collision limits
@@ -66,7 +71,7 @@ client/src/
 
 ## Asset Hints
 
-The scene uses procedural meshes for the fly, props, and neural markers so their state is always causal and inspectable. Generated textures provide the material character: a 2 m repeating floor; two 0.85 m translucent wing surfaces; a 300 px atlas reference; and a 36 px logo aperture. No downloaded FlyWire morphology or texture is embedded in the source tree.
+The scene uses procedural meshes for the fly, worm, props, and neural markers so their state is always causal and inspectable. Generated textures provide the material character: a 2 m repeating floor; two 0.85 m translucent wing surfaces; a 300 px atlas reference; and a 36 px logo aperture. Future optimized mesh references are NeuroMechFly (Apache-2.0) for the fly and OpenWorm Worm Browser (MIT) for the worm; no downloaded FlyWire morphology or texture is embedded in the source tree.
 
 ## Determinism Policy
 

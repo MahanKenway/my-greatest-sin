@@ -14,6 +14,13 @@
 | `digital-fly-brain-map.png` | Brain-activity texture | 300 × 300 px atlas panel | `/manus-storage/digital-fly-brain-map_8c20bc49.png` | Used as the background reference for the UI brain atlas; actual active points remain programmatic. |
 | `digital-fly-mark.png` | Digital Fly aperture mark / favicon source | 36 × 36 px HUD mark | `/manus-storage/digital-fly-mark_36065411.png` | Used in top-level HUD and supplied as the externally hosted brand mark. |
 
+## External Body References
+
+| Asset family | Source | License | Intended integration | Attribution requirement |
+|---|---|---|---|---|
+| Drosophila body components | [NeLy-EPFL/NeuroMechFly](https://github.com/NeLy-EPFL/NeuroMechFly) | Apache-2.0 | Optional optimized GLB assembled from source body-part meshes; procedural body remains the low-risk first integration. | Preserve the Apache-2.0 notice and cite NeuroMechFly. |
+| C. elegans anatomy/layers | [openworm/wormbrowser](https://github.com/openworm/wormbrowser) | MIT | Inform a lightweight segmented worm body and future optimized mesh extraction. | Preserve the MIT notice and cite OpenWorm Worm Browser. |
+
 ## Build Rules
 
 The generated assets are stored outside the repository and referenced only through the stable manuscript storage URLs above. They may establish aesthetic direction but they do not represent biological imagery or scientific data. Any modelled geometry, neural state, or environment data presented beside them will carry explicit provenance labels in the UI.

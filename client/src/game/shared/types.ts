@@ -1,6 +1,18 @@
 /** Luminous Connectome Lab: strict scientific data contracts and provenance markers. */
 export type Provenance = "SOURCE DATA" | "MODELLED MAPPING" | "SYNTHETIC TEST FIXTURE";
 
+export type SpeciesId = "DROSOPHILA" | "C_ELEGANS";
+
+export type SpeciesProfile = {
+  id: SpeciesId;
+  displayName: string;
+  commonName: string;
+  bodyLabel: string;
+  sourceLabel: string;
+  sourceLicense: string;
+  sourceUrl: string;
+};
+
 export type SensorFrame = {
   food: number;
   odor: number;
@@ -91,6 +103,7 @@ export type SimulationSnapshot = {
   averageRate: number;
   fps: number;
   memoryEstimateMiB: number;
+  species: SpeciesProfile;
   sensor: SensorFrame;
   motor: MotorFrame;
   behavior: "ORIENTING" | "FORAGING" | "BRACING" | "IDLE";
@@ -103,4 +116,5 @@ export type SimulationCommand =
   | { type: "step" }
   | { type: "reset" }
   | { type: "stimulus"; stimulus: "food" | "wind" | "light" | "touch" | "temperature"; amount: number }
-  | { type: "demo" };
+  | { type: "demo" }
+  | { type: "species"; species: SpeciesId };

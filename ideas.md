@@ -92,3 +92,5 @@ All visual, component, and canvas choices will reinforce the Luminous Connectome
 - Every route opens immediately to an asymmetric observation surface: a central embodied world, evidence/control rails, a low temporal strip, and a visible provenance tag.
 - Axonal Magenta is restricted to active neural signal, live pathway emphasis, and the primary simulation operation. Structural dividers, fixture warnings, and generic decoration use neutral, gold, or cyan materials instead.
 - The compound-eye aperture and `DIGITAL FLY` wordmark remain visible in the initial viewport. Copy describes explicit laboratory actions such as tracing a signal or stepping an experiment; it does not use generic marketing invitations.
+- The dual-species selector changes the central modelled specimen and its contextual evidence in one operation; it must never make the synthetic neural fixture appear to be a real species-specific connectome.
+- The visible body-reference licence is an evidence label, not a claim that a high-resolution source mesh or biological neural data is being executed.
