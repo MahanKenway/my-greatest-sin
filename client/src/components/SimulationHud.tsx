@@ -3,6 +3,7 @@
  * Every live panel surfaces an explicit provenance label so synthetic or modelled values stay candid.
  */
 import type { DflyPackStatus, FlywireStageStatus, SimulationCommand, SimulationSnapshot } from "@/game/shared/types";
+import { createHudActivitySlots } from "./hudActivitySlots";
 
 const MARK_URL = "/manus-storage/digital-fly-mark_36065411.png";
 const BRAIN_MAP_URL = "/manus-storage/digital-fly-brain-map_8c20bc49.png";
@@ -25,7 +26,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
   const motor = snapshot?.motor;
   const activity = snapshot?.neuronActivity ?? new Float32Array(0);
   const timeline = snapshot?.timeline ?? new Float32Array(64);
-  const sampleIndices = Array.from({ length: 16 }, (_, index) => Math.min(Math.max(0, activity.length - 1), Math.floor(((index + 1) / 17) * activity.length)));
+  const activitySlots = createHudActivitySlots(activity.length);
   const execution = snapshot?.connectomeExecution;
   const usesSourceTopology = execution?.topology === "SOURCE DATA";
   const showingFly = snapshot?.species.id === "DROSOPHILA";
@@ -61,9 +62,9 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
           <div className="brain-atlas">
             <img src={BRAIN_MAP_URL} alt="Abstract generated brain activity atlas" />
             <div className="sampled-neurons" aria-label="Sampled neural activity markers">
-              {sampleIndices.map((neuron, index) => {
+              {activitySlots.map(({ index, key, neuron }) => {
                 const intensity = activity[neuron] ?? 0;
-                return <i key={neuron} className={intensity > 0.035 ? "active" : ""} style={{ "--dot": index } as React.CSSProperties} />;
+                return <i key={key} className={intensity > 0.035 ? "active" : ""} style={{ "--dot": index } as React.CSSProperties} />;
               })}
             </div>
           </div>

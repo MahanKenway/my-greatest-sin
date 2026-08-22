@@ -89,3 +89,9 @@
 - [x] Make Drosophila render an explicit staged/idle FlyWire state with no synthetic spikes, neuron count, or synapse count.
 - [x] Keep C. elegans source-topology execution and its 279-neuron live HUD unaffected by fly fallback removal.
 - [x] Add tests and browser validation for fly staged mode and C. elegans active mode.
+
+## React HUD Key Integrity Fix
+
+- [x] Replace duplicate activity-marker keys with deterministic, unique keys for zero-length and staged-network states.
+- [x] Add a regression test that verifies empty and one-neuron activity buffers produce unique marker keys.
+- [x] Re-run type checks, tests, production build, and browser-console validation before checkpointing.
