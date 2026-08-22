@@ -29,6 +29,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
   const execution = snapshot?.connectomeExecution;
   const usesSourceTopology = execution?.topology === "SOURCE DATA";
   const showingFly = snapshot?.species.id === "DROSOPHILA";
+  const flywireStaged = showingFly && execution?.label.includes("FLYWIRE V783 STAGED");
 
   return (
     <div className="lab-hud" aria-live="polite">
@@ -75,7 +76,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
         <section className="lab-pane provenance-pane">
           <p className="micro-label">DATA STATUS</p>
           <div className="provenance-row"><span className={`provenance ${usesSourceTopology ? "source" : "fixture"}`}>{execution?.label ?? "SYNTHETIC TEST FIXTURE"}</span><span>{snapshot?.neuronCount ?? 0} N / {snapshot?.synapseCount ?? 0} E</span></div>
-          <p>{snapshot?.species.bodyLabel ?? "SPECIMEN BODY"}: modelled presentation. {usesSourceTopology ? "Topology executes from integrity-checked source columns; stimulus routing and motor embodiment remain modelled mappings." : "Network execution remains a synthetic fixture until a validated, cited DFLY manifest is activated."}</p>
+          <p>{snapshot?.species.bodyLabel ?? "SPECIMEN BODY"}: modelled presentation. {usesSourceTopology ? "Topology executes from integrity-checked source columns; stimulus routing and motor embodiment remain modelled mappings." : flywireStaged ? "No substitute neural fixture executes for the fly. The official pack is staged outside this public app pending WebGPU benchmark and delivery approval." : "No synthetic fallback is active while the source pack is verified."}</p>
           <div className="source-readout"><span>BODY REFERENCE</span><strong>{snapshot?.species.sourceLicense ?? "—"}</strong></div>
           <div className="memory-readout"><span>EDGE COLUMNS</span><strong>{numeric(snapshot?.memoryEstimateMiB ?? 0)} MiB</strong></div>
           {showingFly && <><div className="provenance-row"><span className="provenance source">FLYWIRE V783 STAGED</span><span>{flywireStage.neuronCount.toLocaleString()} N / {flywireStage.synapseCount.toLocaleString()} E</span></div><p className="pack-message">{flywireStage.message}</p><div className="pack-state blocked"><span>LICENSE</span><strong>{flywireStage.license} · {flywireStage.packMiB} MiB</strong></div></>}

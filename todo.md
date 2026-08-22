@@ -82,3 +82,10 @@
 - [x] Keep the resulting real-data pack outside the git repository and all public release bundles until the publication gate is separately reviewed.
 - [x] Add an explicit FlyWire staged profile with CC BY-NC attribution, source-pack preflight, cache progress and no-CPU-activation warning.
 - [x] Add a WebGPU sparse backend capability/benchmark gate before allowing a 140k-neuron pack to execute.
+
+## Remove Fly Synthetic Fallback
+
+- [x] Remove the 96-neuron synthetic LIF fixture from the Drosophila species path.
+- [x] Make Drosophila render an explicit staged/idle FlyWire state with no synthetic spikes, neuron count, or synapse count.
+- [x] Keep C. elegans source-topology execution and its 279-neuron live HUD unaffected by fly fallback removal.
+- [x] Add tests and browser validation for fly staged mode and C. elegans active mode.

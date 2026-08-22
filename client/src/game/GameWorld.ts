@@ -1,7 +1,7 @@
 /** Luminous Connectome Lab: framework-independent owner for fixed-step environment → sensors → neural engine → body loop. */
 import type { Scene } from "@babylonjs/core/scene";
-import { createSyntheticFixture } from "@/game/connectome/fixture";
 import { loadCElegansRuntime } from "@/game/connectome/celegansRuntime";
+import { createStagedFlywireColumns, stagedFlywireExecution } from "@/game/connectome/stagedFlywire";
 import { estimateColumnMemoryMiB } from "@/game/connectome/manifest";
 import { FlyBody } from "@/game/body/FlyBody";
 import { WormBody } from "@/game/body/WormBody";
@@ -15,7 +15,7 @@ import { BrainView } from "@/game/visualization/BrainView";
 const DT = 0.005;
 
 export class GameWorld {
-  private readonly fixture = createSyntheticFixture();
+  private readonly stagedFlywire = createStagedFlywireColumns();
   private readonly arena: Arena;
   private activeConnectome: ConnectomeColumns;
   private neural: NeuralEngine;
@@ -36,19 +36,19 @@ export class GameWorld {
   private fps = 60;
   private species: SpeciesId = "DROSOPHILA";
   private celegansActivation: Promise<void> | null = null;
-  private connectomeExecution: ConnectomeExecution = this.fixtureExecution();
+  private connectomeExecution: ConnectomeExecution = stagedFlywireExecution();
   private lastSensor: SensorFrame = { food: 0, odor: 0, light: 0, leftCue: 0, rightCue: 0, wind: 0, touch: 0, temperature: 0, taste: 0, provenance: "MODELLED MAPPING" };
   private lastMotor: MotorFrame = { forward: 0, turn: 0, wingLift: 0, gait: 0, provenance: "MODELLED MAPPING" };
 
   constructor(private readonly scene: Scene) {
     this.arena = new Arena(scene);
-    this.neural = new NeuralEngine(this.fixture);
-    this.activeConnectome = this.fixture;
+    this.neural = new NeuralEngine(this.stagedFlywire);
+    this.activeConnectome = this.stagedFlywire;
     this.fly = new FlyBody(scene);
     this.worm = new WormBody(scene);
     this.worm.setEnabled(false);
     this.activeBody = this.fly;
-    this.brain = new BrainView(scene, this.fixture);
+    this.brain = new BrainView(scene, this.stagedFlywire);
   }
 
   update(renderDt: number): void {
@@ -96,6 +96,15 @@ export class GameWorld {
     this.simTime += dt;
     if (this.demo) this.runDemoSchedule();
     this.lastSensor = this.arena.sample(this.activeBody.getPosition(), this.activeBody.getHeading(), dt);
+    if (this.species === "DROSOPHILA") {
+      this.spikes = 0;
+      this.active = 0;
+      this.lastMotor = { forward: 0, turn: 0, wingLift: 0, gait: 0, provenance: "MODELLED MAPPING" };
+      this.activeBody.update(this.lastMotor, dt);
+      this.timeline.copyWithin(0, 1);
+      this.timeline[this.timeline.length - 1] = 0;
+      return;
+    }
     this.spikes = this.neural.step(dt, this.lastSensor);
     this.lastMotor = this.decodeMotor();
     this.activeBody.update(this.lastMotor, dt);
@@ -153,7 +162,7 @@ export class GameWorld {
   }
 
   private snapshot(): SimulationSnapshot {
-    const averageRate = this.neural.cpu.firingRate.reduce((sum, value) => sum + value, 0) / this.activeConnectome.neuronCount;
+    const averageRate = this.neural.cpu.firingRate.reduce((sum, value) => sum + value, 0) / Math.max(1, this.activeConnectome.neuronCount);
     const behavior = this.lastSensor.wind > 0.65 || this.lastSensor.touch > 0.5
       ? "BRACING"
       : this.lastSensor.food > 0.28 ? "FORAGING" : this.lastSensor.leftCue + this.lastSensor.rightCue > 0.1 ? "ORIENTING" : "IDLE";
@@ -185,24 +194,24 @@ export class GameWorld {
     this.fly.setEnabled(flyActive);
     this.worm.setEnabled(!flyActive);
     this.activeBody = flyActive ? this.fly : this.worm;
-    if (flyActive) this.activateFixture();
+    if (flyActive) this.activateStagedFlywire();
     else void this.activateCElegans();
   }
 
-  private activateFixture(): void {
-    if (this.activeConnectome === this.fixture) {
-      this.connectomeExecution = this.fixtureExecution();
+  private activateStagedFlywire(): void {
+    if (this.activeConnectome === this.stagedFlywire) {
+      this.connectomeExecution = stagedFlywireExecution();
       return;
     }
-    this.installConnectome(this.fixture, undefined, this.fixtureExecution());
+    this.installConnectome(this.stagedFlywire, undefined, stagedFlywireExecution());
   }
 
   private async activateCElegans(): Promise<void> {
     if (this.activeConnectome.provenance === "SOURCE DATA" || this.celegansActivation) return;
     this.connectomeExecution = {
-      topology: "SYNTHETIC TEST FIXTURE",
+      topology: "MODELLED MAPPING",
       label: "C. ELEGANS PACK LOADING",
-      detail: "The 96-neuron fixture remains active while the cited C. elegans manifest and five source chunks are checksum-verified.",
+      detail: "No synthetic fly network is active while the cited C. elegans manifest and five source chunks are checksum-verified.",
     };
     this.celegansActivation = loadCElegansRuntime()
       .then((runtime) => {
@@ -210,9 +219,9 @@ export class GameWorld {
       })
       .catch((error: unknown) => {
         this.connectomeExecution = {
-          topology: "SYNTHETIC TEST FIXTURE",
+          topology: "MODELLED MAPPING",
           label: "C. ELEGANS PACK ERROR",
-          detail: error instanceof Error ? error.message : "The C. elegans source pack could not be activated; the synthetic fixture remains active.",
+          detail: error instanceof Error ? error.message : "The C. elegans source pack could not be activated; no synthetic fallback is active.",
         };
       })
       .finally(() => {
@@ -231,11 +240,4 @@ export class GameWorld {
     this.reset();
   }
 
-  private fixtureExecution(): ConnectomeExecution {
-    return {
-      topology: "SYNTHETIC TEST FIXTURE",
-      label: "SYNTHETIC TEST FIXTURE",
-      detail: "The fly currently uses the built-in 96-neuron software fixture. It is not FlyWire source data.",
-    };
-  }
 }
