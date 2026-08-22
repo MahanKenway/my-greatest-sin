@@ -54,3 +54,13 @@
 - [x] Integrate lightweight three-dimensional bodies, distinct locomotion, source labels, and shared camera framing for both species.
 - [x] Run browser, type, test, build, and visual validation before checkpointing the dual-species revision.
 - [ ] Convert and simplify the externally sourced high-detail body meshes into attributed GLB assets before any future raw-mesh replacement.
+
+## C. elegans Real-Connectome Execution Revision
+
+- [x] Select one authoritative connectome release with explicit terms, version, citation, and permitted download path.
+- [x] Download only the selected source tables outside the project tree and record SHA-256 values, sizes, columns, and source URLs.
+- [x] Implement a source-specific converter to a provenance-rich C. elegans DFLY manifest and checksummed typed-array chunks.
+- [x] Add deterministic source-schema and converter tests without committing the real source data to the repository.
+- [x] Add a C. elegans pack activation path that preserves an explicit distinction between `SOURCE DATA` and modelled sensors, motor decoder, and body.
+- [ ] Convert a licensed C. elegans model reference into an optimized GLB, upload it to managed web storage, and preserve attribution.
+- [ ] Validate checksum loading, species switching, runtime behavior, type checks, tests, production build, and a browser interaction before checkpointing.

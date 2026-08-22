@@ -1,6 +1,7 @@
 /** Luminous Connectome Lab: framework-independent owner for fixed-step environment → sensors → neural engine → body loop. */
 import type { Scene } from "@babylonjs/core/scene";
 import { createSyntheticFixture } from "@/game/connectome/fixture";
+import { loadCElegansRuntime } from "@/game/connectome/celegansRuntime";
 import { estimateColumnMemoryMiB } from "@/game/connectome/manifest";
 import { FlyBody } from "@/game/body/FlyBody";
 import { WormBody } from "@/game/body/WormBody";
@@ -8,7 +9,7 @@ import type { BodyController } from "@/game/body/types";
 import { Arena } from "@/game/environment/Arena";
 import { NeuralEngine } from "@/game/neural/engine";
 import { SPECIES_PROFILES } from "@/game/species/profiles";
-import type { MotorFrame, SensorFrame, SimulationCommand, SimulationSnapshot, SpeciesId } from "@/game/shared/types";
+import type { ConnectomeColumns, ConnectomeExecution, MotorFrame, NeuralRouting, SensorFrame, SimulationCommand, SimulationSnapshot, SpeciesId } from "@/game/shared/types";
 import { BrainView } from "@/game/visualization/BrainView";
 
 const DT = 0.005;
@@ -16,11 +17,12 @@ const DT = 0.005;
 export class GameWorld {
   private readonly fixture = createSyntheticFixture();
   private readonly arena: Arena;
-  private readonly neural: NeuralEngine;
+  private activeConnectome: ConnectomeColumns;
+  private neural: NeuralEngine;
   private readonly fly: FlyBody;
   private readonly worm: WormBody;
   private activeBody: BodyController;
-  private readonly brain: BrainView;
+  private brain: BrainView;
   private readonly timeline = new Float32Array(64);
   private readonly listeners = new Set<(snapshot: SimulationSnapshot) => void>();
   private elapsed = 0;
@@ -33,12 +35,15 @@ export class GameWorld {
   private active = 0;
   private fps = 60;
   private species: SpeciesId = "DROSOPHILA";
+  private celegansActivation: Promise<void> | null = null;
+  private connectomeExecution: ConnectomeExecution = this.fixtureExecution();
   private lastSensor: SensorFrame = { food: 0, odor: 0, light: 0, leftCue: 0, rightCue: 0, wind: 0, touch: 0, temperature: 0, taste: 0, provenance: "MODELLED MAPPING" };
   private lastMotor: MotorFrame = { forward: 0, turn: 0, wingLift: 0, gait: 0, provenance: "MODELLED MAPPING" };
 
   constructor(private readonly scene: Scene) {
     this.arena = new Arena(scene);
     this.neural = new NeuralEngine(this.fixture);
+    this.activeConnectome = this.fixture;
     this.fly = new FlyBody(scene);
     this.worm = new WormBody(scene);
     this.worm.setEnabled(false);
@@ -84,6 +89,7 @@ export class GameWorld {
 
   dispose(): void {
     this.listeners.clear();
+    this.brain.dispose();
   }
 
   private step(dt: number): void {
@@ -94,7 +100,7 @@ export class GameWorld {
     this.lastMotor = this.decodeMotor();
     this.activeBody.update(this.lastMotor, dt);
     this.timeline.copyWithin(0, 1);
-    this.timeline[this.timeline.length - 1] = Math.min(1, this.spikes / 18);
+    this.timeline[this.timeline.length - 1] = Math.min(1, this.spikes / Math.max(18, this.activeConnectome.neuronCount * 0.12));
     this.active = 0;
     for (let neuron = 0; neuron < this.neural.cpu.firingRate.length; neuron += 1) {
       if (this.neural.cpu.firingRate[neuron] > 0.035) this.active += 1;
@@ -102,15 +108,15 @@ export class GameWorld {
   }
 
   private decodeMotor(): MotorFrame {
-    const mean = (start: number, end: number) => {
+    const mean = (indices: ReadonlyArray<number>) => {
       let value = 0;
-      for (let index = start; index < end; index += 1) value += this.neural.cpu.firingRate[index];
-      return value / (end - start);
+      for (const index of indices) value += this.neural.cpu.firingRate[index] ?? 0;
+      return indices.length ? value / indices.length : 0;
     };
-    const forward = Math.min(1, mean(64, 72) * 8.8);
-    const left = mean(72, 80) * 10;
-    const right = mean(80, 88) * 10;
-    const reactive = mean(88, 96) * 8;
+    const forward = Math.min(1, mean(this.neural.routing.motor.forward) * 8.8);
+    const left = mean(this.neural.routing.motor.left) * 10;
+    const right = mean(this.neural.routing.motor.right) * 10;
+    const reactive = mean(this.neural.routing.motor.reactive) * 8;
     const bodyWave = Math.min(1, forward + reactive * 0.3);
     return {
       forward: Math.max(0.08, forward),
@@ -147,7 +153,7 @@ export class GameWorld {
   }
 
   private snapshot(): SimulationSnapshot {
-    const averageRate = this.neural.cpu.firingRate.reduce((sum, value) => sum + value, 0) / this.fixture.neuronCount;
+    const averageRate = this.neural.cpu.firingRate.reduce((sum, value) => sum + value, 0) / this.activeConnectome.neuronCount;
     const behavior = this.lastSensor.wind > 0.65 || this.lastSensor.touch > 0.5
       ? "BRACING"
       : this.lastSensor.food > 0.28 ? "FORAGING" : this.lastSensor.leftCue + this.lastSensor.rightCue > 0.1 ? "ORIENTING" : "IDLE";
@@ -155,13 +161,14 @@ export class GameWorld {
       timeSeconds: this.simTime,
       paused: this.paused,
       backend: this.neural.status,
-      neuronCount: this.fixture.neuronCount,
-      synapseCount: this.fixture.synapseCount,
+      neuronCount: this.activeConnectome.neuronCount,
+      synapseCount: this.activeConnectome.synapseCount,
       activeNeurons: this.active,
       spikeCount: this.spikes,
       averageRate,
       fps: this.fps,
-      memoryEstimateMiB: estimateColumnMemoryMiB(this.fixture.synapseCount),
+      memoryEstimateMiB: estimateColumnMemoryMiB(this.activeConnectome.synapseCount),
+      connectomeExecution: this.connectomeExecution,
       species: SPECIES_PROFILES[this.species],
       sensor: this.lastSensor,
       motor: this.lastMotor,
@@ -178,5 +185,57 @@ export class GameWorld {
     this.fly.setEnabled(flyActive);
     this.worm.setEnabled(!flyActive);
     this.activeBody = flyActive ? this.fly : this.worm;
+    if (flyActive) this.activateFixture();
+    else void this.activateCElegans();
+  }
+
+  private activateFixture(): void {
+    if (this.activeConnectome === this.fixture) {
+      this.connectomeExecution = this.fixtureExecution();
+      return;
+    }
+    this.installConnectome(this.fixture, undefined, this.fixtureExecution());
+  }
+
+  private async activateCElegans(): Promise<void> {
+    if (this.activeConnectome.provenance === "SOURCE DATA" || this.celegansActivation) return;
+    this.connectomeExecution = {
+      topology: "SYNTHETIC TEST FIXTURE",
+      label: "C. ELEGANS PACK LOADING",
+      detail: "The 96-neuron fixture remains active while the cited C. elegans manifest and five source chunks are checksum-verified.",
+    };
+    this.celegansActivation = loadCElegansRuntime()
+      .then((runtime) => {
+        if (this.species === "C_ELEGANS") this.installConnectome(runtime.columns, runtime.routing, runtime.execution);
+      })
+      .catch((error: unknown) => {
+        this.connectomeExecution = {
+          topology: "SYNTHETIC TEST FIXTURE",
+          label: "C. ELEGANS PACK ERROR",
+          detail: error instanceof Error ? error.message : "The C. elegans source pack could not be activated; the synthetic fixture remains active.",
+        };
+      })
+      .finally(() => {
+        this.celegansActivation = null;
+        this.emit();
+      });
+    await this.celegansActivation;
+  }
+
+  private installConnectome(columns: ConnectomeColumns, routing: NeuralRouting | undefined, execution: ConnectomeExecution): void {
+    this.activeConnectome = columns;
+    this.neural = new NeuralEngine(columns, routing);
+    this.brain.dispose();
+    this.brain = new BrainView(this.scene, columns);
+    this.connectomeExecution = execution;
+    this.reset();
+  }
+
+  private fixtureExecution(): ConnectomeExecution {
+    return {
+      topology: "SYNTHETIC TEST FIXTURE",
+      label: "SYNTHETIC TEST FIXTURE",
+      detail: "The fly currently uses the built-in 96-neuron software fixture. It is not FlyWire source data.",
+    };
   }
 }

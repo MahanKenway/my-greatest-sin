@@ -53,7 +53,14 @@ The converter makes two sequential passes over the Feather record batches. First
 
 The browser first downloads the manifest, validates bounds and provenance, and calculates a conservative memory estimate. Chunks are fetched from a CORS-enabled static host, optionally through HTTP `Range` requests when a manifest describes a byte range. Data are cached in IndexedDB under dataset ID, transform version, chunk ID, and checksum. A chunk is usable only after its SHA-256 matches the manifest. The current browser integration validates and stages a pack; full graph execution remains disabled until the full WebGPU sparse backend is benchmarked on the current device.
 
+## C. elegans c302 Profile
+
+The project also defines the `celegans-c302-hermaphrodite-connectivity` profile. It preserves an ordered `cellNames` dictionary, incoming CSR offsets, compact presynaptic indices, source `connection_weight`, and source `connection_kind` (`chemical` or `electrical`). The c302 workbook's `NMJ` rows are recorded as excluded transform metadata rather than silently treated as neuron–neuron edges. The default browser execution validates each chunk SHA-256 before it instantiates the **۲۷۹ connected-neuron / ۶٬۲۶۱-edge** source topology on the preallocated CPU engine.[3]
+
+Source connection multiplicities become bounded LIF weights only through a versioned `MODELLED MAPPING`. Input routing, a one-tick delay, motor-cell groups, neuron visual positions and the segmented body are also modelled mappings. This execution is therefore a source-topology simulation, not a complete physiological reproduction of a living animal.
+
 ## References
 
 [1]: https://flywire.ai/guidelines "FlyWire citation guidelines"
 [2]: https://zenodo.org/records/10676866 "FlyWire Whole-brain Connectome Connectivity Data"
+[3]: https://github.com/openworm/c302 "OpenWorm c302 repository and MIT license"

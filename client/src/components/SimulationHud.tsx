@@ -24,7 +24,9 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
   const motor = snapshot?.motor;
   const activity = snapshot?.neuronActivity ?? new Float32Array(0);
   const timeline = snapshot?.timeline ?? new Float32Array(64);
-  const sampleIndices = [2, 7, 11, 19, 24, 31, 38, 44, 53, 61, 67, 72, 79, 86, 92, 95];
+  const sampleIndices = Array.from({ length: 16 }, (_, index) => Math.min(Math.max(0, activity.length - 1), Math.floor(((index + 1) / 17) * activity.length)));
+  const execution = snapshot?.connectomeExecution;
+  const usesSourceTopology = execution?.topology === "SOURCE DATA";
 
   return (
     <div className="lab-hud" aria-live="polite">
@@ -65,16 +67,16 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
           <div className="readout-line"><span>ACTIVE CELLS</span><strong>{snapshot?.activeNeurons ?? 0}</strong></div>
           <div className="readout-line"><span>SPIKES / STEP</span><strong>{snapshot?.spikeCount ?? 0}</strong></div>
           <div className="readout-line"><span>MEAN RATE</span><strong>{numeric(snapshot?.averageRate ?? 0, 3)}</strong></div>
-          <p className="pane-note">Rendering is sampled. The 96-neuron fixture remains a software test network, not FlyWire or C. elegans source biology.</p>
+          <p className="pane-note">{execution?.detail ?? "Rendering is sampled while the simulation prepares."}</p>
         </section>
 
         <section className="lab-pane provenance-pane">
           <p className="micro-label">DATA STATUS</p>
-          <div className="provenance-row"><span className="provenance fixture">SYNTHETIC TEST FIXTURE</span><span>96 N / {snapshot?.synapseCount ?? 0} E</span></div>
-          <p>{snapshot?.species.bodyLabel ?? "SPECIMEN BODY"}: modelled presentation. Network execution stays locked until a validated, cited `DFLY` manifest is loaded.</p>
+          <div className="provenance-row"><span className={`provenance ${usesSourceTopology ? "source" : "fixture"}`}>{execution?.label ?? "SYNTHETIC TEST FIXTURE"}</span><span>{snapshot?.neuronCount ?? 0} N / {snapshot?.synapseCount ?? 0} E</span></div>
+          <p>{snapshot?.species.bodyLabel ?? "SPECIMEN BODY"}: modelled presentation. {usesSourceTopology ? "Topology executes from integrity-checked source columns; stimulus routing and motor embodiment remain modelled mappings." : "Network execution remains a synthetic fixture until a validated, cited DFLY manifest is activated."}</p>
           <div className="source-readout"><span>BODY REFERENCE</span><strong>{snapshot?.species.sourceLicense ?? "—"}</strong></div>
           <div className="memory-readout"><span>EDGE COLUMNS</span><strong>{numeric(snapshot?.memoryEstimateMiB ?? 0)} MiB</strong></div>
-          <div className="pack-control-row"><button className={packStatus.state === "ERROR" || packStatus.state === "BLOCKED" ? "pack-action pack-warning" : "pack-action"} title={packStatus.message} onClick={onConfigurePack}>{packStatus.state === "CACHED" ? "PACK CACHED" : packStatus.state === "VALIDATED" ? "PACK READY" : packStatus.state === "ERROR" ? "PACK ERROR" : "VERIFY DFLY PACK"}</button>{(packStatus.state === "VALIDATED" || packStatus.state === "CACHED") && <button className="pack-action cache-action" onClick={onCachePack}>{cacheProgress ? `CACHE ${cacheProgress.completed}/${cacheProgress.total}` : "CACHE"}</button>}</div>
+          <div className="pack-control-row"><button className={usesSourceTopology ? "pack-action" : packStatus.state === "ERROR" || packStatus.state === "BLOCKED" ? "pack-action pack-warning" : "pack-action"} title={usesSourceTopology ? execution?.detail : packStatus.message} onClick={usesSourceTopology ? undefined : onConfigurePack}>{usesSourceTopology ? "SOURCE PACK ACTIVE" : packStatus.state === "CACHED" ? "PACK CACHED" : packStatus.state === "VALIDATED" ? "PACK READY" : packStatus.state === "ERROR" ? "PACK ERROR" : "VERIFY DFLY PACK"}</button>{!usesSourceTopology && (packStatus.state === "VALIDATED" || packStatus.state === "CACHED") && <button className="pack-action cache-action" onClick={onCachePack}>{cacheProgress ? `CACHE ${cacheProgress.completed}/${cacheProgress.total}` : "CACHE"}</button>}</div>
           {packStatus.state !== "UNCONFIGURED" && <div className={`pack-state ${packStatus.state.toLowerCase()}`}><span>DFLY</span><strong>{packStatus.state.replace("_", " ")}</strong></div>}
           {(packStatus.state === "VALIDATED" || packStatus.state === "CACHED" || packStatus.state === "BLOCKED" || packStatus.state === "ERROR") && <p className="pack-message">{packStatus.message}</p>}
         </section>

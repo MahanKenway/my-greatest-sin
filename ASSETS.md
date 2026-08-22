@@ -21,6 +21,10 @@
 | Drosophila body components | [NeLy-EPFL/NeuroMechFly](https://github.com/NeLy-EPFL/NeuroMechFly) | Apache-2.0 | Optional optimized GLB assembled from source body-part meshes; procedural body remains the low-risk first integration. | Preserve the Apache-2.0 notice and cite NeuroMechFly. |
 | C. elegans anatomy/layers | [openworm/wormbrowser](https://github.com/openworm/wormbrowser) | MIT | Inform a lightweight segmented worm body and future optimized mesh extraction. | Preserve the MIT notice and cite OpenWorm Worm Browser. |
 
+## Conversion Staging
+
+The source `Thorax.stl` from NeuroMechFly was converted outside the repository into `fly-thorax.glb` (464 KiB) with Assimp, preserving Apache-2.0 attribution. It is intentionally not yet substituted into the articulated procedural fly: a single thorax mesh would degrade the coherent existing body without an authored assembly/rig. Virtual Worm uses a legacy `utf8` geometry format, so its future GLB extraction remains an explicit conversion task rather than a misleading claim of a raw-mesh integration.
+
 ## Build Rules
 
 The generated assets are stored outside the repository and referenced only through the stable manuscript storage URLs above. They may establish aesthetic direction but they do not represent biological imagery or scientific data. Any modelled geometry, neural state, or environment data presented beside them will carry explicit provenance labels in the UI.

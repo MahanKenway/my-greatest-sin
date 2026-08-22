@@ -47,6 +47,17 @@ export type ConnectomeColumns = {
   provenance: Provenance;
 };
 
+export type NeuralRouting = {
+  sensory: { food: ReadonlyArray<number>; leftCue: ReadonlyArray<number>; rightCue: ReadonlyArray<number>; reactive: ReadonlyArray<number> };
+  motor: { forward: ReadonlyArray<number>; left: ReadonlyArray<number>; right: ReadonlyArray<number>; reactive: ReadonlyArray<number> };
+};
+
+export type ConnectomeExecution = {
+  topology: Provenance;
+  label: string;
+  detail: string;
+};
+
 export type ConnectomeManifest = {
   format: "DFLY";
   formatVersion: number;
@@ -61,7 +72,7 @@ export type ConnectomeManifest = {
     citations: ReadonlyArray<string>;
     transform: { name: string; version: string };
   };
-  dictionaries?: { neuropils?: ReadonlyArray<string> };
+  dictionaries?: { neuropils?: ReadonlyArray<string>; cellNames?: ReadonlyArray<string>; connectionKinds?: ReadonlyArray<string> };
   columns?: Readonly<Record<string, { scalarType: "u16" | "u32" | "u64" | "f16" | "f32"; elementCount: number; stride: number; semanticStatus: Provenance; chunks: ReadonlyArray<string> }>>;
   chunks: ReadonlyArray<{
     id: string;
@@ -89,6 +100,7 @@ export type DflyPackStatus =
   | { state: "UNCONFIGURED"; message: string }
   | { state: "VALIDATED"; message: string; manifest: ConnectomeManifest; preflight: DflyPackPreflight }
   | { state: "CACHED"; message: string; manifest: ConnectomeManifest; preflight: DflyPackPreflight; cachedChunks: number }
+  | { state: "ACTIVE"; message: string; manifest: ConnectomeManifest; preflight: DflyPackPreflight }
   | { state: "BLOCKED"; message: string; manifest: ConnectomeManifest; preflight: DflyPackPreflight }
   | { state: "ERROR"; message: string };
 
@@ -103,6 +115,7 @@ export type SimulationSnapshot = {
   averageRate: number;
   fps: number;
   memoryEstimateMiB: number;
+  connectomeExecution: ConnectomeExecution;
   species: SpeciesProfile;
   sensor: SensorFrame;
   motor: MotorFrame;

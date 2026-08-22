@@ -1,15 +1,17 @@
 /** Luminous Connectome Lab: transparent backend selection; fixture execution remains on the deterministic fallback. */
-import type { ConnectomeColumns, SensorFrame } from "@/game/shared/types";
-import { TypedArrayLifEngine } from "./lifCpu";
+import type { ConnectomeColumns, NeuralRouting, SensorFrame } from "@/game/shared/types";
+import { FIXTURE_ROUTING, TypedArrayLifEngine } from "./lifCpu";
 
 type NavigatorGpu = Navigator & { gpu?: unknown };
 
 export class NeuralEngine {
   readonly cpu: TypedArrayLifEngine;
+  readonly routing: NeuralRouting;
   readonly status: "CPU TypedArray" | "WebGPU available — sparse kernel staged" | "WebGPU unavailable";
 
-  constructor(columns: ConnectomeColumns) {
-    this.cpu = new TypedArrayLifEngine(columns);
+  constructor(columns: ConnectomeColumns, routing?: NeuralRouting) {
+    this.routing = routing ?? FIXTURE_ROUTING;
+    this.cpu = new TypedArrayLifEngine(columns, this.routing);
     this.status = typeof navigator !== "undefined" && "gpu" in (navigator as NavigatorGpu)
       ? "WebGPU available — sparse kernel staged"
       : "WebGPU unavailable";

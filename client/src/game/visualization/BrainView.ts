@@ -38,4 +38,9 @@ export class BrainView {
     this.material.emissiveColor = Color3.Lerp(Color3.FromHexString("#28112D"), Color3.FromHexString("#FF3D8D"), activity);
     this.cloud.rotation.y = timeSeconds * 0.11;
   }
+
+  dispose(): void {
+    this.cloud.dispose();
+    this.material.dispose();
+  }
 }

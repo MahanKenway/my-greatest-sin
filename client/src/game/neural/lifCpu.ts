@@ -1,5 +1,10 @@
 /** Luminous Connectome Lab: a preallocated LIF fallback with incoming CSR propagation. */
-import type { ConnectomeColumns } from "@/game/shared/types";
+import type { ConnectomeColumns, NeuralRouting } from "@/game/shared/types";
+
+export const FIXTURE_ROUTING: NeuralRouting = {
+  sensory: { food: [0, 1, 2, 3], leftCue: [4, 5, 6, 7], rightCue: [8, 9, 10, 11], reactive: [12, 13, 14, 15] },
+  motor: { forward: [64, 65, 66, 67, 68, 69, 70, 71], left: [72, 73, 74, 75, 76, 77, 78, 79], right: [80, 81, 82, 83, 84, 85, 86, 87], reactive: [88, 89, 90, 91, 92, 93, 94, 95] },
+};
 
 export class TypedArrayLifEngine {
   readonly membrane: Float32Array;
@@ -9,7 +14,7 @@ export class TypedArrayLifEngine {
   private readonly externalInput: Float32Array;
   private readonly previousSpikes: Uint8Array;
 
-  constructor(private readonly columns: ConnectomeColumns) {
+  constructor(private readonly columns: ConnectomeColumns, private readonly routing: NeuralRouting = FIXTURE_ROUTING) {
     this.membrane = new Float32Array(columns.neuronCount);
     this.spikes = new Uint8Array(columns.neuronCount);
     this.firingRate = new Float32Array(columns.neuronCount);
@@ -29,10 +34,10 @@ export class TypedArrayLifEngine {
 
   setSensoryInput(food: number, leftCue: number, rightCue: number, reactive: number): void {
     this.externalInput.fill(0);
-    this.assign(0, 4, food * 1.25);
-    this.assign(4, 4, leftCue * 1.15);
-    this.assign(8, 4, rightCue * 1.15);
-    this.assign(12, 4, reactive * 1.05);
+    this.assign(this.routing.sensory.food, food * 1.25);
+    this.assign(this.routing.sensory.leftCue, leftCue * 1.15);
+    this.assign(this.routing.sensory.rightCue, rightCue * 1.15);
+    this.assign(this.routing.sensory.reactive, reactive * 1.05);
   }
 
   step(dt: number): number {
@@ -66,7 +71,7 @@ export class TypedArrayLifEngine {
     return spikeCount;
   }
 
-  private assign(start: number, length: number, amount: number): void {
-    for (let offset = 0; offset < length; offset += 1) this.externalInput[start + offset] = amount;
+  private assign(indices: ReadonlyArray<number>, amount: number): void {
+    for (const index of indices) if (index >= 0 && index < this.externalInput.length) this.externalInput[index] = amount;
   }
 }
