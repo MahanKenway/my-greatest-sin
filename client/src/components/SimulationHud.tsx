@@ -2,7 +2,7 @@
  * Luminous Connectome Lab: the DOM HUD is an observation bench, not the simulation owner.
  * Every live panel surfaces an explicit provenance label so synthetic or modelled values stay candid.
  */
-import type { DflyPackStatus, SimulationCommand, SimulationSnapshot } from "@/game/shared/types";
+import type { DflyPackStatus, FlywireStageStatus, SimulationCommand, SimulationSnapshot } from "@/game/shared/types";
 
 const MARK_URL = "/manus-storage/digital-fly-mark_36065411.png";
 const BRAIN_MAP_URL = "/manus-storage/digital-fly-brain-map_8c20bc49.png";
@@ -12,6 +12,7 @@ type Props = {
   onCommand: (command: SimulationCommand) => void;
   packStatus: DflyPackStatus;
   cacheProgress: { completed: number; total: number } | null;
+  flywireStage: FlywireStageStatus;
   onConfigurePack: () => void;
   onCachePack: () => void;
 };
@@ -19,7 +20,7 @@ type Props = {
 const numeric = (value: number, digits = 2) => value.toFixed(digits);
 const percentage = (value: number) => `${Math.round(Math.max(0, Math.min(1, value)) * 100)}%`;
 
-export default function SimulationHud({ snapshot, onCommand, packStatus, cacheProgress, onConfigurePack, onCachePack }: Props) {
+export default function SimulationHud({ snapshot, onCommand, packStatus, cacheProgress, flywireStage, onConfigurePack, onCachePack }: Props) {
   const sensor = snapshot?.sensor;
   const motor = snapshot?.motor;
   const activity = snapshot?.neuronActivity ?? new Float32Array(0);
@@ -27,6 +28,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
   const sampleIndices = Array.from({ length: 16 }, (_, index) => Math.min(Math.max(0, activity.length - 1), Math.floor(((index + 1) / 17) * activity.length)));
   const execution = snapshot?.connectomeExecution;
   const usesSourceTopology = execution?.topology === "SOURCE DATA";
+  const showingFly = snapshot?.species.id === "DROSOPHILA";
 
   return (
     <div className="lab-hud" aria-live="polite">
@@ -76,6 +78,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
           <p>{snapshot?.species.bodyLabel ?? "SPECIMEN BODY"}: modelled presentation. {usesSourceTopology ? "Topology executes from integrity-checked source columns; stimulus routing and motor embodiment remain modelled mappings." : "Network execution remains a synthetic fixture until a validated, cited DFLY manifest is activated."}</p>
           <div className="source-readout"><span>BODY REFERENCE</span><strong>{snapshot?.species.sourceLicense ?? "—"}</strong></div>
           <div className="memory-readout"><span>EDGE COLUMNS</span><strong>{numeric(snapshot?.memoryEstimateMiB ?? 0)} MiB</strong></div>
+          {showingFly && <><div className="provenance-row"><span className="provenance source">FLYWIRE V783 STAGED</span><span>{flywireStage.neuronCount.toLocaleString()} N / {flywireStage.synapseCount.toLocaleString()} E</span></div><p className="pack-message">{flywireStage.message}</p><div className="pack-state blocked"><span>LICENSE</span><strong>{flywireStage.license} · {flywireStage.packMiB} MiB</strong></div></>}
           <div className="pack-control-row"><button className={usesSourceTopology ? "pack-action" : packStatus.state === "ERROR" || packStatus.state === "BLOCKED" ? "pack-action pack-warning" : "pack-action"} title={usesSourceTopology ? execution?.detail : packStatus.message} onClick={usesSourceTopology ? undefined : onConfigurePack}>{usesSourceTopology ? "SOURCE PACK ACTIVE" : packStatus.state === "CACHED" ? "PACK CACHED" : packStatus.state === "VALIDATED" ? "PACK READY" : packStatus.state === "ERROR" ? "PACK ERROR" : "VERIFY DFLY PACK"}</button>{!usesSourceTopology && (packStatus.state === "VALIDATED" || packStatus.state === "CACHED") && <button className="pack-action cache-action" onClick={onCachePack}>{cacheProgress ? `CACHE ${cacheProgress.completed}/${cacheProgress.total}` : "CACHE"}</button>}</div>
           {packStatus.state !== "UNCONFIGURED" && <div className={`pack-state ${packStatus.state.toLowerCase()}`}><span>DFLY</span><strong>{packStatus.state.replace("_", " ")}</strong></div>}
           {(packStatus.state === "VALIDATED" || packStatus.state === "CACHED" || packStatus.state === "BLOCKED" || packStatus.state === "ERROR") && <p className="pack-message">{packStatus.message}</p>}

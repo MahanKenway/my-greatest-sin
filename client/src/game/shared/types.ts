@@ -104,6 +104,16 @@ export type DflyPackStatus =
   | { state: "BLOCKED"; message: string; manifest: ConnectomeManifest; preflight: DflyPackPreflight }
   | { state: "ERROR"; message: string };
 
+export type FlywireStageStatus = {
+  state: "WEBGPU_UNAVAILABLE" | "BENCHMARK_REQUIRED";
+  neuronCount: number;
+  synapseCount: number;
+  packMiB: number;
+  license: "CC BY-NC 4.0";
+  sourceUrl: string;
+  message: string;
+};
+
 export type SimulationSnapshot = {
   timeSeconds: number;
   paused: boolean;

@@ -64,3 +64,21 @@
 - [x] Add a C. elegans pack activation path that preserves an explicit distinction between `SOURCE DATA` and modelled sensors, motor decoder, and body.
 - [ ] Convert a licensed C. elegans model reference into an optimized GLB, upload it to managed web storage, and preserve attribution.
 - [ ] Validate checksum loading, species switching, runtime behavior, type checks, tests, production build, and a browser interaction before checkpointing.
+
+## User-Supplied Fly/Worm Repository Review
+
+- [x] Inspect `erojasoficial-byte/fly-brain`, `lixiang1076/fly-brain`, and `heyseth/worm-sim` for code, data, provenance, licenses, and unsafe/undocumented dependencies.
+- [x] Determine whether either fly repository contains a real FlyWire-derived 140k-neuron graph, a converter, a model-only approximation, or only visualization assets.
+- [x] Cross-check any claimed FlyWire files against official release identifiers, source terms, checksums, and permitted redistribution.
+- [x] Compare compatible repository components against the existing DFLY contract and use only clearly licensed, provenance-preserving code or data.
+- [ ] If a valid source pack is available, add staged 140k-neuron preflight/cache support; otherwise preserve the explicit no-data boundary and document the blocker.
+
+## Confirmed Official FlyWire v783 Staged Path
+
+- [x] Record the user-confirmed noncommercial use boundary, CC BY-NC 4.0 notice, citations, and no-third-party-mirror rule.
+- [x] Retrieve `proofread_root_ids_783.npy` and `proofread_connections_783.feather` directly from the official FlyWire release outside the project tree.
+- [x] Verify source file sizes and SHA-256 checksums before any transform.
+- [x] Run the existing streaming converter outside the project tree and validate the generated DFLY manifest and every chunk checksum.
+- [x] Keep the resulting real-data pack outside the git repository and all public release bundles until the publication gate is separately reviewed.
+- [x] Add an explicit FlyWire staged profile with CC BY-NC attribution, source-pack preflight, cache progress and no-CPU-activation warning.
+- [x] Add a WebGPU sparse backend capability/benchmark gate before allowing a 140k-neuron pack to execute.
