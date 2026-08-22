@@ -1,0 +1,9 @@
+{
+  "name": "Digital Fly — Connectome Observation Bench",
+  "short_name": "Digital Fly",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#071018",
+  "theme_color": "#071018",
+  "description": "Browser-first embodied Drosophila connectome experiment software."
+}

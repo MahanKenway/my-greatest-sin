@@ -1,0 +1,7 @@
+name = "digital-fly"
+compatibility_date = "2026-08-22"
+pages_build_output_dir = "./dist/public"
+
+# Cloudflare Pages build command: pnpm install --frozen-lockfile && pnpm build
+# No Worker is required for the simulation. A Worker/R2 data proxy is optional and must preserve
+# FlyWire release terms, range requests, immutable checksums, and explicit provenance metadata.
