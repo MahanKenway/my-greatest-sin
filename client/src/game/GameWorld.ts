@@ -53,6 +53,7 @@ export class GameWorld {
 
   update(renderDt: number): void {
     this.elapsed += renderDt;
+    this.arena.updatePresentation(this.elapsed);
     this.fps = this.fps * 0.93 + (renderDt > 0 ? 1 / renderDt : 60) * 0.07;
     if (!this.paused) {
       this.accumulator = Math.min(0.08, this.accumulator + renderDt);

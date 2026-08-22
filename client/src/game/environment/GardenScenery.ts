@@ -9,6 +9,7 @@ import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
+import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import type { Scene } from "@babylonjs/core/scene";
 import { GARDEN_ASSETS, type GardenAssetKey } from "./gardenAssets";
 
@@ -37,15 +38,37 @@ const PLACEMENTS: readonly GardenPlacement[] = [
   { asset: "yellowFlower", name: "yellow-flowers", position: new Vector3(-3.95, 0, -1.55), scale: 1.1, rotationY: 0.62 },
   { asset: "stonePath", name: "stone-path", position: new Vector3(1.15, 0.01, -2.9), scale: 1.18, rotationY: -0.3 },
   { asset: "stonePathCircle", name: "stone-path-circle", position: new Vector3(2.55, 0.01, -2.76), scale: 1.12, rotationY: 0.24 },
+  { asset: "woodenBridge", name: "wooden-bridge", position: new Vector3(-3.02, 0.12, 2.2), scale: 1.05, rotationY: Math.PI / 2 },
 ];
 
 export class GardenScenery {
+  private readonly grassAnchors: TransformNode[] = [];
+  private readonly fireflies: { anchor: TransformNode; phase: number }[] = [];
+  private readonly waterfallRibbons: Mesh[] = [];
+
   constructor(scene: Scene) {
     this.createMossBeds(scene);
     this.createPond(scene);
+    this.createWaterfall(scene);
     this.createStimulusLanterns(scene);
     this.createFireflies(scene);
     void Promise.all(PLACEMENTS.map((placement) => this.loadPlacement(scene, placement)));
+  }
+
+  update(elapsed: number): void {
+    this.grassAnchors.forEach((anchor, index) => {
+      anchor.rotation.z = Math.sin(elapsed * 0.95 + index * 1.7) * 0.055;
+      anchor.rotation.x = Math.cos(elapsed * 0.72 + index * 0.9) * 0.028;
+    });
+    this.fireflies.forEach(({ anchor, phase }) => {
+      anchor.position.y = 0.34 + Math.sin(elapsed * 1.45 + phase) * 0.18;
+      anchor.position.x += Math.cos(elapsed * 0.7 + phase) * 0.0008;
+      anchor.position.z += Math.sin(elapsed * 0.63 + phase) * 0.0008;
+    });
+    this.waterfallRibbons.forEach((ribbon, index) => {
+      ribbon.position.y = 0.64 + Math.sin(elapsed * 2.2 + index) * 0.035;
+      ribbon.scaling.x = 0.92 + Math.sin(elapsed * 1.45 + index * 1.9) * 0.06;
+    });
   }
 
   private createMossBeds(scene: Scene): void {
@@ -80,6 +103,28 @@ export class GardenScenery {
     pond.material = water;
   }
 
+  private createWaterfall(scene: Scene): void {
+    const rockMaterial = new StandardMaterial("garden-waterfall-rock-material", scene);
+    rockMaterial.diffuseColor = Color3.FromHexString("#284239");
+    rockMaterial.emissiveColor = Color3.FromHexString("#0A1715");
+    rockMaterial.specularColor = Color3.Black();
+    const cliff = MeshBuilder.CreateBox("garden-waterfall-cliff", { width: 0.72, height: 1.02, depth: 0.48 }, scene);
+    cliff.position.set(-4.08, 0.48, 2.7);
+    cliff.material = rockMaterial;
+
+    const waterMaterial = new StandardMaterial("garden-waterfall-material", scene);
+    waterMaterial.diffuseColor = Color3.FromHexString("#4BB9D2");
+    waterMaterial.emissiveColor = Color3.FromHexString("#0E5065");
+    waterMaterial.alpha = 0.7;
+    waterMaterial.backFaceCulling = false;
+    for (let index = 0; index < 3; index += 1) {
+      const ribbon = MeshBuilder.CreatePlane(`garden-waterfall-ribbon-${index}`, { width: 0.16, height: 0.82 }, scene);
+      ribbon.position.set(-4.08 + (index - 1) * 0.16, 0.64, 2.43);
+      ribbon.material = waterMaterial;
+      this.waterfallRibbons.push(ribbon);
+    }
+  }
+
   private createStimulusLanterns(scene: Scene): void {
     const lanternMaterial = new StandardMaterial("garden-lantern-material", scene);
     lanternMaterial.diffuseColor = Color3.FromHexString("#E7B854");
@@ -106,9 +151,12 @@ export class GardenScenery {
       [2.96, 0.45, 2.5], [3.58, 0.63, 2.05], [2.42, 0.38, -2.82],
     ] as const;
     points.forEach((point, index) => {
+      const anchor = new TransformNode(`garden-firefly-anchor-${index}`, scene);
+      anchor.position.set(point[0], point[1], point[2]);
       const firefly = MeshBuilder.CreateSphere(`garden-firefly-${index}`, { diameter: 0.055, segments: 8 }, scene);
-      firefly.position.set(point[0], point[1], point[2]);
+      firefly.parent = anchor;
       firefly.material = fireflyMaterial;
+      this.fireflies.push({ anchor, phase: index * 1.23 });
     });
   }
 
@@ -122,6 +170,7 @@ export class GardenScenery {
       anchor.position.copyFrom(placement.position);
       anchor.scaling.setAll(placement.scale);
       anchor.rotation.y = placement.rotationY ?? 0;
+      if (placement.asset === "grass" || placement.asset === "leafGrass") this.grassAnchors.push(anchor);
     } catch {
       // A missing decorative asset must not prevent the scientific simulation from running.
     }

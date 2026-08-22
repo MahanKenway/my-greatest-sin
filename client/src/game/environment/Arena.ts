@@ -20,6 +20,7 @@ export class Arena {
   private readonly lightPosition = new Vector3(-2.8, 0.06, -1.1);
   private readonly foodMesh;
   private readonly lightMesh;
+  private readonly garden: GardenScenery;
 
   constructor(scene: Scene) {
     const ground = MeshBuilder.CreateGround("specimen-ground", { width: 9.8, height: 8.6, subdivisions: 2 }, scene);
@@ -73,7 +74,11 @@ export class Arena {
       wall.material = wallMaterial;
     }
 
-    new GardenScenery(scene);
+    this.garden = new GardenScenery(scene);
+  }
+
+  updatePresentation(elapsed: number): void {
+    this.garden.update(elapsed);
   }
 
   apply(stimulus: "food" | "wind" | "light" | "touch" | "temperature", amount: number): void {

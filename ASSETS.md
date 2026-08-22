@@ -35,6 +35,17 @@ The planned environment clusters are: a sheltered flowering grove around the spe
 
 The active selection is **16 small GLB files** (about 172 KiB in total): oak, pine and small trees; detailed bush and two grass forms; large and small rocks; lily, mushrooms and log; three flower forms; and two stone-path forms. They are individually hosted in managed project storage rather than bundled from the source archive, so the application uses only the models visible in the garden.
 
+## Complete Specimen-Body Replacement Plan
+
+| Specimen | Visual source and license | Runtime boundary | Optimization target |
+|---|---|---|---|
+| Drosophila | A neutral full-body assembly derived outside the repository from the Apache-2.0 NeuroMechFly component meshes and their supplied SDF pose. | The mesh is a **modelled presentation**; it is not FlyWire morphology and does not change the staged FlyWire execution boundary. | One compact GLB with a root transform that preserves the existing modelled motor-controller interface. |
+| C. elegans | A custom compact full-body GLB informed by the MIT-licensed OpenWorm WormBrowser visual reference. The legacy WormBrowser `utf8` geometry is not passed through or represented as an imported raw mesh. | The mesh is a **modelled presentation**; the 279-neuron source topology remains independently labelled and executed. | One compact, smooth tapered GLB with a root transform that preserves the existing modelled locomotion interface. |
+
+The garden extension uses the existing CC0 Kenney asset family for a wood bridge, while its waterfall is a procedural, decorative water form. Grass sway and firefly drift are render-time presentation effects, never sensory inputs or neural outputs.
+
+The generated fly GLB contains 82,654 vertices and 57,722 faces before web delivery (about 2.0 MiB); it is assembled only from the NeuroMechFly Apache-2.0 STL components and its resting SDF pose. The generated worm GLB contains 504 vertices and 980 faces (about 21 KiB), is original presentation geometry, and references—rather than embeds—the MIT-licensed OpenWorm WormBrowser visuals. The checked source pages are [NeuroMechFly](https://github.com/NeLy-EPFL/NeuroMechFly), [FlyBody](https://github.com/TuragaLab/flybody) as a corroborating Apache-2.0 complete-body source, and [OpenWorm](https://github.com/openworm/OpenWorm).
+
 ## Conversion Staging
 
 The source `Thorax.stl` from NeuroMechFly was converted outside the repository into `fly-thorax.glb` (464 KiB) with Assimp, preserving Apache-2.0 attribution. It is intentionally not yet substituted into the articulated procedural fly: a single thorax mesh would degrade the coherent existing body without an authored assembly/rig. Virtual Worm uses a legacy `utf8` geometry format, so its future GLB extraction remains an explicit conversion task rather than a misleading claim of a raw-mesh integration.

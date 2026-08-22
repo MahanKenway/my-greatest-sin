@@ -102,3 +102,11 @@
 - [x] Select lightweight, web-ready models or authored substitutes for vegetation, stones, habitat furniture, and sensory props with clear license/attribution records.
 - [x] Integrate distinct garden clusters with LOD-friendly Babylon assets and preserve stable simulation controls and labels.
 - [x] Validate desktop and mobile composition, frame rate, attribution, type checks, tests, build, and browser rendering before checkpointing.
+
+## Complete Specimen Bodies and Animated Garden
+
+- [x] Define anatomical, licensing, optimization, animation-anchor and provenance requirements for complete fly and worm GLB replacements.
+- [x] Find and evaluate clearly licensed, browser-suitable full-body model sources for Drosophila and C. elegans.
+- [x] Prepare optimized GLB variants and retain separate causal motor mappings for each specimen.
+- [x] Add a small waterfall, wooden bridge, grass sway and firefly-motion effects without coupling them to scientific runtime data.
+- [x] Validate dual-species switching, desktop/mobile rendering, performance, type checks, tests, build, browser console and provenance before checkpointing.

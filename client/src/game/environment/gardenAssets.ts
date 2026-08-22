@@ -16,6 +16,7 @@ export const GARDEN_ASSETS = {
   yellowFlower: "/manus-storage/flower_yellowC_35b25b2b.glb",
   stonePath: "/manus-storage/path_stone_fde6ed5e.glb",
   stonePathCircle: "/manus-storage/path_stoneCircle_dae573d4.glb",
+  woodenBridge: "/manus-storage/bridge_woodRound_31f2ae7d.glb",
 } as const;
 
 export type GardenAssetKey = keyof typeof GARDEN_ASSETS;
