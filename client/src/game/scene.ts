@@ -42,6 +42,12 @@ export async function createGameScene(
   const specimenLight = new PointLight("specimen-light", new Vector3(-2.2, 4.2, 2.6), scene);
   specimenLight.intensity = 22;
   specimenLight.diffuse.set(0.98, 0.67, 0.28);
+  const gardenFill = new PointLight("garden-fill", new Vector3(-3.2, 2.1, 2.4), scene);
+  gardenFill.intensity = 0.9;
+  gardenFill.diffuse.set(0.18, 0.78, 0.61);
+  const gardenRim = new PointLight("garden-rim", new Vector3(3.5, 2.6, -2.2), scene);
+  gardenRim.intensity = 0.7;
+  gardenRim.diffuse.set(0.84, 0.42, 0.25);
 
   const world = new GameWorld(scene);
   scene.onBeforeRenderObservable.add(() => {

@@ -95,3 +95,10 @@
 - [x] Replace duplicate activity-marker keys with deterministic, unique keys for zero-length and staged-network states.
 - [x] Add a regression test that verifies empty and one-neuron activity buffers produce unique marker keys.
 - [x] Re-run type checks, tests, production build, and browser-console validation before checkpointing.
+
+## Three-Dimensional Garden Enrichment
+
+- [x] Inventory the current garden props, visual gaps, draw-call budget, and authored-object boundaries.
+- [x] Select lightweight, web-ready models or authored substitutes for vegetation, stones, habitat furniture, and sensory props with clear license/attribution records.
+- [x] Integrate distinct garden clusters with LOD-friendly Babylon assets and preserve stable simulation controls and labels.
+- [x] Validate desktop and mobile composition, frame rate, attribution, type checks, tests, build, and browser rendering before checkpointing.

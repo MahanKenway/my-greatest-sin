@@ -6,6 +6,7 @@ import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import type { Scene } from "@babylonjs/core/scene";
 import type { SensorFrame } from "@/game/shared/types";
+import { GardenScenery } from "./GardenScenery";
 
 const FLOOR_URL = "/manus-storage/digital-fly-specimen-floor_c2cc3595.png";
 
@@ -71,6 +72,8 @@ export class Arena {
       wall.position.set(x, 0.08, z);
       wall.material = wallMaterial;
     }
+
+    new GardenScenery(scene);
   }
 
   apply(stimulus: "food" | "wind" | "light" | "touch" | "temperature", amount: number): void {

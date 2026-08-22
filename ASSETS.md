@@ -13,6 +13,7 @@
 | `digital-fly-wing-texture.png` | Transparent procedural wing texture | 0.85 m long on each wing | `/manus-storage/digital-fly-wing-texture_02c80633.png` | Applied to the procedural wing meshes. |
 | `digital-fly-brain-map.png` | Brain-activity texture | 300 × 300 px atlas panel | `/manus-storage/digital-fly-brain-map_8c20bc49.png` | Used as the background reference for the UI brain atlas; actual active points remain programmatic. |
 | `digital-fly-mark.png` | Digital Fly aperture mark / favicon source | 36 × 36 px HUD mark | `/manus-storage/digital-fly-mark_36065411.png` | Used in top-level HUD and supplied as the externally hosted brand mark. |
+| `luminous-garden-art-direction.png` | Garden lighting, density and composition reference | 16:9 art-direction reference | `/manus-storage/luminous-garden-art-direction_8066b9bf.png` | Used as the visual target for the CC0 model selection and night-garden staging; it is not rendered as a scene sprite. |
 
 ## External Body References
 
@@ -20,6 +21,19 @@
 |---|---|---|---|---|
 | Drosophila body components | [NeLy-EPFL/NeuroMechFly](https://github.com/NeLy-EPFL/NeuroMechFly) | Apache-2.0 | Optional optimized GLB assembled from source body-part meshes; procedural body remains the low-risk first integration. | Preserve the Apache-2.0 notice and cite NeuroMechFly. |
 | C. elegans anatomy/layers | [openworm/wormbrowser](https://github.com/openworm/wormbrowser) | MIT | Inform a lightweight segmented worm body and future optimized mesh extraction. | Preserve the MIT notice and cite OpenWorm Worm Browser. |
+
+## Garden Asset Sources
+
+| Asset family | Source | License | Intended garden role | Selection boundary |
+|---|---|---|---|---|
+| Trees, flowers, rocks, grass and bushes | [Quaternius Stylized Nature MegaKit](https://quaternius.com/packs/stylizednaturemegakit.html) | CC0 | Preferred visual vocabulary for a lush, stylized habitat. | Select only a small subset of glTF/GLB meshes after checking texture references, triangle count and per-file size. |
+| Vegetation, stones, terrain and water-adjacent props | [Kenney Nature Kit](https://kenney.nl/assets/nature-kit) | CC0 | Broad fallback library for habitat dressing and small sensory-prop replacements. | Use only optimized individual models; never commit the downloaded source archive or the full pack. |
+
+The planned environment clusters are: a sheltered flowering grove around the specimen, a stone-and-moss border to make the arena feel grounded, a small water/reflective habitat zone, and clear three-dimensional representations of the food, light and wind stimuli. All garden geometry remains `MODELLED MAPPING`; it decorates the observation environment and is not biological or source data.
+
+### Selected Kenney GLB Models
+
+The active selection is **16 small GLB files** (about 172 KiB in total): oak, pine and small trees; detailed bush and two grass forms; large and small rocks; lily, mushrooms and log; three flower forms; and two stone-path forms. They are individually hosted in managed project storage rather than bundled from the source archive, so the application uses only the models visible in the garden.
 
 ## Conversion Staging
 

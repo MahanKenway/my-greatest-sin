@@ -16,6 +16,7 @@ React frame (one full-screen GameCanvas)
        ├── FlyBody (procedural mesh + modelled kinematics/dynamics)
        ├── WormBody (segmented procedural mesh + modelled undulation)
        ├── Arena (food, light, wind, wall, touch, temperature, odor fields)
+       │    └── GardenScenery (CC0 GLB habitat dressing; visual-only `MODELLED MAPPING`)
        ├── BrainView (sampled thin instances, region summaries, selection)
        └── ExperimentStore (commands, seeded events, export/replay metadata)
 ```
@@ -62,6 +63,8 @@ client/src/
       MotorDecoder.ts       sampled/annotated output → actuator command
     environment/
       Arena.ts              stimulus fields and collision limits
+      GardenScenery.ts      asynchronous GLB habitat composition and decorative lighting
+      gardenAssets.ts       managed-storage URLs for the selected CC0 models
     visualization/
       BrainView.ts          sampled activity and region summaries
       TimelineView.ts       spike raster and signal traces
@@ -71,7 +74,7 @@ client/src/
 
 ## Asset Hints
 
-The scene uses procedural meshes for the fly, worm, props, and neural markers so their state is always causal and inspectable. Generated textures provide the material character: a 2 m repeating floor; two 0.85 m translucent wing surfaces; a 300 px atlas reference; and a 36 px logo aperture. Future optimized mesh references are NeuroMechFly (Apache-2.0) for the fly and OpenWorm Worm Browser (MIT) for the worm; no downloaded FlyWire morphology or texture is embedded in the source tree.
+The scene uses procedural meshes for the fly, worm, stimulus fields, and neural markers so their state is always causal and inspectable. A visual-only `GardenScenery` layer asynchronously imports a small selection of CC0 Kenney Nature Kit GLBs—trees, foliage, rocks, flowers, water-adjacent props, a log, and path stones—from managed storage. These assets decorate the habitat edge and never affect sensing, collision, movement, network execution, or source-data claims. Generated textures provide the material character: a 2 m repeating floor; two 0.85 m translucent wing surfaces; a 300 px atlas reference; and a 36 px logo aperture. Future optimized mesh references are NeuroMechFly (Apache-2.0) for the fly and OpenWorm Worm Browser (MIT) for the worm; no downloaded FlyWire morphology or texture is embedded in the source tree.
 
 ## Determinism Policy
 
