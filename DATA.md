@@ -23,6 +23,8 @@ The initial generic pack format is a project-owned container, not an official Fl
 
 Chunk payloads are cached in IndexedDB under the tuple `(origin, release, transformVersion, checksum)`. The service worker and Cache Storage layer are deferred until the static simulation core is validated, but the manifest and cache keys are designed for that addition. Large state exports remain binary; JSON holds only experiment metadata and references.
 
+The current implementation adds `scripts/data-processing/build_flywire_v783_pack.py`. It streams user-provided Feather record batches twice, emits source-preserving DFLY chunks outside the repository, writes SHA-256 values into `manifest.json`, and refuses to run without an explicit data-terms acknowledgement. The browser fetches and validates the manifest before caching any chunk. A full DFLY pack is never silently substituted for the current synthetic fixture, and cached source chunks do not automatically imply that the active neural backend is executing them.
+
 ## Provenance Labels
 
 | Label | Meaning | Example |

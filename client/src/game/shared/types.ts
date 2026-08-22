@@ -44,8 +44,41 @@ export type ConnectomeManifest = {
   license: string;
   neuronCount: number;
   synapseCount: number;
-  chunks: ReadonlyArray<{ id: string; bytes: number; sha256: string; url: string }>;
+  provenance?: {
+    sourceFiles: ReadonlyArray<{ name: string; sha256: string }>;
+    citations: ReadonlyArray<string>;
+    transform: { name: string; version: string };
+  };
+  dictionaries?: { neuropils?: ReadonlyArray<string> };
+  columns?: Readonly<Record<string, { scalarType: "u16" | "u32" | "u64" | "f16" | "f32"; elementCount: number; stride: number; semanticStatus: Provenance; chunks: ReadonlyArray<string> }>>;
+  chunks: ReadonlyArray<{
+    id: string;
+    bytes: number;
+    sha256: string;
+    url?: string;
+    path?: string;
+    column?: string;
+    elementOffset?: number;
+    elementCount?: number;
+    byteRange?: { start: number; end: number };
+  }>;
 };
+
+export type DflyPackPreflight = {
+  packBytes: number;
+  edgeColumnMiB: number;
+  estimatedRuntimeMiB: number;
+  deviceMemoryGiB: number | null;
+  compatible: boolean;
+  reason: string;
+};
+
+export type DflyPackStatus =
+  | { state: "UNCONFIGURED"; message: string }
+  | { state: "VALIDATED"; message: string; manifest: ConnectomeManifest; preflight: DflyPackPreflight }
+  | { state: "CACHED"; message: string; manifest: ConnectomeManifest; preflight: DflyPackPreflight; cachedChunks: number }
+  | { state: "BLOCKED"; message: string; manifest: ConnectomeManifest; preflight: DflyPackPreflight }
+  | { state: "ERROR"; message: string };
 
 export type SimulationSnapshot = {
   timeSeconds: number;

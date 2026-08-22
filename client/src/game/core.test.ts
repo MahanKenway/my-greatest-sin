@@ -19,7 +19,7 @@ describe("DFLY connectome contract", () => {
   it("accepts a bounded provenance-complete manifest and refuses incomplete release claims", () => {
     const manifest = validateManifest({
       format: "DFLY", formatVersion: 1, datasetId: "test-release", release: "v783-adapter-0", origin: "https://example.org/pack", license: "CC BY-NC 4.0", neuronCount: 139255, synapseCount: 50_000_000,
-      chunks: [{ id: "neurons", bytes: 1024, sha256: "abc", url: "https://example.org/chunk" }],
+      chunks: [{ id: "neurons", bytes: 1024, sha256: "0000000000000000000000000000000000000000000000000000000000000000", url: "https://example.org/chunk" }],
     });
     expect(manifest.neuronCount).toBe(139255);
     expect(estimateColumnMemoryMiB(50_000_000)).toBe(524.52);

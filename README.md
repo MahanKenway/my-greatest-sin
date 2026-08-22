@@ -47,6 +47,22 @@ Obtain FlyWire data only from permitted sources and retain source versions, chec
 
 The planned loader labels every value as `SOURCE DATA`, `MODELLED MAPPING`, or `SYNTHETIC TEST FIXTURE`. Read [SCIENTIFIC_LIMITATIONS.md](SCIENTIFIC_LIMITATIONS.md) before conducting or presenting experiments.
 
+## Install a User-Obtained FlyWire v783 Pack
+
+The repository now includes a local-only converter for the official `proofread_root_ids_783.npy` and `proofread_connections_783.feather` artifacts. It does not download FlyWire data, upload data, or permit output inside this source repository. Review the current data-use terms first, obtain the source files through an allowed route, and then run:
+
+```bash
+python3 scripts/data-processing/build_flywire_v783_pack.py \
+  --root-ids /path/to/proofread_root_ids_783.npy \
+  --connections /path/to/proofread_connections_783.feather \
+  --out-dir /path/outside-the-repository/flywire-v783-dfly \
+  --accept-flywire-terms
+```
+
+The command writes a checksummed `manifest.json` and independently verifiable binary chunks. Host that output on a CORS-enabled static host. In Digital Fly, choose **VERIFY PACK**, paste the `manifest.json` URL, inspect the provenance and device-memory result, then use **CACHE** to stage verified chunks in IndexedDB. Query form `?pack=https://host.example/flywire-v783-dfly/manifest.json` performs the same inspection on startup.
+
+The browser loader validates the manifest and caches chunks, but it intentionally does not activate a real full pack in the current LIF scene. Activation remains blocked until the sparse WebGPU backend and a release-specific model mapping have been benchmarked. Full instructions are in [docs/DFLY_V1.md](docs/DFLY_V1.md) and [docs/HOSTING_DFLY_PACKS.md](docs/HOSTING_DFLY_PACKS.md).
+
 ## Deployment
 
 `pnpm build` emits a static `dist/public` directory. The checked-in [GitHub Pages workflow](.github/workflows/deploy.yml) runs the type check, tests, and build before publishing on pushes to `main`. For Cloudflare Pages, set build command to `pnpm install --frozen-lockfile && pnpm build` and output directory to `dist/public`; `wrangler.toml` records the same output path.

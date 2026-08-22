@@ -4,8 +4,9 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { Engine } from "@babylonjs/core/Engines/engine";
+import { cacheManifestChunks, inspectRemotePack } from "@/game/connectome/loader";
 import { createGameScene, type GameHandle } from "@/game/scene";
-import type { SimulationCommand, SimulationSnapshot } from "@/game/shared/types";
+import type { DflyPackStatus, SimulationCommand, SimulationSnapshot } from "@/game/shared/types";
 import SimulationHud from "./SimulationHud";
 
 export default function GameCanvas() {
@@ -13,6 +14,9 @@ export default function GameCanvas() {
   const startedRef = useRef(false);
   const handleRef = useRef<GameHandle | null>(null);
   const [snapshot, setSnapshot] = useState<SimulationSnapshot | null>(null);
+  const [packStatus, setPackStatus] = useState<DflyPackStatus>({ state: "UNCONFIGURED", message: "No DFLY manifest has been selected." });
+  const [packUrl, setPackUrl] = useState<string | null>(null);
+  const [cacheProgress, setCacheProgress] = useState<{ completed: number; total: number } | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -37,6 +41,11 @@ export default function GameCanvas() {
 
       handle = sceneHandle;
       handleRef.current = sceneHandle;
+      const requestedPack = new URLSearchParams(window.location.search).get("pack");
+      if (requestedPack) {
+        setPackUrl(requestedPack);
+        void inspectRemotePack(requestedPack).then(setPackStatus);
+      }
       if (new URLSearchParams(window.location.search).has("demo")) {
         sceneHandle.world.command({ type: "demo" });
       }
@@ -62,10 +71,31 @@ export default function GameCanvas() {
   }, []);
 
   const onCommand = (command: SimulationCommand) => handleRef.current?.world.command(command);
+  const configurePack = () => {
+    const enteredUrl = window.prompt("Paste the CORS-enabled URL of a DFLY manifest.json file.");
+    if (!enteredUrl) return;
+    try {
+      const normalizedUrl = new URL(enteredUrl).toString();
+      setPackUrl(normalizedUrl);
+      setPackStatus({ state: "UNCONFIGURED", message: "Inspecting DFLY manifest provenance and browser limits…" });
+      void inspectRemotePack(normalizedUrl).then(setPackStatus);
+    } catch {
+      setPackStatus({ state: "ERROR", message: "The DFLY manifest URL is not valid." });
+    }
+  };
+  const cachePack = () => {
+    if (!packUrl || (packStatus.state !== "VALIDATED" && packStatus.state !== "CACHED")) return;
+    setCacheProgress({ completed: 0, total: packStatus.manifest.chunks.length });
+    void cacheManifestChunks(packUrl, packStatus.manifest, (completed, total) => setCacheProgress({ completed, total }))
+      .then(() => inspectRemotePack(packUrl))
+      .then(setPackStatus)
+      .catch((error: unknown) => setPackStatus({ state: "ERROR", message: error instanceof Error ? error.message : "Unable to cache DFLY chunks." }))
+      .finally(() => setCacheProgress(null));
+  };
 
   return <main className="digital-fly-shell">
     <canvas ref={canvasRef} className="lab-canvas" aria-label="Digital Fly live simulation canvas" />
     <svg className="axon-overlay" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true"><path d="M122 266C270 270 344 352 522 436S750 614 927 572" /><path d="M169 314C318 332 406 409 571 446S804 561 1095 422" /></svg>
-    <SimulationHud snapshot={snapshot} onCommand={onCommand} />
+    <SimulationHud snapshot={snapshot} onCommand={onCommand} packStatus={packStatus} cacheProgress={cacheProgress} onConfigurePack={configurePack} onCachePack={cachePack} />
   </main>;
 }
