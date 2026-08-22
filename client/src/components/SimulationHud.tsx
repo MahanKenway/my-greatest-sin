@@ -87,9 +87,9 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
       </aside>
 
       <section className="world-caption">
-        <p className="micro-label">CLOSED LOOP / ENVIRONMENT → SENSORS → NETWORK → MOTOR → BODY</p>
-        <div className="behavior-title"><span className="state-hash">//</span><strong>{snapshot?.behavior ?? "INITIALIZING"}</strong></div>
-        <p>{snapshot?.species.commonName ?? "SPECIMEN"} motion is modelled from the live motor decoder; it is not a pre-recorded walk cycle.</p>
+        <p className="micro-label">{flywireStaged ? "FLYWIRE EXECUTION PARKED / WEBGPU BENCHMARK REQUIRED" : "CLOSED LOOP / ENVIRONMENT → SENSORS → NETWORK → MOTOR → BODY"}</p>
+        <div className="behavior-title"><span className="state-hash">//</span><strong>{flywireStaged ? "STAGED / NO EXECUTION" : snapshot?.behavior ?? "INITIALIZING"}</strong></div>
+        <p>{flywireStaged ? "The Drosophila body is parked: no source topology, substitute neural fixture, or live motor decode executes until the official FlyWire pack passes a sparse WebGPU benchmark." : `${snapshot?.species.commonName ?? "SPECIMEN"} motion is modelled from the live motor decoder; it is not a pre-recorded walk cycle.`}</p>
       </section>
 
       <aside className="observation-rail right-rail">
