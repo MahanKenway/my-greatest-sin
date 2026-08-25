@@ -2,6 +2,18 @@
  * Luminous Connectome Lab: published root-ID contract for an evidence-only pilot.
  * IDs are strings because FlyWire root IDs exceed JavaScript Number precision.
  */
+export type SugarMn9InputAblation = "OPEN" | "CLOSED";
+
+export type SugarMn9PilotProtocol = {
+  activationRateHz: number;
+  inputAblation: SugarMn9InputAblation;
+};
+
+export const DEFAULT_SUGAR_MN9_PILOT_PROTOCOL: SugarMn9PilotProtocol = {
+  activationRateHz: 150,
+  inputAblation: "OPEN",
+};
+
 export const SUGAR_MN9_PILOT = {
   id: "sugar-grn-to-mn9-v783-pilot",
   label: "SUGAR-GRN → MN9 / PROBOSCIS PILOT",
@@ -14,7 +26,8 @@ export const SUGAR_MN9_PILOT = {
     "720575940611875570",
   ],
   outputRootId: "720575940660219265",
-  inputMapping: "MODELLED SENSOR INPUT: food/odor slider to sugar-GRN firing-rate encoding.",
+  inputMapping: "MODELLED SENSOR INPUT: food/odor slider and selected 0–200 Hz protocol to sugar-GRN injection encoding.",
   outputMapping: "MODELLED MOTOR DECODER: MN9 readout to a future proboscis-only visual rig; not walking or wing control.",
+  inputAblation: "MODELLED INPUT ABLATION: closes only the external sugar-GRN injection; it does not claim to zero all biological outgoing synapses.",
   evidence: "Shiu et al. (2024) report labellar sugar-GRN stimulation and MN9 readout in a FlyWire-based computational brain model.",
 } as const;

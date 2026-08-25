@@ -4,10 +4,10 @@
  */
 import { fetchChunk, sha256Hex } from "./loader";
 import { validateRealPackManifest } from "./manifest";
-import { SUGAR_MN9_PILOT } from "./sugarMn9Pilot";
+import { DEFAULT_SUGAR_MN9_PILOT_PROTOCOL, SUGAR_MN9_PILOT, type SugarMn9PilotProtocol } from "./sugarMn9Pilot";
+import { requestFlywireExecutionDevice } from "./flywireAdapterCapability";
 import type { ConnectomeManifest } from "@/game/shared/types";
 
-type GpuNavigator = Navigator & { gpu?: { requestAdapter: () => Promise<any | null> } };
 const REQUIRED_COLUMNS = ["root_id", "incoming_offsets", "source_index", "synapse_count"] as const;
 const EVIDENCE = { url: "/manus-storage/sugar-mn9-evidence_06b7fcc1.json", sha256: "60809bba02fbc6d34d0e50a3bb1ff067949619e5c2ef7674dbc22838ca09593e" };
 const TWO_HOP_PATHS = { url: "/manus-storage/sugar-mn9-two-hop_6d3b2fde.json", sha256: "d30076f45dd2f9a949b716117a269b121109ea1dcde2c0c4b16a1c35f42edf10" };
@@ -22,6 +22,16 @@ export type SugarMn9PilotResult = {
   mn9StructuralScore: number;
   propagationSteps: number;
   evidenceTwoHopIntermediates: number;
+  estimatedResidentGpuMiB: number;
+  adapterMaxStorageBufferBindingBytes: number;
+  timestampQueryAvailable: boolean | null;
+  activationRateHz: number;
+  inputAblation: SugarMn9PilotProtocol["inputAblation"];
+};
+
+export type SugarMn9PilotOptions = {
+  foodIntensity: number;
+  protocol?: Partial<SugarMn9PilotProtocol>;
 };
 
 /**
@@ -33,7 +43,17 @@ export function decodeMn9StructuralScoreForProboscis(structuralScore: number): n
   return structuralScore / (structuralScore + 0.0025);
 }
 
-export async function runSugarMn9Pilot(manifestUrl: string, foodIntensity: number): Promise<SugarMn9PilotResult> {
+export function normalizeSugarMn9PilotProtocol(protocol?: Partial<SugarMn9PilotProtocol>): SugarMn9PilotProtocol {
+  const candidateRate = protocol?.activationRateHz ?? DEFAULT_SUGAR_MN9_PILOT_PROTOCOL.activationRateHz;
+  return {
+    activationRateHz: Number.isFinite(candidateRate) ? Math.max(0, Math.min(200, candidateRate)) : DEFAULT_SUGAR_MN9_PILOT_PROTOCOL.activationRateHz,
+    inputAblation: protocol?.inputAblation === "CLOSED" ? "CLOSED" : "OPEN",
+  };
+}
+
+export async function runSugarMn9Pilot(manifestUrl: string, input: number | SugarMn9PilotOptions): Promise<SugarMn9PilotResult> {
+  const options = typeof input === "number" ? { foodIntensity: input } : input;
+  const protocol = normalizeSugarMn9PilotProtocol(options.protocol);
   const [evidence, paths] = await Promise.all([fetchCheckedJson(EVIDENCE), fetchCheckedJson(TWO_HOP_PATHS)]);
   const inputsPresent = Number(evidence.sugarGrnPresent);
   const twoHopIntermediates = Number(paths.twoHopIntermediateCount);
@@ -53,20 +73,17 @@ export async function runSugarMn9Pilot(manifestUrl: string, foodIntensity: numbe
   const mn9Index = rootIndex.get(SUGAR_MN9_PILOT.outputRootId);
   if (mn9Index === undefined || sugarIndices.length !== inputsPresent) throw new Error("Pilot root IDs do not agree with the verified v783 source columns.");
 
-  const gpu = (navigator as GpuNavigator).gpu;
-  if (!gpu) throw new Error("WebGPU is unavailable; the pilot cannot substitute a CPU run.");
-  const adapter = await gpu.requestAdapter();
-  if (!adapter) throw new Error("WebGPU adapter request was rejected; the sugar-GRN → MN9 pilot remains blocked.");
-  const device = await adapter.requestDevice();
+  const capability = await requestFlywireExecutionDevice(manifest);
+  if (capability.state !== "READY" || !capability.device || capability.maxStorageBufferBindingBytes === null) throw new Error(capability.message);
+  const device = capability.device;
   const usage = (globalThis as any).GPUBufferUsage;
   const mapMode = (globalThis as any).GPUMapMode;
-  const largestColumn = Math.max(columns.offsets.byteLength, columns.source.byteLength, columns.synapse.byteLength);
-  if (Number(device.limits.maxStorageBufferBindingSize ?? 0) && largestColumn > Number(device.limits.maxStorageBufferBindingSize)) throw new Error("This adapter cannot bind the largest verified v783 source column.");
 
   const stateBytes = manifest.neuronCount * Float32Array.BYTES_PER_ELEMENT;
-  const boundedInput = Math.max(0, Math.min(1, foodIntensity));
+  const boundedInput = Math.max(0, Math.min(1, options.foodIntensity));
+  const structuralInjection = protocol.inputAblation === "CLOSED" ? 0 : boundedInput * (protocol.activationRateHz / 200);
   const injection = new Float32Array(manifest.neuronCount);
-  for (const index of sugarIndices) injection[index] = boundedInput;
+  for (const index of sugarIndices) injection[index] = structuralInjection;
   const offsets = createStorageBuffer(device, columns.offsets, usage);
   const source = createStorageBuffer(device, columns.source, usage);
   const synapse = createStorageBuffer(device, columns.synapse, usage);
@@ -106,7 +123,7 @@ export async function runSugarMn9Pilot(manifestUrl: string, foodIntensity: numbe
   readback.unmap();
   for (const buffer of [offsets, source, synapse, injectionBuffer, stateA, stateB, parameterBuffer, readback]) buffer.destroy();
   device.destroy();
-  return { sourceStatus: "SOURCE DATA", modelledInput: "MODELLED SENSOR INPUT", modelledOutput: "MODELLED MOTOR DECODER", stimulusIntensity: boundedInput, sugarInputsPresent: sugarIndices.length, mn9RootId: SUGAR_MN9_PILOT.outputRootId, mn9StructuralScore, propagationSteps, evidenceTwoHopIntermediates: twoHopIntermediates };
+  return { sourceStatus: "SOURCE DATA", modelledInput: "MODELLED SENSOR INPUT", modelledOutput: "MODELLED MOTOR DECODER", stimulusIntensity: boundedInput, sugarInputsPresent: sugarIndices.length, mn9RootId: SUGAR_MN9_PILOT.outputRootId, mn9StructuralScore, propagationSteps, evidenceTwoHopIntermediates: twoHopIntermediates, estimatedResidentGpuMiB: capability.budget.residentGpuBytes / (1024 * 1024), adapterMaxStorageBufferBindingBytes: capability.maxStorageBufferBindingBytes, timestampQueryAvailable: capability.timestampQueryAvailable, activationRateHz: protocol.activationRateHz, inputAblation: protocol.inputAblation };
 }
 
 async function fetchCheckedJson(resource: { url: string; sha256: string }): Promise<Record<string, unknown>> {

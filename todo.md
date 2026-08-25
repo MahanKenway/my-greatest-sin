@@ -208,3 +208,11 @@
 - [x] افزودن ریگ جدا و محدودِ خرطوم در FlyBody؛ خروجی فقط باید از خوانش MN9ِ پایلوت بیاید و هرگز گام، بال یا حرکت ریشه را کنترل نکند.
 - [x] برچسب‌گذاری روشنِ `SOURCE DATA` برای گره‌ها/لبه‌ها و `MODELLED SENSOR INPUT`/`MODELLED MOTOR DECODER` برای تبدیل قند و خرطوم.
 - [ ] اجرای آزمایش شدت–پاسخ و آزمایش خاموش‌سازی/ablation در هستهٔ پایلوت، ثبت نتیجهٔ قابل‌بازبینی؛ این کار فقط روی adapter معتبر مجاز است و وضعیت blocked مرورگر فعلی باید حفظ شود.
+
+## FlyWire Adapter-Ready Pilot Continuation
+
+- [x] تعریف قرارداد capability و budget دستگاه برای adapter معتبر، شامل storage-buffer limit، timestamp-query availability و دلیل توقف قابل‌نمایش در HUD.
+- [x] افزودن ورودی پایلوت برای شدت تحریک و ablation انتخابی sugar-GRN، با حفظ شناسه‌های root به‌صورت رشته/BigInt و بدون مسیر CPU.
+- [ ] افزودن kernel و readback لازم برای گزارش کنترل مثبت/منفی MN9 تنها روی WebGPU adapter معتبر.
+- [ ] افزودن آزمون‌های خالص برای قرارداد ورودی/ablation، نرمال‌سازی خوانش و جلوگیری از فعال‌شدن مسیر بدن در حالت blocked.
+- [ ] ثبت معیارهای واقعی GPU، شدت–پاسخ و ablation روی دستگاه سازگار؛ تا پیش از آن `0 N / 0 E` برای FlyWire در GameWorld حفظ شود.
