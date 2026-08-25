@@ -196,6 +196,33 @@ def create_neuromechfly_pivots(armature: bpy.types.Object, collection: bpy.types
     return pivots
 
 
+def attach_neuromechfly_hierarchy(
+    armature: bpy.types.Object,
+    meshes: list[bpy.types.Object],
+    pivots: list[bpy.types.Object],
+) -> None:
+    """Rebuild the published rest-pose bone hierarchy without changing source geometry.
+
+    The public Blend stores rigid body parts parented to armature bones.  The
+    browser export deliberately uses independent copies so every part remains
+    available to glTF, but those copies must retain the same rest-pose parent
+    chain.  Matrix preservation keeps every source-derived mesh in its exact
+    inspected position while making the body connected for runtime articulation.
+    """
+    pivots_by_bone = {pivot["source_joint"]: pivot for pivot in pivots}
+    for bone in armature.data.bones:
+        pivot = pivots_by_bone[bone.name]
+        if bone.parent is None:
+            continue
+        world = pivot.matrix_world.copy()
+        pivot.parent = pivots_by_bone[bone.parent.name]
+        pivot.matrix_world = world
+    for mesh in meshes:
+        world = mesh.matrix_world.copy()
+        mesh.parent = pivots_by_bone[mesh["source_joint"]]
+        mesh.matrix_world = world
+
+
 def parent_parts_to_source_joints(armature: bpy.types.Object, meshes: list[bpy.types.Object]) -> None:
     for mesh in meshes:
         source_bone = mesh.name
@@ -245,6 +272,7 @@ def export_neuromechfly(output: Path) -> None:
         meshes.append(mesh)
     apply_neuromechfly_materials(meshes)
     pivots = create_neuromechfly_pivots(armature, export_collection)
+    attach_neuromechfly_hierarchy(armature, meshes, pivots)
     select_only(meshes + pivots)
     export_glb(output)
 

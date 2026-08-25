@@ -33,6 +33,7 @@ export class WormBody implements BodyController {
       ({ animationGroups }) => {
         this.wave = animationGroups.find((group) => group.name.includes("MODELLED_C_ELEGANS_BODY_WAVE"));
         this.wave?.start(true, 1.15);
+        this.wave?.setWeightForAllAnimatables(0.2);
       },
     );
     this.visual.scaling.setAll(0.25);
@@ -48,7 +49,11 @@ export class WormBody implements BodyController {
     this.root.position.z = Math.max(-3.65, Math.min(3.65, this.root.position.z + Math.sin(this.heading) * stride));
     this.root.rotation.y = -this.heading;
     this.visual.position.y = Math.sin(this.gaitPhase * 1.7) * 0.008;
-    if (this.wave) this.wave.speedRatio = 0.65 + motor.gait * 1.25;
+    if (this.wave) {
+      const waveStrength = Math.max(0.14, Math.min(1, motor.gait));
+      this.wave.speedRatio = 0.22 + waveStrength * 2.8;
+      this.wave.setWeightForAllAnimatables(waveStrength);
+    }
   }
 
   getPosition(): Vector3 { return this.root.position; }

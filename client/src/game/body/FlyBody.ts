@@ -83,19 +83,19 @@ export class FlyBody implements BodyController {
     this.root.setEnabled(enabled);
   }
 
-  private bindSourceJoints(meshes: readonly { name: string; setParent(parent: TransformNode): void }[], transformNodes: readonly TransformNode[]): void {
+  private bindSourceJoints(meshes: readonly Mesh[], transformNodes: readonly TransformNode[]): void {
     const pivots = new Map(transformNodes.map((node) => [node.name, node]));
     for (const prefix of LEG_PREFIXES) {
       for (let index = 1; index < LEG_SEGMENTS.length; index += 1) {
         const child = pivots.get(`nmf_pivot__${prefix}${LEG_SEGMENTS[index]}`);
         const parent = pivots.get(`nmf_pivot__${prefix}${LEG_SEGMENTS[index - 1]}`);
-        if (child && parent) child.setParent(parent);
+        if (child && parent && child.parent !== parent) child.setParent(parent);
       }
     }
     for (const mesh of meshes) {
       const jointName = mesh.name.replace(/^nmf__/, "");
       const pivot = pivots.get(`nmf_pivot__${jointName}`);
-      if (pivot) mesh.setParent(pivot);
+      if (pivot && mesh.parent !== pivot) mesh.setParent(pivot);
     }
     for (const [name, node] of Array.from(pivots.entries())) {
       if (!name.startsWith("nmf_pivot__")) continue;

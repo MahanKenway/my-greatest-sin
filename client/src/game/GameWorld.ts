@@ -130,13 +130,14 @@ export class GameWorld {
       for (const index of indices) value += this.neural.cpu.firingRate[index] ?? 0;
       return indices.length ? value / indices.length : 0;
     };
-    const forward = Math.min(1, mean(this.neural.routing.motor.forward) * 8.8);
+    const sourceForward = Math.min(1, mean(this.neural.routing.motor.forward) * 8.8);
     const left = mean(this.neural.routing.motor.left) * 10;
     const right = mean(this.neural.routing.motor.right) * 10;
     const reactive = mean(this.neural.routing.motor.reactive) * 8;
+    const forward = Math.max(0.08, sourceForward);
     const bodyWave = Math.min(1, forward + reactive * 0.3);
     return {
-      forward: Math.max(0.08, forward),
+      forward,
       turn: Math.max(-1, Math.min(1, left - right + (this.lastSensor.wind - 0.25) * 0.2)),
       wingLift: this.species === "DROSOPHILA" ? Math.min(1, reactive) : bodyWave,
       gait: bodyWave,
