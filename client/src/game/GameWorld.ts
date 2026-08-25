@@ -78,6 +78,7 @@ export class GameWorld {
     if (command.type === "reset") this.reset();
     if (command.type === "demo") this.demo = !this.demo;
     if (command.type === "stimulus") this.arena.apply(command.stimulus, command.amount);
+    if (command.type === "environment") this.arena.setPresentation(command.setting, command.amount);
     if (command.type === "species") this.selectSpecies(command.species);
     this.emit();
   }
@@ -182,6 +183,7 @@ export class GameWorld {
       species: SPECIES_PROFILES[this.species],
       sensor: this.lastSensor,
       motor: this.lastMotor,
+      environment: this.arena.getPresentation(),
       behavior,
       neuronActivity: this.neural.cpu.firingRate,
       timeline: this.timeline,

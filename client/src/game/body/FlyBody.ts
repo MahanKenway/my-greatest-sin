@@ -1,4 +1,4 @@
-/** Luminous Connectome Lab: an Apache-2.0 full-body GLB follows only labelled modelled motor commands. */
+/** Luminous Connectome Lab: a CC BY 4.0 wildtype-female GLB follows only labelled modelled motor commands. */
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
@@ -18,14 +18,15 @@ export class FlyBody implements BodyController {
   constructor(scene: Scene) {
     this.root = new TransformNode("drosophila-complete-body", scene);
     this.root.position.set(-0.65, 0.2, -0.5);
-    const cuticle = new StandardMaterial("drosophila-glb-cuticle", scene);
-    cuticle.diffuseColor = Color3.FromHexString("#9B7652");
-    cuticle.emissiveColor = Color3.FromHexString("#21160F");
-    cuticle.specularColor = Color3.FromHexString("#322214");
+    const cuticle = new StandardMaterial("drosophila-wildtype-cuticle", scene);
+    cuticle.diffuseColor = Color3.FromHexString("#6C513B");
+    cuticle.emissiveColor = Color3.FromHexString("#0A0705");
+    cuticle.specularColor = Color3.FromHexString("#7E674D");
+    cuticle.specularPower = 24;
     cuticle.backFaceCulling = false;
-    this.visual = loadPresentationMesh(scene, SPECIMEN_PRESENTATION_ASSETS.fly, this.root, "drosophila-neuromechfly-presentation", cuticle);
+    this.visual = loadPresentationMesh(scene, SPECIMEN_PRESENTATION_ASSETS.fly, this.root, "drosophila-wildtype-presentation", cuticle);
     this.visual.rotation.x = -Math.PI / 2;
-    this.visual.scaling.setAll(1.65);
+    this.visual.scaling.setAll(0.16);
     this.visual.position.y = 0.11;
   }
 

@@ -113,6 +113,9 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
           <Stimulus label="WIND VECTOR" value={sensor?.wind ?? 0} color="cyan" onChange={(amount) => onCommand({ type: "stimulus", stimulus: "wind", amount })} />
           <Stimulus label="TOUCH PULSE" value={sensor?.touch ?? 0} color="magenta" onChange={(amount) => onCommand({ type: "stimulus", stimulus: "touch", amount })} />
           <Stimulus label="TEMPERATURE" value={(sensor?.temperature ?? 0 + 1) / 2} color="cyan" onChange={(amount) => onCommand({ type: "stimulus", stimulus: "temperature", amount })} />
+          <div className="environment-divider"><span>GARDEN PRESENTATION / MODELLED</span></div>
+          <Stimulus label="DAYLIGHT" value={snapshot?.environment.daylight ?? 0.18} color="gold" onChange={(amount) => onCommand({ type: "environment", setting: "daylight", amount })} />
+          <Stimulus label="WATERFALL FLOW" value={snapshot?.environment.waterfall ?? 0.62} color="cyan" onChange={(amount) => onCommand({ type: "environment", setting: "waterfall", amount })} />
         </section>
 
         <section className="lab-pane decode-pane">

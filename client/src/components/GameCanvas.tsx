@@ -4,6 +4,8 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { Engine } from "@babylonjs/core/Engines/engine";
+import { EngineStore } from "@babylonjs/core/Engines/engineStore";
+import { Color4 } from "@babylonjs/core/Maths/math.color";
 import { cacheManifestChunks, inspectRemotePack } from "@/game/connectome/loader";
 import { inspectOfficialFlywireStage } from "@/game/connectome/flywireStage";
 import { createGameScene, type GameHandle } from "@/game/scene";
@@ -24,9 +26,12 @@ export default function GameCanvas() {
     const canvas = canvasRef.current;
     if (!canvas || startedRef.current) return;
 
+    for (const existingEngine of [...EngineStore.Instances]) {
+      if (existingEngine.getRenderingCanvas() === canvas) existingEngine.dispose();
+    }
     startedRef.current = true;
     const engine = new Engine(canvas, true, {
-      preserveDrawingBuffer: true,
+      preserveDrawingBuffer: false,
       stencil: true,
       adaptToDeviceRatio: true,
     });
@@ -54,7 +59,10 @@ export default function GameCanvas() {
       unsubscribe = sceneHandle.world.subscribe((nextSnapshot) => {
         if (!disposed) setSnapshot(nextSnapshot);
       });
-      engine.runRenderLoop(() => sceneHandle.scene.render());
+      engine.runRenderLoop(() => {
+        engine.clear(new Color4(0.027, 0.063, 0.094, 1), true, true, true);
+        sceneHandle.scene.render();
+      });
     });
 
     const onResize = () => engine.resize();

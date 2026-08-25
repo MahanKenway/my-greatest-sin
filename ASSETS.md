@@ -1,55 +1,24 @@
 # Digital Fly Asset Manifest
 
-## Art Direction
+## Presentation Boundary
 
-**Luminous Connectome Lab** uses a basalt-navy research-instrument field, specimen-ivory labels, muted smoky panels, and visibility that is earned by meaningful live state. Axonal Magenta (`#FF3D8D`) is reserved for spikes and active pathways; glial cyan represents derived output; photoreceptor gold represents environmental stimulus. The visual system must never imply that data are biological when they are modelled or synthetic.
+Every visual body, garden element, light, and waterfall effect in **My Greatest Sin** is a `MODELLED MAPPING`. None of these assets are neural data, sensory evidence, a connectome, or evidence that an organism is alive. The fly remains **FlyWire v783 staged at 0 N / 0 E**; *C. elegans* executes the separate, integrity-checked **279-neuron / 6,261-edge** source topology.
 
-## Generated Assets
+## Active Presentation Assets
 
-| Asset | Role | Intended size | Source URL | Integration |
-|---|---|---|---|---|
-| `digital-fly-visual-target.png` | Mandatory visual QA reference | 480 × 270 px calibration pane | `/manus-storage/digital-fly-visual-target_03e6dd46.png` | Used as the empty-state / calibration reference in the loader panel and as visual fidelity target, not as an in-scene sprite. |
-| `digital-fly-specimen-floor.png` | Mineral arena ground texture | 2 m repeat tile | `/manus-storage/digital-fly-specimen-floor_c2cc3595.png` | Tiled on a Babylon ground plane. |
-| `digital-fly-wing-texture.png` | Transparent procedural wing texture | 0.85 m long on each wing | `/manus-storage/digital-fly-wing-texture_02c80633.png` | Applied to the procedural wing meshes. |
-| `digital-fly-brain-map.png` | Brain-activity texture | 300 × 300 px atlas panel | `/manus-storage/digital-fly-brain-map_8c20bc49.png` | Used as the background reference for the UI brain atlas; actual active points remain programmatic. |
-| `digital-fly-mark.png` | Digital Fly aperture mark / favicon source | 36 × 36 px HUD mark | `/manus-storage/digital-fly-mark_36065411.png` | Used in top-level HUD and supplied as the externally hosted brand mark. |
-| `luminous-garden-art-direction.png` | Garden lighting, density and composition reference | 16:9 art-direction reference | `/manus-storage/luminous-garden-art-direction_8066b9bf.png` | Used as the visual target for the CC0 model selection and night-garden staging; it is not rendered as a scene sprite. |
-
-## External Body References
-
-| Asset family | Source | License | Intended integration | Attribution requirement |
-|---|---|---|---|---|
-| Drosophila body components | [NeLy-EPFL/NeuroMechFly](https://github.com/NeLy-EPFL/NeuroMechFly) | Apache-2.0 | Optional optimized GLB assembled from source body-part meshes; procedural body remains the low-risk first integration. | Preserve the Apache-2.0 notice and cite NeuroMechFly. |
-| C. elegans anatomy/layers | [openworm/wormbrowser](https://github.com/openworm/wormbrowser) | MIT | Inform a lightweight segmented worm body and future optimized mesh extraction. | Preserve the MIT notice and cite OpenWorm Worm Browser. |
-
-## Garden Asset Sources
-
-| Asset family | Source | License | Intended garden role | Selection boundary |
-|---|---|---|---|---|
-| Trees, flowers, rocks, grass and bushes | [Quaternius Stylized Nature MegaKit](https://quaternius.com/packs/stylizednaturemegakit.html) | CC0 | Preferred visual vocabulary for a lush, stylized habitat. | Select only a small subset of glTF/GLB meshes after checking texture references, triangle count and per-file size. |
-| Vegetation, stones, terrain and water-adjacent props | [Kenney Nature Kit](https://kenney.nl/assets/nature-kit) | CC0 | Broad fallback library for habitat dressing and small sensory-prop replacements. | Use only optimized individual models; never commit the downloaded source archive or the full pack. |
-
-The planned environment clusters are: a sheltered flowering grove around the specimen, a stone-and-moss border to make the arena feel grounded, a small water/reflective habitat zone, and clear three-dimensional representations of the food, light and wind stimuli. All garden geometry remains `MODELLED MAPPING`; it decorates the observation environment and is not biological or source data.
-
-### Selected Kenney GLB Models
-
-The active selection is **16 small GLB files** (about 172 KiB in total): oak, pine and small trees; detailed bush and two grass forms; large and small rocks; lily, mushrooms and log; three flower forms; and two stone-path forms. They are individually hosted in managed project storage rather than bundled from the source archive, so the application uses only the models visible in the garden.
-
-## Complete Specimen-Body Replacement Plan
-
-| Specimen | Visual source and license | Runtime boundary | Optimization target |
+| Asset | Source and licence | Active use | Runtime boundary |
 |---|---|---|---|
-| Drosophila | A neutral full-body assembly derived outside the repository from the Apache-2.0 NeuroMechFly component meshes and their supplied SDF pose. | The mesh is a **modelled presentation**; it is not FlyWire morphology and does not change the staged FlyWire execution boundary. | One compact GLB with a root transform that preserves the existing modelled motor-controller interface. |
-| C. elegans | A custom compact full-body GLB informed by the MIT-licensed OpenWorm WormBrowser visual reference. The legacy WormBrowser `utf8` geometry is not passed through or represented as an imported raw mesh. | The mesh is a **modelled presentation**; the 279-neuron source topology remains independently labelled and executed. | One compact, smooth tapered GLB with a root transform that preserves the existing modelled locomotion interface. |
+| Wildtype female *Drosophila melanogaster* | [Sketchfab model](https://sketchfab.com/3d-models/wildtype-female-drosophila-melanogaster-3ba1adba62f34fe995413ee5e9cf3c25), **CC BY 4.0**; user-supplied SHA-256 `5f38f1ce7a3eeeaee4c35449fbe75b9fe766239b8082167ef38897d9698a7349` | Centred, browser-safe derivative `/manus-storage/wildtype-female-drosophila-web_74ce663a.glb`: 2,338,112 bytes, 120,000 faces. | Body mesh follows the existing modelled motor root only; it neither activates nor substitutes FlyWire. |
+| *Caenorhabditis elegans* visual reference | [Model by Miguelangelo Rosario](https://sketchfab.com/3d-models/caenorhabditis-elegans-d0591813159a4e8691994f8df58c128d), **CC BY 4.0**; user-supplied SHA-256 `6eea8c9402937f5a2f5fe8968e2fd35a963dbffccd3f266c43274c2163701569` | A single smooth contour body is modelled from the source visual silhouette, after inspection found the supplied science-visualisation GLB contains auxiliary structures that do not read as one organism in the observation bench. | The source reference remains attributed in the species profile. The contour body and its locomotion are modelled presentation, independent of the source topology. |
 
-The garden extension uses the existing CC0 Kenney asset family for a wood bridge, while its waterfall is a procedural, decorative water form. Grass sway and firefly drift are render-time presentation effects, never sensory inputs or neural outputs.
+The original fly is 51.64 MB / 1,229,670 faces. The original worm reference is 30.45 MB / 391,713 faces. Both originals remain outside the project tree. Derivatives, diagnostics, and reports are created outside the repository by scripts in `scripts/data-processing/`; the originals and connectome source data are never committed.
 
-The generated fly GLB contains 82,654 vertices and 57,722 faces before web delivery (about 2.0 MiB); it is assembled only from the NeuroMechFly Apache-2.0 STL components and its resting SDF pose. The generated worm GLB contains 504 vertices and 980 faces (about 21 KiB), is original presentation geometry, and references—rather than embeds—the MIT-licensed OpenWorm WormBrowser visuals. The checked source pages are [NeuroMechFly](https://github.com/NeLy-EPFL/NeuroMechFly), [FlyBody](https://github.com/TuragaLab/flybody) as a corroborating Apache-2.0 complete-body source, and [OpenWorm](https://github.com/openworm/OpenWorm).
+## Garden and Interface Assets
 
-## Conversion Staging
+The active garden uses procedural Babylon geometry only: moss beds, a reflective pond and lily, a dedicated wooden bridge, a small rock-and-ribbon waterfall, trees, shrubs, grass, flowers, stones, log, lanterns, and fireflies. It does **not** import a bundled Kenney or other garden GLB at runtime. Grass sway, firefly drift, and waterfall ribbons are decorative animation only.
 
-The source `Thorax.stl` from NeuroMechFly was converted outside the repository into `fly-thorax.glb` (464 KiB) with Assimp, preserving Apache-2.0 attribution. It is intentionally not yet substituted into the articulated procedural fly: a single thorax mesh would degrade the coherent existing body without an authored assembly/rig. Virtual Worm uses a legacy `utf8` geometry format, so its future GLB extraction remains an explicit conversion task rather than a misleading claim of a raw-mesh integration.
+`DAYLIGHT` changes the background and named Babylon light intensities. `WATERFALL FLOW` changes waterfall opacity and animation rate. They are visibly labelled `GARDEN PRESENTATION / MODELLED` and deliberately do not modify `LIGHT FIELD`, neural data, source topology, sensory routing, or motor mapping.
 
-## Build Rules
+## Attribution and Distribution Rules
 
-The generated assets are stored outside the repository and referenced only through the stable manuscript storage URLs above. They may establish aesthetic direction but they do not represent biological imagery or scientific data. Any modelled geometry, neural state, or environment data presented beside them will carry explicit provenance labels in the UI.
+The visible species metadata retains each CC BY 4.0 reference URL and attribution. The FlyWire v783 source pack remains outside the public application under its **CC BY-NC 4.0** boundary; it is not distributed by this repository or by managed presentation storage. Generated images and small UI textures use managed `/manus-storage/...` URLs, never project-local media files.

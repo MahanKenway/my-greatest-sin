@@ -1,11 +1,13 @@
 /** Luminous Connectome Lab: an explicit modelled environmental field, never a claim of source-derived physiology. */
-import { Color3 } from "@babylonjs/core/Maths/math.color";
+import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
+import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
+import { PointLight } from "@babylonjs/core/Lights/pointLight";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import type { Scene } from "@babylonjs/core/scene";
-import type { SensorFrame } from "@/game/shared/types";
+import type { EnvironmentPresentation, SensorFrame } from "@/game/shared/types";
 import { GardenScenery } from "./GardenScenery";
 
 const FLOOR_URL = "/manus-storage/digital-fly-specimen-floor_c2cc3595.png";
@@ -16,13 +18,14 @@ export class Arena {
   private lightAmount = 0.62;
   private touchPulse = 0;
   private temperatureShift = 0;
+  private readonly environment: EnvironmentPresentation = { daylight: 0.18, waterfall: 0.62, provenance: "MODELLED MAPPING" };
   private readonly foodPosition = new Vector3(2.35, 0.14, 1.5);
   private readonly lightPosition = new Vector3(-2.8, 0.06, -1.1);
   private readonly foodMesh;
   private readonly lightMesh;
   private readonly garden: GardenScenery;
 
-  constructor(scene: Scene) {
+  constructor(private readonly scene: Scene) {
     const ground = MeshBuilder.CreateGround("specimen-ground", { width: 9.8, height: 8.6, subdivisions: 2 }, scene);
     const groundMaterial = new StandardMaterial("mineral-ground", scene);
     const floorTexture = new Texture(FLOOR_URL, scene, true, false);
@@ -47,13 +50,6 @@ export class Arena {
     lightMaterial.alpha = 0.48;
     this.lightMesh.material = lightMaterial;
 
-    const obstacleMaterial = new StandardMaterial("obstacle-material", scene);
-    obstacleMaterial.diffuseColor = Color3.FromHexString("#CBD6DB");
-    obstacleMaterial.emissiveColor = Color3.FromHexString("#14222D");
-    const obstacle = MeshBuilder.CreateBox("observation-obstacle", { width: 1.0, depth: 0.52, height: 0.42 }, scene);
-    obstacle.position.set(2.2, 0.21, -2.15);
-    obstacle.material = obstacleMaterial;
-
     const windMaterial = new StandardMaterial("wind-probe-material", scene);
     windMaterial.diffuseColor = Color3.FromHexString("#6DE5FF");
     windMaterial.emissiveColor = Color3.FromHexString("#164A5B");
@@ -75,10 +71,26 @@ export class Arena {
     }
 
     this.garden = new GardenScenery(scene);
+    this.applyDaylight(this.environment.daylight);
   }
 
   updatePresentation(elapsed: number): void {
     this.garden.update(elapsed);
+  }
+
+  getPresentation(): EnvironmentPresentation {
+    return this.environment;
+  }
+
+  setPresentation(setting: "daylight" | "waterfall", amount: number): void {
+    const value = Math.max(0, Math.min(1, amount));
+    if (setting === "waterfall") {
+      this.environment.waterfall = value;
+      this.garden.setWaterfallIntensity(value);
+      return;
+    }
+    this.environment.daylight = value;
+    this.applyDaylight(value);
   }
 
   apply(stimulus: "food" | "wind" | "light" | "touch" | "temperature", amount: number): void {
@@ -117,5 +129,21 @@ export class Arena {
 
   private fieldAt(position: Vector3, source: Vector3, radius: number): number {
     return Math.max(0, 1 - Vector3.Distance(position, source) / radius);
+  }
+
+  private applyDaylight(daylight: number): void {
+    const ambient = this.scene.getLightByName("lab-ambient");
+    const specimenLight = this.scene.getLightByName("specimen-light");
+    const gardenFill = this.scene.getLightByName("garden-fill");
+    const gardenRim = this.scene.getLightByName("garden-rim");
+    if (ambient instanceof HemisphericLight) {
+      ambient.intensity = 0.16 + daylight * 0.5;
+      ambient.diffuse.set(0.2 + daylight * 0.35, 0.3 + daylight * 0.32, 0.4 + daylight * 0.25);
+      ambient.groundColor.set(0.014 + daylight * 0.065, 0.025 + daylight * 0.08, 0.04 + daylight * 0.08);
+    }
+    if (specimenLight instanceof PointLight) specimenLight.intensity = 2 + (1 - daylight) * 5;
+    if (gardenFill instanceof PointLight) gardenFill.intensity = 0.12 + daylight * 0.48;
+    if (gardenRim instanceof PointLight) gardenRim.intensity = 0.1 + (1 - daylight) * 0.32;
+    this.scene.clearColor = new Color4(0.012 + daylight * 0.06, 0.03 + daylight * 0.085, 0.05 + daylight * 0.09, 1);
   }
 }

@@ -110,3 +110,13 @@
 - [x] Prepare optimized GLB variants and retain separate causal motor mappings for each specimen.
 - [x] Add a small waterfall, wooden bridge, grass sway and firefly-motion effects without coupling them to scientific runtime data.
 - [x] Validate dual-species switching, desktop/mobile rendering, performance, type checks, tests, build, browser console and provenance before checkpointing.
+
+## High-Quality User-Supplied Specimen Revision
+
+- [x] Inspect the user-supplied Drosophila and C. elegans GLBs for mesh, material, texture, transform, triangle-budget and attribution metadata.
+- [x] Create quality-preserving, browser-safe GLB derivatives outside the project tree and upload only the selected outputs to managed web storage.
+- [x] Add modelled `DAYLIGHT` and `WATERFALL FLOW` controls that change Babylon presentation only, never source topology or neural runtime data.
+- [x] Replace the current presentation-body URLs, retain separate motor mappings, and document CC BY attribution for the supplied models.
+- [x] Remove any garden prop that reads as a duplicate organism or a white placeholder; replace the bridge with a dedicated lightweight wood construction.
+- [x] Reframe the supplied C. elegans display pose so its complete silhouette remains legible at rest and during modelled locomotion.
+- [x] Validate both selected species, environmental controls, type checks, tests, production build and browser console before checkpointing.

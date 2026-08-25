@@ -34,6 +34,12 @@ export type MotorFrame = {
   provenance: Provenance;
 };
 
+export type EnvironmentPresentation = {
+  daylight: number;
+  waterfall: number;
+  provenance: "MODELLED MAPPING";
+};
+
 export type ConnectomeColumns = {
   neuronCount: number;
   synapseCount: number;
@@ -129,6 +135,7 @@ export type SimulationSnapshot = {
   species: SpeciesProfile;
   sensor: SensorFrame;
   motor: MotorFrame;
+  environment: EnvironmentPresentation;
   behavior: "ORIENTING" | "FORAGING" | "BRACING" | "IDLE";
   neuronActivity: Float32Array;
   timeline: Float32Array;
@@ -139,5 +146,6 @@ export type SimulationCommand =
   | { type: "step" }
   | { type: "reset" }
   | { type: "stimulus"; stimulus: "food" | "wind" | "light" | "touch" | "temperature"; amount: number }
+  | { type: "environment"; setting: "daylight" | "waterfall"; amount: number }
   | { type: "demo" }
   | { type: "species"; species: SpeciesId };
