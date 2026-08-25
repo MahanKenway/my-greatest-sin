@@ -216,3 +216,14 @@
 - [ ] افزودن kernel و readback لازم برای گزارش کنترل مثبت/منفی MN9 تنها روی WebGPU adapter معتبر.
 - [ ] افزودن آزمون‌های خالص برای قرارداد ورودی/ablation، نرمال‌سازی خوانش و جلوگیری از فعال‌شدن مسیر بدن در حالت blocked.
 - [ ] ثبت معیارهای واقعی GPU، شدت–پاسخ و ablation روی دستگاه سازگار؛ تا پیش از آن `0 N / 0 E` برای FlyWire در GameWorld حفظ شود.
+
+## FlyWire v783 Transmitter-Aware LIF and Experimental Protocol
+
+- [x] تأیید ستون‌های رسمی احتمال ناقل، ترتیب شش کانال، dtype/stride، مجوز و provenance برای مشتق v783 LIF.
+- [x] تعریف protocol نسخه‌دار شدت–پاسخ برای نرخ‌های ۰، ۲۵، ۵۰، ۱۰۰، ۱۵۰ و ۲۰۰ Hz و معیار ثبت MN9 بدون تولید نتیجهٔ ساختگی.
+- [ ] تعریف protocol ablation نسخه‌دار با کنترل baseline، input-ablation و حذف انتخابیِ مسیر فقط در صورت وجود تعریف علمیِ معتبر.
+- [x] تولید مشتق checksum-verified خارج از repository شامل ستون‌های probability ناقل و manifest جداگانهٔ LIF.
+- [x] اعتبارسنجی تعداد، stride، SHA-256 و ناسازگاری‌های نسخهٔ v783 پیش از هر upload مدیریت‌شده.
+- [ ] اجرای protocol روی WebGPU adapter معتبر و ثبت raw MN9 readout، memory، latency و وضعیت timestamp-query.
+- [ ] اضافه‌کردن LIF گیت‌شده تنها پس از کامل‌شدن قرارداد ناقل و اجرای benchmark معتبر؛ تا آن زمان kernel ساختاری به‌صورت صریح non-physiological بماند.
+- [ ] یافتن یا تولید دادهٔ site-level دارای cleft-score و preprocessor بازتولیدپذیر برای طبقه‌بندی ناقل neuron-level مطابق روش Shiu et al.; probabilityهای connection-row به‌تنهایی برای این جایگزینی کافی نیستند.

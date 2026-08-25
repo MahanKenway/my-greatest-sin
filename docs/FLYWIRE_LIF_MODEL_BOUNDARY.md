@@ -20,6 +20,18 @@
 
 گام بعدیِ قابل‌دفاع، افزودن protocolهای activation و ablation به همین kernel ساختاری است؛ نتایج آن تنها برای کنترل path داده، checksum، گیت adapter و خوانش MN9 معتبر خواهند بود. برای پیاده‌سازی LIF قابل‌ردیابی باید مشتق رسمی v783 شامل پیش‌بینی ناقل، قرارداد تبدیل دقیق آن به وزن، زمان‌بندی رویداد و validation جداگانه آماده شود. این کار از فعال‌کردن بی‌برچسبِ ۱۳۹٬۲۵۵ نورون در `GameWorld` جدا است.
 
+## مشتق LIF آماده‌شده — ۲۵ اوت ۲۰۲۶
+
+از pack کاملِ خارج از مخزن، مشتق `flywire-v783-dfly-lif-candidate-v1` در `/home/ubuntu/webdev-static-assets/` ساخته شد. ابزار derivation پیش از هر copy، اندازه و SHA-256 همهٔ chunkها را با manifest کامل کنترل کرد و سپس checksum فایل کپی‌شده را دوباره‌سنجی کرد. این مشتق **۱۳۹٬۲۵۵ نورون**، **۱۶٬۸۴۷٬۹۹۷ اتصال**، ۱۵ chunk و **۳۳۸٬۶۳۱٬۰۰۴ بایت** دارد؛ SHA-256 manifest آن `2091a5cc474a99efbe3614848e17e9167d099b7b1028797079a8e9a2c49cc1b0` است.
+
+ستون‌های انتخاب‌شده `root_id`، `incoming_offsets`، `source_index`، `synapse_count` و `nt_probabilities` هستند. ستون آخر `f16 × 6` و ترتیب ثبت‌شده‌اش `gaba_avg`، `ach_avg`، `glut_avg`، `oct_avg`، `ser_avg` و `da_avg` است. این تنها یک **LIF input candidate** است: هنوز به GPU upload نشده، به وزن تحریکی/مهاری نگاشت نشده و هیچ نورون FlyWire را در `GameWorld` فعال نمی‌کند.
+
+## قاعدهٔ ناقل در مدل مرجع و blocker باقیمانده
+
+مقالهٔ مرجع برای هر **presynaptic site**، بالاترین پیش‌بینی ناقل را پس از cleft-score cutoff برابر ۵۰ می‌گیرد. یک نورون زمانی مهاری طبقه‌بندی می‌شود که بیش از نیمی از siteهای پیش‌سیناپسی‌اش GABA یا glutamate باشند؛ در غیر این صورت تحریکی است. dopamine، octopamine و serotonin در دستهٔ تحریکی قرار داده شده‌اند و مدل اندازهٔ یکسانی برای وزن تحریکی و مهاری فرض می‌کند [1].
+
+مشتق رسمیِ موجود در این پروژه، probabilityهای `gaba_avg` تا `da_avg` را برای **connection rowهای خلاصه‌شده** دارد، نه شمارش siteهای خام با cleft-score. بنابراین نمی‌توان بدون یک preprocessor بازتولیدپذیر و دادهٔ site-level، طبقه‌بندی نورون‌به‌نورون مقاله را دقیقاً بازسازی کرد. گام LIF فعلاً عمداً blocked می‌ماند: مشتق آماده، checksum-verified و قابل‌دریافت است؛ اما تولید sign/weight برای kernel تا تعیین منبع site-level یا روش دقیقِ هم‌ارز فعال نمی‌شود.
+
 ## منابع
 
 [1]: https://pmc.ncbi.nlm.nih.gov/articles/PMC11446845/ "Shiu et al. (2024), A Drosophila computational brain model reveals sensorimotor processing"

@@ -30,14 +30,18 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--storage-map", type=Path, help="Optional JSON mapping from chunk filename to managed-storage URL")
     args = parser.parse_args()
 
     manifest = json.loads(args.input.read_text(encoding="utf-8"))
+    storage_urls = STORAGE_URLS
+    if args.storage_map:
+        storage_urls = json.loads(args.storage_map.read_text(encoding="utf-8"))
     for chunk in manifest["chunks"]:
         filename = Path(chunk["path"]).name
-        if filename not in STORAGE_URLS:
+        if filename not in storage_urls:
             raise SystemExit(f"Missing managed-storage URL for {filename}")
-        chunk["url"] = STORAGE_URLS[filename]
+        chunk["url"] = storage_urls[filename]
         del chunk["path"]
     args.output.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return 0

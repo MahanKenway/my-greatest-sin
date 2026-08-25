@@ -25,3 +25,25 @@
 پیش از ساخت bufferهای GPU، runtime اکنون بودجهٔ سه ستون لازم و سه buffer حالت `f32` را برآورد می‌کند و سقف storage-buffer، `maxBufferSize` و قابلیت timestamp-query را از adapter معتبر می‌سنجد. این preflight یک گیت اجرایی است، نه metric عملکرد؛ metric تنها پس از اجرای موفق روی سخت‌افزار سازگار ثبت می‌شود.
 
 در بازبینی مستقیم مرورگر، HUD نرخ انتخاب‌شدهٔ ۱۰۰ Hz، هر دو وضعیت `INPUT OPEN` و `INPUT ABLATED` و پیام خطای adapter را بدون خطای کنسول نمایش داد. پس از تعویض گونه، C. elegans همچنان `SOURCE PACK ACTIVE` با ۲۷۹ نورون و ۶٬۲۶۱ یال باقی ماند. این مشاهده، کنترل correctness رابط و جداسازی گونه‌ها است؛ اعتبار علمی شدت–پاسخ یا ablation تا اجرای واقعی GPU ثبت نشده است.
+
+## قرارداد آزمایش‌های بعدی
+
+برای اجرای قابل‌بازبینی روی adapter معتبر، sweep برنامه شامل نرخ‌های **۰، ۲۵، ۵۰، ۱۰۰، ۱۵۰ و ۲۰۰ Hz** برای baseline و input-ablation است. منبع Brian2 همراه پژوهش، sweep دقیق‌تر ۱۰ تا ۲۰۰ Hz، trialهای ۱۰۰۰ ms و ۳۰ تکرار را گزارش می‌کند؛ قرارداد مرورگر در حال حاضر فقط rateهای منتخب را برای کنترل اقتصادی اولیه تعریف می‌کند و نباید معادل تحلیل آماری مقاله قلمداد شود [1] [2]. تا زمانی که GPU واقعاً اجرا نشود، جدول نتیجه باید خالی و وضعیت آن `PROTOCOL ONLY — NO GPU MEASUREMENT` بماند.
+
+## منابع افزوده
+
+[1]: https://pmc.ncbi.nlm.nih.gov/articles/PMC11446845/ "Shiu et al. (2024), A Drosophila computational brain model reveals sensorimotor processing"
+[2]: https://github.com/philshiu/Drosophila_brain_model "Drosophila Brain Model — figures notebook"
+
+## تلاش اجرای protocol — ۲۵ اوت ۲۰۲۶
+
+دو اجرای واقعی از رابط انجام شد: baseline با ورودی sugar باز در ۱۵۰ Hz و input-ablation در ۱۵۰ Hz. در هر دو مورد adapter پیش از دریافت ستون‌های حجیم گراف بررسی شد و `requestAdapter()` رد شد. در نتیجه، هیچ CSR v783 برای این دو تلاش به GPU upload نشد، هیچ MN9 structural score یا rate ثبت نشد، هیچ جدول شدت–پاسخ پر نشد و هیچ خروجی بدنی تغییر نکرد. کنسول مرورگر خالی بود.
+
+| وضعیت | baseline ۱۵۰ Hz | input-ablation ۱۵۰ Hz |
+|---|---|---|
+| گیت adapter | `BLOCKED` | `BLOCKED` |
+| MN9 readout | ثبت نشد | ثبت نشد |
+| CPU fallback | استفاده نشد | استفاده نشد |
+| تغییر GameWorld FlyWire | `0 N / 0 E` حفظ شد | `0 N / 0 E` حفظ شد |
+
+بنابراین هنوز **هیچ نتیجهٔ شدت–پاسخ یا ablation زیستی/محاسباتی قابل‌تفسیر** نداریم. تنها نتیجهٔ معتبر این مرحله، عملکرد درست گیت سخت‌افزاری و جلوگیری از انتقال ۳۳۸٫۶ MiB دادهٔ LIF candidate در مرورگر بدون adapter است.

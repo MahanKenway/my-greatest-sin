@@ -64,6 +64,9 @@ export async function runSugarMn9Pilot(manifestUrl: string, input: number | Suga
   const response = await fetch(manifestUrl, { cache: "no-store", headers: { Accept: "application/json" } });
   if (!response.ok) throw new Error(`Official pilot manifest returned HTTP ${response.status}.`);
   const manifest = validateRealPackManifest(await response.json());
+  const capability = await requestFlywireExecutionDevice(manifest);
+  if (capability.state !== "READY" || !capability.device || capability.maxStorageBufferBindingBytes === null) throw new Error(capability.message);
+  const device = capability.device;
   const columns = await loadRequiredColumns(manifestUrl, manifest);
   const rootIds = new BigUint64Array(columns.rootId);
   if (rootIds.length !== manifest.neuronCount) throw new Error("Official root-ID column length differs from its manifest.");
@@ -73,9 +76,6 @@ export async function runSugarMn9Pilot(manifestUrl: string, input: number | Suga
   const mn9Index = rootIndex.get(SUGAR_MN9_PILOT.outputRootId);
   if (mn9Index === undefined || sugarIndices.length !== inputsPresent) throw new Error("Pilot root IDs do not agree with the verified v783 source columns.");
 
-  const capability = await requestFlywireExecutionDevice(manifest);
-  if (capability.state !== "READY" || !capability.device || capability.maxStorageBufferBindingBytes === null) throw new Error(capability.message);
-  const device = capability.device;
   const usage = (globalThis as any).GPUBufferUsage;
   const mapMode = (globalThis as any).GPUMapMode;
 
