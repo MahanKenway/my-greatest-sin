@@ -1,8 +1,6 @@
-/** Luminous Connectome Lab: official WormBase Cuticle surface; locomotion morph remains MODELLED MAPPING. */
+/** Natural specimen: continuous handcrafted body + MODELLED MAPPING wave from real MotorFrame values. */
 import type { AnimationGroup } from "@babylonjs/core/Animations/animationGroup";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import type { Scene } from "@babylonjs/core/scene";
 import type { MotorFrame } from "@/game/shared/types";
@@ -18,27 +16,24 @@ export class WormBody implements BodyController {
   private gaitPhase = 0;
 
   constructor(scene: Scene) {
-    this.root = new TransformNode("c-elegans-wormbase-cuticle-body", scene);
-    this.root.position.set(0.32, 0.16, -0.28);
-    const cuticle = new StandardMaterial("c-elegans-wormbase-hypodermis-presentation", scene);
-    cuticle.diffuseColor = Color3.FromHexString("#381116");
-    cuticle.specularColor = Color3.FromHexString("#251014");
-    cuticle.backFaceCulling = false;
+    this.root = new TransformNode("c-elegans-modelled-continuous-body", scene);
+    this.root.position.set(0.32, 0.18, -0.28);
     this.visual = loadPresentationMesh(
       scene,
       SPECIMEN_PRESENTATION_ASSETS.celegans,
       this.root,
-      "c-elegans-wormbase-mit-presentation",
-      cuticle,
+      "c-elegans-modelled-continuous-presentation",
+      undefined,
       ({ animationGroups }) => {
         this.wave = animationGroups.find((group) => group.name.includes("MODELLED_C_ELEGANS_BODY_WAVE"));
         this.wave?.start(true, 1.15);
-        this.wave?.setWeightForAllAnimatables(0.2);
+        this.wave?.setWeightForAllAnimatables(0.22);
       },
     );
-    this.visual.scaling.setAll(0.25);
-    // The glTF long axis is -Z. This maps its head toward the root's +X forward direction.
-    this.visual.rotation.y = -Math.PI / 2;
+    this.visual.scaling.setAll(0.44);
+    // The handcrafted body's broader head is authored on -X. This half-turn
+    // maps the real silhouette's head to the root's forward +X direction.
+    this.visual.rotation.y = Math.PI;
   }
 
   update(motor: MotorFrame, dt: number): void {
@@ -50,8 +45,8 @@ export class WormBody implements BodyController {
     this.root.rotation.y = -this.heading;
     this.visual.position.y = Math.sin(this.gaitPhase * 1.7) * 0.008;
     if (this.wave) {
-      const waveStrength = Math.max(0.14, Math.min(1, motor.gait));
-      this.wave.speedRatio = 0.22 + waveStrength * 2.8;
+      const waveStrength = Math.max(0.18, Math.min(1, motor.gait));
+      this.wave.speedRatio = 0.26 + waveStrength * 2.9;
       this.wave.setWeightForAllAnimatables(waveStrength);
     }
   }
@@ -61,7 +56,7 @@ export class WormBody implements BodyController {
   getHeading(): number { return this.heading; }
 
   reset(): void {
-    this.root.position.set(0.32, 0.16, -0.28);
+    this.root.position.set(0.32, 0.18, -0.28);
     this.heading = 0.2;
     this.gaitPhase = 0;
     this.visual.position.y = 0;

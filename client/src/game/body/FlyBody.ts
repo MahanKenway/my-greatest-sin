@@ -1,9 +1,6 @@
-/** Luminous Connectome Lab: actual Apache-2.0 NeuroMechFly geometry, with only presentation-labelled motor motion. */
+/** Natural specimen: Apache-2.0 FlyBody geometry + MODELLED MAPPING gait only. */
 import { Axis } from "@babylonjs/core/Maths/math.axis";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import type { Scene } from "@babylonjs/core/scene";
 import type { MotorFrame } from "@/game/shared/types";
@@ -13,8 +10,14 @@ import type { BodyController } from "./types";
 
 type JointRig = Readonly<{ node: TransformNode; rest: Quaternion }>;
 
-const LEG_PREFIXES = ["LF", "LM", "LH", "RF", "RM", "RH"] as const;
-const LEG_SEGMENTS = ["Coxa", "Femur", "Tibia", "Tarsus1", "Tarsus2", "Tarsus3", "Tarsus4", "Tarsus5"] as const;
+const LEGS = [
+  ["coxa_T1_left", "femur_T1_left", "tibia_T1_left"],
+  ["coxa_T2_left", "femur_T2_left", "tibia_T2_left"],
+  ["coxa_T3_left", "femur_T3_left", "tibia_T3_left"],
+  ["coxa_T1_right", "femur_T1_right", "tibia_T1_right"],
+  ["coxa_T2_right", "femur_T2_right", "tibia_T2_right"],
+  ["coxa_T3_right", "femur_T3_right", "tibia_T3_right"],
+] as const;
 
 export class FlyBody implements BodyController {
   private readonly root: TransformNode;
@@ -24,48 +27,45 @@ export class FlyBody implements BodyController {
   private gaitPhase = 0;
 
   constructor(scene: Scene) {
-    this.root = new TransformNode("drosophila-neuromechfly-body", scene);
-    this.root.position.set(0.48, 0.78, -0.38);
-    const materials = this.createPresentationMaterials(scene);
+    this.root = new TransformNode("drosophila-flybody-body", scene);
+    this.root.position.set(0.48, 0.72, -0.38);
     this.visual = loadPresentationMesh(
       scene,
       SPECIMEN_PRESENTATION_ASSETS.drosophila,
       this.root,
-      "drosophila-neuromechfly-apache2-presentation",
+      "drosophila-flybody-apache2-presentation",
       undefined,
-      ({ meshes, transformNodes }) => {
-        this.applyPresentationMaterials(meshes, materials);
-        this.bindSourceJoints(meshes, transformNodes);
-      },
+      ({ transformNodes }) => this.bindSourceJoints(transformNodes),
     );
-    this.visual.scaling.setAll(380);
-    // The glTF Y-up conversion inverts the Blender inspection sign; +90° puts the imported tarsi toward Babylon's ground.
-    this.visual.rotation.x = Math.PI / 2;
+    this.visual.scaling.setAll(0.58);
+    // FlyBody's inspected head is on source -X. This half-turn maps it to the
+    // controller's forward +X direction while preserving the source up axis.
+    this.visual.rotation.y = Math.PI;
   }
 
   update(motor: MotorFrame, dt: number): void {
-    this.gaitPhase += dt * (2.4 + motor.gait * 7.8);
+    this.gaitPhase += dt * (2.2 + motor.gait * 7.4);
     this.heading += motor.turn * dt * 1.25;
-    const stride = (0.08 + motor.forward * 0.52) * dt;
+    const stride = (0.06 + motor.forward * 0.48) * dt;
     this.root.position.x = Math.max(-4.45, Math.min(4.45, this.root.position.x + Math.cos(this.heading) * stride));
     this.root.position.z = Math.max(-3.85, Math.min(3.85, this.root.position.z + Math.sin(this.heading) * stride));
     this.root.rotation.y = -this.heading;
-    this.visual.position.y = Math.sin(this.gaitPhase * 2.1) * (0.014 + motor.gait * 0.018);
+    this.visual.position.y = Math.sin(this.gaitPhase * 2.05) * (0.010 + motor.gait * 0.016);
 
-    const flap = Math.sin(this.gaitPhase * 12.5) * (0.22 + motor.wingLift * 0.7);
-    this.setJoint("LWing", Axis.Y, flap);
-    this.setJoint("RWing", Axis.Y, -flap);
-    this.setJoint("LHaltere", Axis.Y, -flap * 0.12);
-    this.setJoint("RHaltere", Axis.Y, flap * 0.12);
+    const flap = Math.sin(this.gaitPhase * 15.5) * (0.16 + motor.wingLift * 0.56);
+    this.setJoint("wing_left", Axis.X, flap);
+    this.setJoint("wing_right", Axis.X, -flap);
+    this.setJoint("haltere_left", Axis.X, -flap * 0.16);
+    this.setJoint("haltere_right", Axis.X, flap * 0.16);
 
-    LEG_PREFIXES.forEach((prefix, index) => {
-      const alternatingPhase = index % 2 === 0 ? 1 : -1;
-      const swing = Math.sin(this.gaitPhase * 4.6 + index * 1.9) * (0.13 + motor.forward * 0.42) * alternatingPhase;
-      // The source rest pose already contains a stable standing stance. Only small
-      // alternating offsets are added; fixed bends here had distorted the real legs.
-      this.setJoint(`${prefix}Coxa`, Axis.X, swing);
-      this.setJoint(`${prefix}Femur`, Axis.X, -swing * 0.48);
-      this.setJoint(`${prefix}Tibia`, Axis.X, swing * 0.36);
+    LEGS.forEach(([coxa, femur, tibia], index) => {
+      const tripod = index % 2 === 0 ? 1 : -1;
+      const swing = Math.sin(this.gaitPhase * 4.8 + index * 1.84) * (0.075 + motor.forward * 0.30) * tripod;
+      // Small rotations around published FlyBody joint pivots. This remains
+      // presentation-only motion, never a FlyWire-derived locomotion claim.
+      this.setJoint(coxa, Axis.Y, swing);
+      this.setJoint(femur, Axis.Y, -swing * 0.54);
+      this.setJoint(tibia, Axis.Y, swing * 0.42);
     });
   }
 
@@ -74,7 +74,7 @@ export class FlyBody implements BodyController {
   getHeading(): number { return this.heading; }
 
   reset(): void {
-    this.root.position.set(0.48, 0.78, -0.38);
+    this.root.position.set(0.48, 0.72, -0.38);
     this.heading = 0.2;
     this.gaitPhase = 0;
     this.visual.position.y = 0;
@@ -85,23 +85,10 @@ export class FlyBody implements BodyController {
     this.root.setEnabled(enabled);
   }
 
-  private bindSourceJoints(meshes: readonly Mesh[], transformNodes: readonly TransformNode[]): void {
-    const pivots = new Map(transformNodes.map((node) => [node.name, node]));
-    for (const prefix of LEG_PREFIXES) {
-      for (let index = 1; index < LEG_SEGMENTS.length; index += 1) {
-        const child = pivots.get(`nmf_pivot__${prefix}${LEG_SEGMENTS[index]}`);
-        const parent = pivots.get(`nmf_pivot__${prefix}${LEG_SEGMENTS[index - 1]}`);
-        if (child && parent && child.parent !== parent) child.setParent(parent);
-      }
-    }
-    for (const mesh of meshes) {
-      const jointName = mesh.name.replace(/^nmf__/, "");
-      const pivot = pivots.get(`nmf_pivot__${jointName}`);
-      if (pivot && mesh.parent !== pivot) mesh.setParent(pivot);
-    }
-    for (const [name, node] of Array.from(pivots.entries())) {
-      if (!name.startsWith("nmf_pivot__")) continue;
-      const joint = name.replace("nmf_pivot__", "");
+  private bindSourceJoints(transformNodes: readonly TransformNode[]): void {
+    for (const node of transformNodes) {
+      if (!node.name.startsWith("fb_pivot__")) continue;
+      const joint = node.name.replace("fb_pivot__", "");
       this.joints.set(joint, { node, rest: node.rotationQuaternion?.clone() ?? Quaternion.Identity() });
     }
   }
@@ -110,41 +97,5 @@ export class FlyBody implements BodyController {
     const joint = this.joints.get(name);
     if (!joint) return;
     joint.node.rotationQuaternion = joint.rest.multiply(Quaternion.RotationAxis(axis, angle));
-  }
-
-  private createPresentationMaterials(scene: Scene): Readonly<{ cuticle: StandardMaterial; eye: StandardMaterial; wing: StandardMaterial }> {
-    const cuticle = new StandardMaterial("neuromechfly-cuticle-presentation", scene);
-    cuticle.diffuseColor = Color3.FromHexString("#8E3B1A");
-    cuticle.emissiveColor = Color3.FromHexString("#180805");
-    cuticle.specularColor = Color3.FromHexString("#D89958");
-    cuticle.specularPower = 44;
-
-    const eye = new StandardMaterial("neuromechfly-compound-eye-presentation", scene);
-    eye.diffuseColor = Color3.FromHexString("#3B0712");
-    eye.emissiveColor = Color3.FromHexString("#150003");
-    eye.specularColor = Color3.FromHexString("#E45A48");
-    eye.specularPower = 76;
-
-    const wing = new StandardMaterial("neuromechfly-wing-membrane-presentation", scene);
-    wing.diffuseColor = Color3.FromHexString("#E8D4A7");
-    wing.emissiveColor = Color3.FromHexString("#1A1508");
-    wing.specularColor = Color3.FromHexString("#FFF0CF");
-    wing.alpha = 0.72;
-    wing.backFaceCulling = false;
-    return { cuticle, eye, wing };
-  }
-
-  private applyPresentationMaterials(
-    meshes: readonly Mesh[],
-    materials: Readonly<{ cuticle: StandardMaterial; eye: StandardMaterial; wing: StandardMaterial }>,
-  ): void {
-    for (const mesh of meshes) {
-      if (!mesh.name.startsWith("nmf__")) continue;
-      mesh.material = /(?:LWing|RWing)/.test(mesh.name)
-        ? materials.wing
-        : /(?:LEye|REye)/.test(mesh.name)
-          ? materials.eye
-          : materials.cuticle;
-    }
   }
 }
