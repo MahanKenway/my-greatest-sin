@@ -10,6 +10,11 @@ import type { BodyController } from "./types";
 
 type JointRig = Readonly<{ node: TransformNode; rest: Quaternion }>;
 
+// The glTF importer keeps FlyBody's visible head on the presentation root's
+// post-import -X axis.  This offset is shared by root translation and Arena
+// sampling so a real-world cue is measured from the same forward direction.
+const FLYBODY_FORWARD_OFFSET = Math.PI;
+
 const LEGS = [
   ["coxa_T1_left", "femur_T1_left", "tibia_T1_left"],
   ["coxa_T2_left", "femur_T2_left", "tibia_T2_left"],
@@ -38,8 +43,8 @@ export class FlyBody implements BodyController {
       ({ transformNodes }) => this.bindSourceJoints(transformNodes),
     );
     this.visual.scaling.setAll(0.58);
-    // FlyBody's inspected head is on source -X. This half-turn maps it to the
-    // controller's forward +X direction while preserving the source up axis.
+    // Preserve the inspected up axis and source rest pose. The controller's
+    // calibrated forward vector below uses the post-import visible head axis.
     this.visual.rotation.y = Math.PI;
   }
 
@@ -47,8 +52,9 @@ export class FlyBody implements BodyController {
     this.gaitPhase += dt * (2.2 + motor.gait * 7.4);
     this.heading += motor.turn * dt * 1.25;
     const stride = (0.06 + motor.forward * 0.48) * dt;
-    this.root.position.x = Math.max(-4.45, Math.min(4.45, this.root.position.x + Math.cos(this.heading) * stride));
-    this.root.position.z = Math.max(-3.85, Math.min(3.85, this.root.position.z + Math.sin(this.heading) * stride));
+    const calibratedHeading = this.heading + FLYBODY_FORWARD_OFFSET;
+    this.root.position.x = Math.max(-4.45, Math.min(4.45, this.root.position.x + Math.cos(calibratedHeading) * stride));
+    this.root.position.z = Math.max(-3.85, Math.min(3.85, this.root.position.z + Math.sin(calibratedHeading) * stride));
     this.root.rotation.y = -this.heading;
     this.visual.position.y = Math.sin(this.gaitPhase * 2.05) * (0.010 + motor.gait * 0.016);
 
@@ -71,7 +77,7 @@ export class FlyBody implements BodyController {
 
   getPosition(): Vector3 { return this.root.position; }
 
-  getHeading(): number { return this.heading; }
+  getHeading(): number { return this.heading + FLYBODY_FORWARD_OFFSET; }
 
   reset(): void {
     this.root.position.set(0.48, 0.72, -0.38);

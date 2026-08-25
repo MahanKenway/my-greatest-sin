@@ -4,6 +4,15 @@
 
 Every visual body, garden element, light, and waterfall effect in **My Greatest Sin** is a `MODELLED MAPPING`. None of these assets are neural data, sensory evidence, a connectome, or evidence that an organism is alive. The fly remains **FlyWire v783 staged at 0 N / 0 E**; *C. elegans* executes the separate, integrity-checked **279-neuron / 6,261-edge** source topology.
 
+## Causal-control audit
+
+| Species | Environment → topology | Topology → body | Current honest status |
+|---|---|---|---|
+| *Drosophila melanogaster* | No active FlyWire network; the garden sliders do **not** supply a scientific FlyWire input while the application is at `0 N / 0 E`. | No source motor decoder exists in the active fly path. The calibrated forward gait, leg cycle and wing flap are display-only `MODELLED MAPPING`. | The model is visually controllable only as an explicitly modelled presentation. It is not an environment-aware, data-driven fly. |
+| *Caenorhabditis elegans* | Garden fields are sampled around the body and injected through **modelled sensor routing** into the checksum-verified 279-neuron / 6,261-edge source topology. | Named source-cell groups are decoded through **modelled motor grouping** into speed, turning and body-wave weight. | The graph execution is real source data; environment encoding, neural weight normalization/delay, motor transfer and body embodiment are modelled mappings. |
+
+This separation is shown live in the HUD under `CAUSAL CONTROL STATUS`. It prevents a display gait or a modelled sensor-to-motor bridge from being presented as direct evidence of biological awareness or a fully validated closed-loop animal simulation.
+
 ## Active Presentation Assets
 
 | Asset | Source and licence | Active use | Runtime boundary |

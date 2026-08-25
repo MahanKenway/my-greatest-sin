@@ -31,6 +31,11 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
   const usesSourceTopology = execution?.topology === "SOURCE DATA";
   const showingFly = snapshot?.species.id === "DROSOPHILA";
   const flywireStaged = showingFly && execution?.label.includes("FLYWIRE V783 STAGED");
+  const controlPath = flywireStaged
+    ? "FLY: display gait only. Environment sliders do not drive a FlyWire network or a scientific motor decoder while 0 N / 0 E remains staged."
+    : usesSourceTopology
+      ? "C. ELEGANS: environment fields → modelled sensor routing → 279 N / 6,261 E source topology → modelled motor grouping → body wave."
+      : "Source topology is not active; no synthetic neural fallback is used.";
 
   return (
     <div className="lab-hud" aria-live="polite">
@@ -78,6 +83,8 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
           <p className="micro-label">DATA STATUS</p>
           <div className="provenance-row"><span className={`provenance ${usesSourceTopology ? "source" : "fixture"}`}>{execution?.label ?? "SYNTHETIC TEST FIXTURE"}</span><span>{snapshot?.neuronCount ?? 0} N / {snapshot?.synapseCount ?? 0} E</span></div>
           <p>{snapshot?.species.bodyLabel ?? "SPECIMEN BODY"}: modelled presentation. {usesSourceTopology ? "Topology executes from integrity-checked source columns; stimulus routing and motor embodiment remain modelled mappings." : flywireStaged ? "No substitute neural fixture executes for the fly. The official pack is staged outside this public app pending WebGPU benchmark and delivery approval." : "No synthetic fallback is active while the source pack is verified."}</p>
+          <p className="micro-label">CAUSAL CONTROL STATUS</p>
+          <p className="pane-note">{controlPath}</p>
           <div className="source-readout"><span>BODY REFERENCE</span><strong>{snapshot?.species.sourceLicense ?? "—"}</strong></div>
           <div className="memory-readout"><span>EDGE COLUMNS</span><strong>{numeric(snapshot?.memoryEstimateMiB ?? 0)} MiB</strong></div>
           {showingFly && <><div className="provenance-row"><span className="provenance source">FLYWIRE V783 STAGED</span><span>{flywireStage.neuronCount.toLocaleString()} N / {flywireStage.synapseCount.toLocaleString()} E</span></div><p className="pack-message">{flywireStage.message}</p><div className="pack-state blocked"><span>LICENSE</span><strong>{flywireStage.license} · {flywireStage.packMiB} MiB</strong></div></>}
@@ -89,8 +96,8 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
 
       <section className="world-caption">
         <p className="micro-label">{flywireStaged ? "FLYWIRE EXECUTION PARKED / WEBGPU BENCHMARK REQUIRED" : "CLOSED LOOP / ENVIRONMENT → SENSORS → NETWORK → MOTOR → BODY"}</p>
-        <div className="behavior-title"><span className="state-hash">//</span><strong>{flywireStaged ? "STAGED / NO EXECUTION" : snapshot?.behavior ?? "INITIALIZING"}</strong></div>
-        <p>{flywireStaged ? "The Drosophila body is parked: no source topology, substitute neural fixture, or live motor decode executes until the official FlyWire pack passes a sparse WebGPU benchmark." : `${snapshot?.species.commonName ?? "SPECIMEN"} motion is modelled from the live motor decoder; it is not a pre-recorded walk cycle.`}</p>
+        <div className="behavior-title"><span className="state-hash">//</span><strong>{flywireStaged ? "DISPLAY GAIT / NO NEURAL CONTROL" : snapshot?.behavior ?? "INITIALIZING"}</strong></div>
+        <p>{flywireStaged ? "The Drosophila model can move only through an explicitly modelled display gait. It has no active FlyWire topology, no substitute neural fixture, and no scientifically validated environment-to-body control until the official pack passes a sparse WebGPU benchmark." : `${snapshot?.species.commonName ?? "SPECIMEN"} motion is modelled from the live motor decoder; it is not a pre-recorded walk cycle.`}</p>
       </section>
 
       <aside className="observation-rail right-rail">
@@ -124,7 +131,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
           <DecodeBar label="FORWARD" value={motor?.forward ?? 0} />
           <DecodeBar label="TURN" value={Math.abs(motor?.turn ?? 0)} />
           <DecodeBar label={snapshot?.species.id === "C_ELEGANS" ? "BODY WAVE" : "WING LIFT"} value={motor?.wingLift ?? 0} />
-          <p className="pane-note">Motor grouping and actuator transfer are labelled modelled mappings.</p>
+          <p className="pane-note">{controlPath}</p>
         </section>
       </aside>
 
