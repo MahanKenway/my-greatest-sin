@@ -1,2 +1,5 @@
-/** Luminous Connectome Lab: specimen mesh URLs are presentation-only and remain separate from connectome provenance. */
-export const SPECIMEN_PRESENTATION_ASSETS = {} as const;
+/** Luminous Connectome Lab: managed, presentation-only public specimen meshes; never a connectome source. */
+export const SPECIMEN_PRESENTATION_ASSETS = {
+  drosophila: "/manus-storage/neuromechfly-articulated-v4_c534738c.glb",
+  celegans: "/manus-storage/celegans-cuticle-wave-v2_0cac32a1.glb",
+} as const;

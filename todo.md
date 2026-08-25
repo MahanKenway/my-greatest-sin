@@ -128,3 +128,11 @@
 - [x] Build independent modelled wing pivots and three-segment leg rigs because the supplied GLB has no skeleton or animation tracks.
 - [x] Replace root-only C. elegans motion with a visible travelling body wave while retaining the source-connectome boundary.
 - [x] Validate both species in the browser, then run type checks, tests and a production build before checkpointing.
+
+## Public Rigged Specimen Replacement
+
+- [x] جست‌وجوی مدل‌های عمومیِ واقعی و قابل‌دانلود برای مگس و C. elegans، بدون نیاز به ورود یا CAPTCHA.
+- [x] تأیید مجوز، صفحهٔ منبع، ساختار GLB/GLTF، جهت محورها، مواد، شمار مش‌ها و وجود واقعی skeleton یا animation track پیش از ورود به پروژه.
+- [x] ردکردن هر مدل بدون بال و پا در مگس، بدون بدن واحد قابل‌تشخیص در کرم، یا دارای قطعات کمکی/محورهای ناپایدار.
+- [x] یکپارچه‌سازی دارایی‌های منتخب با هندسهٔ منبع و پیوت/سطح واقعی، و برچسب‌گذاری دقیق هر حرکت تکمیلی به‌عنوان MODELLED MAPPING.
+- [x] اعتبارسنجی نشست تازهٔ مرورگر، تعویض گونه، حرکت، کنسول، TypeScript، آزمون‌ها و build پیش از checkpoint.

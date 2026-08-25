@@ -4,21 +4,18 @@
 
 دارایی پذیرفته‌شده باید مدل دانلودپذیر، مجوز قابل‌ثبت، مؤلف مشخص، فرمت قابل‌تبدیل به glTF/GLB، و امکان درج attribution در رابط و اسناد انتشار داشته باشد. مدل خام نباید مستقیماً در بستهٔ وب استفاده شود؛ نسخهٔ بهینه‌شده باید با سطح جزئیاتِ مناسب، تکسچرهای فشرده و اندازهٔ قابل‌قبول ساخته شود.
 
-## نامزدهای تأییدشده از نظر صفحهٔ منبع
+## منابع پذیرفته‌شدهٔ بدون ورود
 
-| موجود | مدل | مؤلف | مجوز | وضعیت دریافت | پیچیدگی خام | تصمیم |
+| موجود | مدل | مؤلف | مجوز | وضعیت دریافت | پیچیدگی تأییدشده | تصمیم |
 |---|---|---|---|---|---:|---|
-| مگس | [Wildtype Female Drosophila Melanogaster](https://sketchfab.com/3d-models/wildtype-female-drosophila-melanogaster-3ba1adba62f34fe995413ee5e9cf3c25) | mlykouretzos | CC BY 4.0 | دکمهٔ دانلود رایگان موجود است؛ ورود Sketchfab لازم است. | ۱٫۲ میلیون مثلث | انتخاب مشروط به دریافت و بهینه‌سازی. |
-| کرم | [Caenorhabditis elegans](https://sketchfab.com/3d-models/caenorhabditis-elegans-d0591813159a4e8691994f8df58c128d) | Miguelangelo Rosario | CC BY 4.0 | دکمهٔ دانلود رایگان موجود است؛ ورود Sketchfab لازم است. | ۳۹۳٫۹ هزار مثلث | انتخاب مشروط به دریافت و بهینه‌سازی. |
+| مگس | [NeLy-EPFL NeuroMechFly](https://github.com/NeLy-EPFL/NeuroMechFly) | NeLy/EPFL | Apache-2.0 | فایل Blender عمومیِ Git LFS، بدون ورود یا CAPTCHA | ۶۵ مش منبع / ۳۰۴٬۳۵۱ چندضلعی | **پذیرفته و یکپارچه‌شده:** مشتق GLB شامل ۶۵ بخش و پیوت‌های مفصل‌های حالت استراحت منبع. |
+| کرم | [WormBase Virtual Worm](http://caltech.wormbase.org/virtualworm/) | WormBase / Caltech | MIT | دایرکتوری عمومی فایل Blend، بدون ورود یا CAPTCHA | Cuticle منبع با ۹۹۲ رأس / ۱٬۰۱۰ چندضلعی منبع | **پذیرفته و یکپارچه‌شده:** مشتق GLB تک‌مش Cuticle با موج morph مدل‌شده. |
 
-## مسیرهای جایگزینِ بدون ورود
+## مسیر تصمیم و مرز حرکت
 
-| موجود | منبع | مجوز | دارایی قابل‌دریافت | تصمیم |
-|---|---|---|---|---|
-| مگس | [NeLy-EPFL/NeuroMechFly](https://github.com/NeLy-EPFL/NeuroMechFly) | Apache-2.0 | اجزای STL مستقل برای سر، قفسهٔ سینه، شکم، شش پا، شاخک، هالتر و بال‌ها. | **منبع منتخب برای ادغام**؛ بدنهٔ مفصل‌دار مگس را می‌توان بی‌نیاز از ورود دریافت و به GLB وب بهینه تبدیل کرد. |
-| کرم | [OpenWorm/Worm Browser](https://github.com/openworm/wormbrowser) | MIT | مدل Virtual Worm و فرادادهٔ آناتومی سه‌بعدی، شامل node `worm_body` و لایه‌های Cuticle، Neurons و Muscles. | منبع مرجعِ دارای مجوز برای هندسه و برچسب‌ها؛ برای بدن اجرایی، یک مش سطح‌پایینِ استخراج‌شده/مدل‌شده بر مبنای آن تولید خواهد شد. |
+NeuroMechFly یک armature واقعی، نام مفصل‌های بال و شش زنجیرهٔ پا را دارد، اما action تألیف‌شده ندارد. بنابراین حرکت آن در برنامه با چرخش قطعات هندسی واقعی حول پیوت‌های حالت استراحت همان مفصل‌ها انجام می‌شود و تنها `MODELLED MAPPING` است. Virtual Worm Cuticle نیز armature یا action ندارد؛ موج morph مشتق‌شده از همان سطح منبع فقط یک `MODELLED MAPPING` است.
 
-مدل‌های Sketchfab همچنان فقط گزینه‌های جایگزین هستند؛ مسیر تولید اکنون به هیچ ورود، رمز یا کنترل مرورگر کاربر وابسته نیست.
+مشتق‌های نهایی فقط از مسیر مدیریت‌شدهٔ وب بارگذاری می‌شوند: `/manus-storage/neuromechfly-articulated-v4_c534738c.glb` و `/manus-storage/celegans-cuticle-wave-v2_0cac32a1.glb`. فایل‌های خام بزرگ خارج از درخت پروژه می‌مانند.
 
 ## الزامات ادغام
 

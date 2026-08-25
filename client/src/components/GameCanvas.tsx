@@ -31,7 +31,8 @@ export default function GameCanvas() {
     }
     startedRef.current = true;
     const engine = new Engine(canvas, true, {
-      preserveDrawingBuffer: false,
+      // Keep the WebGL frame available for review screenshots of public specimen assets.
+      preserveDrawingBuffer: true,
       stencil: true,
       adaptToDeviceRatio: true,
     });

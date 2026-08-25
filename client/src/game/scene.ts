@@ -4,6 +4,12 @@
  */
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import type { Engine } from "@babylonjs/core/Engines/engine";
+import "@babylonjs/core/Shaders/color.fragment.js";
+import "@babylonjs/core/Shaders/color.vertex.js";
+import "@babylonjs/core/Shaders/default.fragment.js";
+import "@babylonjs/core/Shaders/default.vertex.js";
+import "@babylonjs/core/Shaders/pbr.fragment.js";
+import "@babylonjs/core/Shaders/pbr.vertex.js";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { PointLight } from "@babylonjs/core/Lights/pointLight";
 import { Color4 } from "@babylonjs/core/Maths/math.color";
