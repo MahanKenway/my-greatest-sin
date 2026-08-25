@@ -153,3 +153,10 @@
 - [x] اتصال شاخص‌های واقعی خروجی موتورِ C. elegans به شدت موج Cuticle و حرکت ریشه، با برچسب MODELLED MAPPING.
 - [x] برای FlyWire staged، نمایش صریح حالت بدون اجرای داده و جلوگیری از نسبت‌دادن حرکت مگس به دادهٔ واقعی FlyWire.
 - [x] اعتبارسنجی دو فریم/دو گونه، تعویض گونه، کنسول، TypeScript، آزمون‌ها و build پیش از checkpoint.
+
+## Babylon Shader Compilation Repair
+
+- [x] بازتولید خطای `<!doctype html>` در shader و ثبت effect یا مسیر واردسازی عامل آن: effect لایه با uniforms `scale` و `textureSampler` بدون ثبت قطعی GLSL به fallback مسیر SPA می‌رسید.
+- [x] بررسی ثبت shaderهای StandardMaterial/glTF و هر URL متناظر در Vite، بدون تغییر مدل‌ها یا دادهٔ منبع.
+- [x] اصلاح واردسازی یا پیکربندی تا GLSL از ماژول Babylon ثبت‌شده دریافت شود، نه پاسخ HTML مسیر SPA.
+- [x] تأیید نشست تازهٔ fly و C. elegans، کنسول بدون خطای shader، TypeScript، آزمون‌ها و build.

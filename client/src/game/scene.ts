@@ -4,18 +4,36 @@
  */
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import type { Engine } from "@babylonjs/core/Engines/engine";
-import "@babylonjs/core/Shaders/color.fragment.js";
-import "@babylonjs/core/Shaders/color.vertex.js";
-import "@babylonjs/core/Shaders/default.fragment.js";
-import "@babylonjs/core/Shaders/default.vertex.js";
-import "@babylonjs/core/Shaders/pbr.fragment.js";
-import "@babylonjs/core/Shaders/pbr.vertex.js";
+import { ShaderStore } from "@babylonjs/core/Engines/shaderStore";
+import { colorPixelShader } from "@babylonjs/core/Shaders/color.fragment.js";
+import { colorVertexShader } from "@babylonjs/core/Shaders/color.vertex.js";
+import { defaultPixelShader } from "@babylonjs/core/Shaders/default.fragment.js";
+import { defaultVertexShader } from "@babylonjs/core/Shaders/default.vertex.js";
+import { layerPixelShader } from "@babylonjs/core/Shaders/layer.fragment.js";
+import { layerVertexShader } from "@babylonjs/core/Shaders/layer.vertex.js";
+import { pbrPixelShader } from "@babylonjs/core/Shaders/pbr.fragment.js";
+import { pbrVertexShader } from "@babylonjs/core/Shaders/pbr.vertex.js";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { PointLight } from "@babylonjs/core/Lights/pointLight";
 import { Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { Scene } from "@babylonjs/core/scene";
 import { GameWorld } from "@/game/GameWorld";
+
+// Keep GLSL in the bundled ShaderStore.  Layer uses `scale` and `textureSampler`,
+// matching the error path that otherwise falls through to Vite's HTML entrypoint.
+for (const shader of [
+  colorPixelShader,
+  colorVertexShader,
+  defaultPixelShader,
+  defaultVertexShader,
+  layerPixelShader,
+  layerVertexShader,
+  pbrPixelShader,
+  pbrVertexShader,
+]) {
+  ShaderStore.ShadersStore[shader.name] ??= shader.shader;
+}
 
 export type GameHandle = {
   scene: Scene;
