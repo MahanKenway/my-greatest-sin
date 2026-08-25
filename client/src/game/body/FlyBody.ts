@@ -30,6 +30,7 @@ export class FlyBody implements BodyController {
   private readonly joints = new Map<string, JointRig>();
   private heading = 0.2;
   private gaitPhase = 0;
+  private proboscisReadout = 0;
 
   constructor(scene: Scene) {
     this.root = new TransformNode("drosophila-flybody-body", scene);
@@ -64,6 +65,15 @@ export class FlyBody implements BodyController {
     this.setJoint("haltere_left", Axis.X, -flap * 0.16);
     this.setJoint("haltere_right", Axis.X, flap * 0.16);
 
+    // The published FlyBody hierarchy provides these mouthpart pivots. This
+    // channel is reserved for the sugar-GRN → MN9 pilot and never changes
+    // root translation, gait, leg motion, or wing flap.
+    const extension = this.proboscisReadout * 0.58;
+    this.setJoint("rostrum", Axis.Y, -extension);
+    this.setJoint("haustellum", Axis.Y, -extension * 0.82);
+    this.setJoint("labrum_left", Axis.Y, -extension * 0.52);
+    this.setJoint("labrum_right", Axis.Y, -extension * 0.52);
+
     LEGS.forEach(([coxa, femur, tibia], index) => {
       const tripod = index % 2 === 0 ? 1 : -1;
       const swing = Math.sin(this.gaitPhase * 4.8 + index * 1.84) * (0.075 + motor.forward * 0.30) * tripod;
@@ -79,10 +89,15 @@ export class FlyBody implements BodyController {
 
   getHeading(): number { return this.heading + FLYBODY_FORWARD_OFFSET; }
 
+  setProboscisPilotReadout(value: number): void {
+    this.proboscisReadout = Math.max(0, Math.min(1, value));
+  }
+
   reset(): void {
     this.root.position.set(0.48, 0.72, -0.38);
     this.heading = 0.2;
     this.gaitPhase = 0;
+    this.proboscisReadout = 0;
     this.visual.position.y = 0;
     for (const { node, rest } of Array.from(this.joints.values())) node.rotationQuaternion = rest.clone();
   }

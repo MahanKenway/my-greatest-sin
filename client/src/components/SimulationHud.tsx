@@ -4,6 +4,7 @@
  */
 import type { DflyPackStatus, FlywireStageStatus, SimulationCommand, SimulationSnapshot } from "@/game/shared/types";
 import type { FlywireWebGpuBenchmark } from "@/game/connectome/flywireWebGpuBenchmark";
+import type { SugarMn9PilotResult } from "@/game/connectome/sugarMn9PilotRuntime";
 import { SUGAR_MN9_PILOT } from "@/game/connectome/sugarMn9Pilot";
 import { createHudActivitySlots } from "./hudActivitySlots";
 
@@ -20,12 +21,14 @@ type Props = {
   onCachePack: () => void;
   benchmark: { state: "IDLE" | "RUNNING" | "MEASURED" | "ERROR"; message: string; result?: FlywireWebGpuBenchmark };
   onRunOfficialBenchmark: () => void;
+  pilot: { state: "IDLE" | "RUNNING" | "MEASURED" | "ERROR"; message: string; result?: SugarMn9PilotResult };
+  onRunPilot: () => void;
 };
 
 const numeric = (value: number, digits = 2) => value.toFixed(digits);
 const percentage = (value: number) => `${Math.round(Math.max(0, Math.min(1, value)) * 100)}%`;
 
-export default function SimulationHud({ snapshot, onCommand, packStatus, cacheProgress, flywireStage, onConfigurePack, onCachePack, benchmark, onRunOfficialBenchmark }: Props) {
+export default function SimulationHud({ snapshot, onCommand, packStatus, cacheProgress, flywireStage, onConfigurePack, onCachePack, benchmark, onRunOfficialBenchmark, pilot, onRunPilot }: Props) {
   const sensor = snapshot?.sensor;
   const motor = snapshot?.motor;
   const activity = snapshot?.neuronActivity ?? new Float32Array(0);
@@ -96,7 +99,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
           {showingFly && <p className="pack-message">{benchmark.message}</p>}
           {showingFly && benchmark.result && <div className="source-readout"><span>MEASURED STEP</span><strong>{benchmark.result.meanStepMs.toFixed(2)} MS · {benchmark.result.residentGpuMiB.toFixed(1)} MiB GPU</strong></div>}
           {showingFly && <button className="pack-action" disabled={benchmark.state === "RUNNING"} onClick={onRunOfficialBenchmark}>{benchmark.state === "RUNNING" ? "MEASURING WEBGPU" : "RUN OFFICIAL WEBGPU BENCHMARK"}</button>}
-          {showingFly && <div className="pilot-readout"><p className="micro-label">SENSORIMOTOR PILOT / SELECTED</p><strong>{SUGAR_MN9_PILOT.label}</strong><p><span className="provenance source">SOURCE DATA</span> {SUGAR_MN9_PILOT.inputRootIds.length} published sugar-GRN root IDs → MN9 root ID.</p><p><span className="provenance fixture">MODELLED MAPPING</span> Food encoding and any future proboscis readout remain separate; the pilot never drives walking, wings, or FlyBody while WebGPU is blocked.</p></div>}
+          {showingFly && <div className="pilot-readout"><p className="micro-label">SENSORIMOTOR PILOT / SELECTED</p><strong>{SUGAR_MN9_PILOT.label}</strong><p><span className="provenance source">SOURCE DATA</span> {SUGAR_MN9_PILOT.inputRootIds.length} published sugar-GRN root IDs → MN9 root ID.</p><p><span className="provenance fixture">MODELLED MAPPING</span> Food encoding and a constrained mouthpart decoder are separate. This pilot can never drive walking, wings, or root movement.</p><div className={`pack-state ${pilot.state.toLowerCase()}`}><span>PILOT EXECUTION</span><strong>{pilot.state}</strong></div><p className="pack-message">{pilot.message}</p>{pilot.result && <div className="source-readout"><span>MN9 STRUCTURAL SCORE</span><strong>{pilot.result.mn9StructuralScore.toFixed(4)} · {pilot.result.evidenceTwoHopIntermediates} TWO-HOP PATHS</strong></div>}<button className="pack-action" disabled={pilot.state === "RUNNING"} onClick={onRunPilot}>{pilot.state === "RUNNING" ? "RUNNING SUGAR → MN9" : "RUN SUGAR → MN9 PILOT"}</button></div>}
           <div className="pack-control-row"><button className={usesSourceTopology ? "pack-action" : packStatus.state === "ERROR" || packStatus.state === "BLOCKED" ? "pack-action pack-warning" : "pack-action"} title={usesSourceTopology ? execution?.detail : packStatus.message} onClick={usesSourceTopology ? undefined : onConfigurePack}>{usesSourceTopology ? "SOURCE PACK ACTIVE" : packStatus.state === "CACHED" ? "PACK CACHED" : packStatus.state === "VALIDATED" ? "PACK READY" : packStatus.state === "ERROR" ? "PACK ERROR" : "VERIFY DFLY PACK"}</button>{!usesSourceTopology && (packStatus.state === "VALIDATED" || packStatus.state === "CACHED") && <button className="pack-action cache-action" onClick={onCachePack}>{cacheProgress ? `CACHE ${cacheProgress.completed}/${cacheProgress.total}` : "CACHE"}</button>}</div>
           {packStatus.state !== "UNCONFIGURED" && <div className={`pack-state ${packStatus.state.toLowerCase()}`}><span>DFLY</span><strong>{packStatus.state.replace("_", " ")}</strong></div>}
           {(packStatus.state === "VALIDATED" || packStatus.state === "CACHED" || packStatus.state === "BLOCKED" || packStatus.state === "ERROR") && <p className="pack-message">{packStatus.message}</p>}

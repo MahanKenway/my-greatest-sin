@@ -99,6 +99,14 @@ flowchart LR
 
 گزارش‌های خواندنیِ این کنترل ساختاری در storage مدیریت‌شده نگهداری می‌شوند: `/manus-storage/sugar-mn9-evidence_06b7fcc1.json` برای حضور شناسه‌ها و آمار مستقیم، و `/manus-storage/sugar-mn9-two-hop_6d3b2fde.json` برای مسیرهای دوگامی. این دو فایل شاهد هستند و بخشی از runtime فعال بدن نیستند.
 
+### وضعیت پیاده‌سازی گیت‌شده
+
+در نسخهٔ فعلی، runtime پایلوت ابتدا هر دو گزارش شاهد را با SHA-256 ثابت بررسی می‌کند، سپس manifest رسمی و چهار ستون `root_id`، `incoming_offsets`، `source_index` و `synapse_count` را با checksum خودشان می‌گیرد. lookup شناسه‌های ۶۴ بیتی تنها با `BigUint64Array` و رشته انجام می‌شود؛ هیچ شناسهٔ FlyWire به `Number` تبدیل نمی‌شود. فقط پس از تأیید حضور MN9 و ۲۰ ورودیِ موجود، `navigator.gpu`، adapter و device بررسی می‌شوند. نبودِ adapter خطای `BLOCKED` می‌دهد و هیچ مسیر CPU یا خروجی بدنی جایگزین ندارد.
+
+در adapter معتبر، kernel چهار گام **structural propagation score** روی CSR رسمی انجام می‌دهد و تنها یک scalar از MN9 می‌خواند. این kernel مدل LIF، نرخ شلیک پیش‌بینی‌شده یا مدل ماهیچه نیست. اسلایدر غذا به injection ورودی sugar-GRN و تبدیل `score / (score + 0.0025)` به چرخش محدودِ `rostrum`، `haustellum` و دو `labrum`، هر دو `MODELLED MAPPING` هستند. ریگ عمداً هیچ دسترسی به حرکت ریشه، گام شش پا یا بال‌ها ندارد.
+
+در مرورگر target همین نسخه، پایلوت تا گیت adapter پیش رفت و `requestAdapter()` رد شد. در نتیجه هیچ score MN9 و هیچ حرکت خرطومِ منبع‌ران تولید نشد؛ HUD به‌درستی `PILOT EXECUTION: ERROR` و علت blocked را نمایش می‌دهد. این محدودیت محیطی، نباید با شکست checksum یا ادعای اجرای کامل FlyWire اشتباه گرفته شود.
+
 ## منابع
 
 [1]: https://codex.flywire.ai/faq "Codex: FlyWire FAQ"

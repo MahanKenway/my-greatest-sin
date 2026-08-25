@@ -9,6 +9,7 @@ import { Color4 } from "@babylonjs/core/Maths/math.color";
 import { cacheManifestChunks, inspectRemotePack } from "@/game/connectome/loader";
 import { inspectOfficialFlywireStage } from "@/game/connectome/flywireStage";
 import { runFlywireWebGpuBenchmark, type FlywireWebGpuBenchmark } from "@/game/connectome/flywireWebGpuBenchmark";
+import { decodeMn9StructuralScoreForProboscis, runSugarMn9Pilot, type SugarMn9PilotResult } from "@/game/connectome/sugarMn9PilotRuntime";
 import { createGameScene, type GameHandle } from "@/game/scene";
 import type { DflyPackStatus, FlywireStageStatus, SimulationCommand, SimulationSnapshot } from "@/game/shared/types";
 import SimulationHud from "./SimulationHud";
@@ -23,6 +24,7 @@ export default function GameCanvas() {
   const [cacheProgress, setCacheProgress] = useState<{ completed: number; total: number } | null>(null);
   const [flywireStage] = useState<FlywireStageStatus>(() => inspectOfficialFlywireStage());
   const [benchmark, setBenchmark] = useState<{ state: "IDLE" | "RUNNING" | "MEASURED" | "ERROR"; message: string; result?: FlywireWebGpuBenchmark }>({ state: "IDLE", message: "No official WebGPU measurement has run in this browser session." });
+  const [pilot, setPilot] = useState<{ state: "IDLE" | "RUNNING" | "MEASURED" | "ERROR"; message: string; result?: SugarMn9PilotResult }>({ state: "IDLE", message: "The selected pilot is armed but cannot run until a verified WebGPU adapter is available." });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -112,10 +114,22 @@ export default function GameCanvas() {
       .then((result) => setBenchmark({ state: "MEASURED", result, message: `Measured ${result.meanStepMs.toFixed(2)} ms per sparse step across ${result.edgeCount.toLocaleString()} proofread connections.` }))
       .catch((error: unknown) => setBenchmark({ state: "ERROR", message: error instanceof Error ? error.message : "Official WebGPU benchmark failed." }));
   };
+  const runPilot = () => {
+    if (pilot.state === "RUNNING") return;
+    const foodIntensity = snapshot?.species.id === "DROSOPHILA" ? snapshot.sensor.odor : 0;
+    setPilot({ state: "RUNNING", message: "Verifying sugar-GRN/MN9 source evidence, then propagating the current food input over official v783 connectivity. This never controls walking or wings." });
+    void runSugarMn9Pilot("/manus-storage/manifest-web_191438ae.json", foodIntensity)
+      .then((result) => {
+        // This is a constrained visual decoder, not MN9 physiology or muscle control.
+        handleRef.current?.world.setFlywireProboscisReadout(decodeMn9StructuralScoreForProboscis(result.mn9StructuralScore));
+        setPilot({ state: "MEASURED", result, message: `SOURCE DATA structural score read at MN9 after ${result.propagationSteps} propagation steps. Food encoding and proboscis conversion remain modelled mappings.` });
+      })
+      .catch((error: unknown) => setPilot({ state: "ERROR", message: error instanceof Error ? error.message : "The sugar-GRN → MN9 pilot could not run." }));
+  };
 
   return <main className="digital-fly-shell">
     <canvas ref={canvasRef} className="lab-canvas" aria-label={`${snapshot?.species.displayName ?? "Specimen"} live simulation canvas`} />
     <svg className="axon-overlay" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true"><path d="M122 266C270 270 344 352 522 436S750 614 927 572" /><path d="M169 314C318 332 406 409 571 446S804 561 1095 422" /></svg>
-    <SimulationHud snapshot={snapshot} onCommand={onCommand} packStatus={packStatus} cacheProgress={cacheProgress} flywireStage={flywireStage} onConfigurePack={configurePack} onCachePack={cachePack} benchmark={benchmark} onRunOfficialBenchmark={runOfficialBenchmark} />
+    <SimulationHud snapshot={snapshot} onCommand={onCommand} packStatus={packStatus} cacheProgress={cacheProgress} flywireStage={flywireStage} onConfigurePack={configurePack} onCachePack={cachePack} benchmark={benchmark} onRunOfficialBenchmark={runOfficialBenchmark} pilot={pilot} onRunPilot={runPilot} />
   </main>;
 }

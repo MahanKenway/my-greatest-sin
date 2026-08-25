@@ -83,6 +83,13 @@ export class GameWorld {
     this.emit();
   }
 
+  /** A FlyWire-pilot readout may move only the FlyBody mouthpart rig. */
+  setFlywireProboscisReadout(structuralScore: number): void {
+    if (this.species !== "DROSOPHILA") return;
+    this.fly.setProboscisPilotReadout(structuralScore);
+    this.emit();
+  }
+
   subscribe(listener: (snapshot: SimulationSnapshot) => void): () => void {
     this.listeners.add(listener);
     listener(this.snapshot());
