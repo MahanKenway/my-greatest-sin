@@ -14,10 +14,11 @@ export class BrainView {
 
   constructor(scene: Scene, columns: ConnectomeColumns) {
     this.cloud = MeshBuilder.CreateIcoSphere("sampled-neuron-cloud", { radius: 0.055, subdivisions: 1 }, scene);
-    this.cloud.position.set(-3.2, 1.15, -2.7);
+    this.cloud.position.set(-2.85, 1.42, 2.35);
+    this.cloud.scaling.setAll(0.32);
     this.material = new StandardMaterial("brain-sample-material", scene);
-    this.material.diffuseColor = Color3.FromHexString("#E8F0EE");
-    this.material.emissiveColor = Color3.FromHexString("#2B1130");
+    this.material.diffuseColor = Color3.FromHexString("#8BEAF2");
+    this.material.emissiveColor = Color3.FromHexString("#07303A");
     this.cloud.material = this.material;
     this.matrices = new Float32Array(columns.neuronCount * 16);
     const matrix = Matrix.Identity();
@@ -35,8 +36,12 @@ export class BrainView {
     for (let index = 0; index < firingRate.length; index += 1) sum += firingRate[index];
     this.peak = Math.max(this.peak * 0.985, sum / Math.max(1, firingRate.length));
     const activity = Math.min(1, this.peak * 8);
-    this.material.emissiveColor = Color3.Lerp(Color3.FromHexString("#28112D"), Color3.FromHexString("#FF3D8D"), activity);
+    this.material.emissiveColor = Color3.Lerp(Color3.FromHexString("#07303A"), Color3.FromHexString("#36D3E4"), activity);
     this.cloud.rotation.y = timeSeconds * 0.11;
+  }
+
+  setVisible(visible: boolean): void {
+    this.cloud.setEnabled(visible);
   }
 
   dispose(): void {

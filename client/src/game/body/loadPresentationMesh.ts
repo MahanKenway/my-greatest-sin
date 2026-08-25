@@ -6,7 +6,14 @@ import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import type { Scene } from "@babylonjs/core/scene";
 
-export function loadPresentationMesh(scene: Scene, url: string, parent: TransformNode, name: string, material?: Material): TransformNode {
+export function loadPresentationMesh(
+  scene: Scene,
+  url: string,
+  parent: TransformNode,
+  name: string,
+  material?: Material,
+  onLoaded?: (meshes: Mesh[]) => void,
+): TransformNode {
   const visual = new TransformNode(name, scene);
   visual.parent = parent;
   void SceneLoader.ImportMeshAsync("", "", url, scene)
@@ -17,6 +24,7 @@ export function loadPresentationMesh(scene: Scene, url: string, parent: Transfor
         mesh.isPickable = false;
       }
       visual.setEnabled(parent.isEnabled());
+      onLoaded?.(result.meshes as Mesh[]);
     })
     .catch(() => {
       // Presentation assets are optional for runtime continuity; no synthetic body substitute is introduced here.

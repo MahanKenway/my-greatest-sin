@@ -12,42 +12,37 @@ import type { BodyController } from "./types";
 export class WormBody implements BodyController {
   private readonly root: TransformNode;
   private readonly visual: TransformNode;
+  private body: Mesh;
+  private readonly head: Mesh;
+  private readonly eyes: Mesh[] = [];
   private heading = 0.2;
   private gaitPhase = 0;
 
-  constructor(scene: Scene) {
+  constructor(private readonly scene: Scene) {
     this.root = new TransformNode("c-elegans-complete-body", scene);
     this.root.position.set(-0.15, 0.1, -0.35);
     const cuticle = new StandardMaterial("c-elegans-science-cuticle", scene);
-    cuticle.diffuseColor = Color3.FromHexString("#D8A49C");
-    cuticle.emissiveColor = Color3.FromHexString("#160A0A");
-    cuticle.specularColor = Color3.FromHexString("#FFD9CF");
-    cuticle.specularPower = 58;
+    cuticle.diffuseColor = Color3.FromHexString("#26090C");
+    cuticle.emissiveColor = Color3.Black();
+    cuticle.specularColor = Color3.Black();
     cuticle.backFaceCulling = false;
     this.visual = new TransformNode("c-elegans-contour-modelled-presentation", scene);
     this.visual.parent = this.root;
-    const path = Array.from({ length: 42 }, (_, index) => {
-      const t = index / 41;
-      return new Vector3(
-        -1.48 + t * 2.96,
-        0.18 + Math.sin(t * Math.PI) * 0.055,
-        Math.sin(t * Math.PI * 1.72) * 0.28 + Math.sin(t * Math.PI * 4.4) * 0.055,
-      );
-    });
-    const body = MeshBuilder.CreateTube("c-elegans-modelled-contour-body", {
+    const path = this.makePath(0);
+    this.body = MeshBuilder.CreateTube("c-elegans-modelled-contour-body", {
       path,
       radius: 0.14,
       tessellation: 18,
       cap: Mesh.CAP_ALL,
       radiusFunction: (index) => 0.04 + Math.sin((index / 41) * Math.PI) * 0.1,
     }, scene);
-    body.material = cuticle;
-    body.parent = this.visual;
-    const head = MeshBuilder.CreateSphere("c-elegans-modelled-head", { diameter: 0.27, segments: 18 }, scene);
-    head.position.copyFrom(path.at(-1)!);
-    head.scaling.set(1.25, 0.95, 0.9);
-    head.material = cuticle;
-    head.parent = this.visual;
+    this.body.material = cuticle;
+    this.body.parent = this.visual;
+    this.head = MeshBuilder.CreateSphere("c-elegans-modelled-head", { diameter: 0.27, segments: 18 }, scene);
+    this.head.position.copyFrom(path.at(-1)!);
+    this.head.scaling.set(1.25, 0.95, 0.9);
+    this.head.material = cuticle;
+    this.head.parent = this.visual;
     const eyeMaterial = new StandardMaterial("c-elegans-modelled-eye", scene);
     eyeMaterial.diffuseColor = Color3.FromHexString("#2A1215");
     eyeMaterial.emissiveColor = Color3.FromHexString("#120407");
@@ -57,6 +52,7 @@ export class WormBody implements BodyController {
       eye.position.addInPlace(new Vector3(0.08, 0.052, side * 0.075));
       eye.material = eyeMaterial;
       eye.parent = this.visual;
+      this.eyes.push(eye);
     }
     scene.onBeforeRenderObservable.add(() => {
       for (const mesh of [...scene.meshes]) {
@@ -73,10 +69,24 @@ export class WormBody implements BodyController {
     this.root.position.z += Math.sin(this.heading) * stride;
     this.root.position.x = Math.max(-4.35, Math.min(4.35, this.root.position.x));
     this.root.position.z = Math.max(-3.65, Math.min(3.65, this.root.position.z));
-    this.root.rotation.y = Math.PI / 2 - this.heading;
-    const amplitude = 0.025 + motor.gait * 0.075;
-    this.visual.rotation.z = Math.sin(this.gaitPhase) * amplitude;
-    this.visual.position.y = Math.cos(this.gaitPhase * 1.35) * amplitude * 0.22;
+    this.root.rotation.y = -this.heading;
+    const path = this.makePath(this.gaitPhase);
+    this.body = MeshBuilder.CreateTube("c-elegans-modelled-contour-body", {
+      path,
+      radius: 0.14,
+      tessellation: 18,
+      cap: Mesh.CAP_ALL,
+      radiusFunction: (index) => 0.04 + Math.sin((index / 41) * Math.PI) * 0.1,
+      instance: this.body,
+    }, this.scene);
+    this.body.parent = this.visual;
+    this.head.position.copyFrom(path.at(-1)!);
+    const head = path.at(-1)!;
+    this.eyes.forEach((eye, index) => {
+      eye.position.copyFrom(head);
+      eye.position.addInPlace(new Vector3(0.08, 0.052, index ? 0.075 : -0.075));
+    });
+    this.visual.position.y = 0;
   }
 
   getPosition(): Vector3 { return this.root.position; }
@@ -87,12 +97,23 @@ export class WormBody implements BodyController {
     this.root.position.set(-0.15, 0.1, -0.35);
     this.heading = 0.2;
     this.gaitPhase = 0;
-    this.visual.rotation.z = 0;
     this.visual.position.y = 0;
   }
 
   setEnabled(enabled: boolean): void {
     this.root.setEnabled(enabled);
     this.visual.setEnabled(enabled);
+  }
+
+  private makePath(phase: number): Vector3[] {
+    return Array.from({ length: 42 }, (_, index) => {
+      const t = index / 41;
+      const envelope = Math.sin(t * Math.PI);
+      return new Vector3(
+        -1.48 + t * 2.96,
+        0.18 + envelope * 0.055,
+        Math.sin(t * Math.PI * 3.15 - phase * 2.7) * envelope * 0.22,
+      );
+    });
   }
 }

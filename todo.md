@@ -120,3 +120,11 @@
 - [x] Remove any garden prop that reads as a duplicate organism or a white placeholder; replace the bridge with a dedicated lightweight wood construction.
 - [x] Reframe the supplied C. elegans display pose so its complete silhouette remains legible at rest and during modelled locomotion.
 - [x] Validate both selected species, environmental controls, type checks, tests, production build and browser console before checkpointing.
+
+## Articulated Specimen-Motion Revision
+
+- [x] Inspect the node hierarchy, mesh names, local axes, materials and animation data of the active Drosophila GLB.
+- [x] Correct the fly’s resting orientation and expose a clear modelled wing-flap signal.
+- [x] Build independent modelled wing pivots and three-segment leg rigs because the supplied GLB has no skeleton or animation tracks.
+- [x] Replace root-only C. elegans motion with a visible travelling body wave while retaining the source-connectome boundary.
+- [x] Validate both species in the browser, then run type checks, tests and a production build before checkpointing.

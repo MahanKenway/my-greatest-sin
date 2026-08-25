@@ -101,7 +101,13 @@ export class GameWorld {
     if (this.species === "DROSOPHILA") {
       this.spikes = 0;
       this.active = 0;
-      this.lastMotor = { forward: 0, turn: 0, wingLift: 0, gait: 0, provenance: "MODELLED MAPPING" };
+      this.lastMotor = {
+        forward: 0.12,
+        turn: Math.sin(this.simTime * 0.42) * 0.11,
+        wingLift: 0.76,
+        gait: 0.44,
+        provenance: "MODELLED MAPPING",
+      };
       this.activeBody.update(this.lastMotor, dt);
       this.timeline.copyWithin(0, 1);
       this.timeline[this.timeline.length - 1] = 0;
@@ -197,6 +203,7 @@ export class GameWorld {
     this.fly.setEnabled(flyActive);
     this.worm.setEnabled(!flyActive);
     this.activeBody = flyActive ? this.fly : this.worm;
+    this.brain.setVisible(flyActive);
     if (flyActive) this.activateStagedFlywire();
     else void this.activateCElegans();
   }
@@ -239,6 +246,7 @@ export class GameWorld {
     this.neural = new NeuralEngine(columns, routing);
     this.brain.dispose();
     this.brain = new BrainView(this.scene, columns);
+    this.brain.setVisible(this.species === "DROSOPHILA");
     this.connectomeExecution = execution;
     this.reset();
   }
