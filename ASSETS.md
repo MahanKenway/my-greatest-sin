@@ -28,6 +28,12 @@ The active garden uses procedural Babylon geometry only: moss beds, a reflective
 
 `DAYLIGHT` changes the background and named Babylon light intensities. `WATERFALL FLOW` changes waterfall opacity and animation rate. They are visibly labelled `GARDEN PRESENTATION / MODELLED` and deliberately do not modify `LIGHT FIELD`, neural data, source topology, sensory routing, or motor mapping.
 
+## Official FlyWire Benchmark Staging
+
+The official Zenodo v783 inputs (`proofread_root_ids_783.npy` and `proofread_connections_783.feather`) were downloaded outside the repository and verified against the published MD5 values. A connectivity-only, checksum-verified CSR derivative contains **139,255 proofread root IDs** and **16,847,997 directed connection rows**. The staged WebGPU benchmark uses only root IDs, incoming offsets, source indices and synapse counts; it omits unexercised transmitter probabilities from GPU upload.
+
+The target browser fetched the managed, integrity-checked columns but rejected `navigator.gpu.requestAdapter()`. Consequently the benchmark has **no valid GPU timing**, FlyWire remains `STAGED — NO EXECUTION`, CPU fallback is forbidden, and the staged data does not drive the fly body. The UI exposes a selected **sugar-GRN → MN9 / proboscis** pilot based on published root IDs and source-evidence queries; its food encoding and any future proboscis output remain `MODELLED MAPPING`, and it never controls the current walking or wing animation.
+
 ## Attribution and Distribution Rules
 
-The visible species metadata retains the FlyBody Apache-2.0 attribution and explicitly labels the handcrafted worm body as `MODELLED MAPPING`. The FlyWire v783 source pack remains outside the public application under its **CC BY-NC 4.0** boundary; it is not distributed by this repository or by managed presentation storage. Generated images, small UI textures and the accepted optimized specimen derivatives use managed `/manus-storage/...` URLs, never project-local media files.
+The visible species metadata retains the FlyBody Apache-2.0 attribution and explicitly labels the handcrafted worm body as `MODELLED MAPPING`. The official FlyWire v783 connectivity record is **CC BY 4.0**; raw inputs and full derivatives remain outside the repository. The small connectivity-only benchmark derivative is in managed storage solely for the private benchmark path, with the source URL, manifest and SHA-256 checksums retained. Generated images, small UI textures and the accepted optimized specimen derivatives use managed `/manus-storage/...` URLs, never project-local media files.

@@ -8,6 +8,8 @@ describe("official FlyWire staged profile", () => {
     expect(stage.state).toBe("WEBGPU_UNAVAILABLE");
     expect(stage.neuronCount).toBe(139_255);
     expect(stage.synapseCount).toBe(16_847_997);
+    expect(stage.license).toBe("CC BY 4.0");
+    expect(stage.packMiB).toBe(163);
     expect(stage.message).toContain("CPU execution is forbidden");
   });
 

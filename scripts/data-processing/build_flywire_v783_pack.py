@@ -142,11 +142,14 @@ def chunk_column(source: Path, output_dir: Path, column: ColumnDefinition, chunk
     chunks_dir.mkdir(exist_ok=True)
     chunks: list[dict[str, Any]] = []
     item_bytes = np.dtype({"u16": "<u2", "u32": "<u4", "u64": "<u8", "f16": "<f2"}[column.scalar_type]).itemsize * column.stride
+    aligned_chunk_bytes = chunk_bytes - (chunk_bytes % item_bytes)
+    if aligned_chunk_bytes <= 0:
+        raise ValueError(f"Chunk size is smaller than one {column.name} element.")
     item_offset = 0
     with source.open("rb") as input_handle:
         part = 0
         while True:
-            block = input_handle.read(chunk_bytes)
+            block = input_handle.read(aligned_chunk_bytes)
             if not block:
                 break
             if len(block) % item_bytes:
@@ -180,10 +183,11 @@ def build_pack(
     output_dir: Path,
     provenance: InputProvenance,
     chunk_mib: int = 64,
+    include_neurotransmitters: bool = True,
 ) -> dict[str, Any]:
     root_ids = load_root_ids(root_ids_path)
     schema_names, batch_count = validate_connection_schema(connections_path)
-    has_nt = set(NT_COLUMNS).issubset(schema_names)
+    has_nt = include_neurotransmitters and set(NT_COLUMNS).issubset(schema_names)
     root_to_index = {int(root_id): index for index, root_id in enumerate(root_ids)}
     incoming_counts = np.zeros(root_ids.size, dtype=np.uint64)
     neuropil_to_index: dict[str, int] = {}
@@ -311,9 +315,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--connections", type=Path, required=True, help="User-obtained proofread_connections_783.feather")
     parser.add_argument("--out-dir", type=Path, required=True, help="Empty directory outside this Git repository")
     parser.add_argument("--source-url", default="https://zenodo.org/records/10676866")
-    parser.add_argument("--license", dest="license_name", default="CC BY-NC 4.0")
+    parser.add_argument("--license", dest="license_name", default="CC BY 4.0")
     parser.add_argument("--citation", action="append", default=[], help="Repeat for every required source citation")
     parser.add_argument("--chunk-mib", type=int, default=64, help="Maximum binary chunk size in MiB")
+    parser.add_argument("--exclude-neurotransmitters", action="store_true", help="Omit transmitter probability columns for a connectivity-only benchmark pack")
     parser.add_argument("--accept-flywire-terms", action="store_true", help="Required acknowledgement before converting user-obtained FlyWire data")
     return parser.parse_args()
 
@@ -342,6 +347,7 @@ def main() -> int:
             output_dir,
             InputProvenance(args.source_url, args.license_name, citations),
             args.chunk_mib,
+            include_neurotransmitters=not args.exclude_neurotransmitters,
         )
     except (OSError, ValueError, pa.ArrowException) as error:
         shutil.rmtree(output_dir, ignore_errors=True)

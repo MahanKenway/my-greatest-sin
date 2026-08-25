@@ -8,6 +8,7 @@ import { EngineStore } from "@babylonjs/core/Engines/engineStore";
 import { Color4 } from "@babylonjs/core/Maths/math.color";
 import { cacheManifestChunks, inspectRemotePack } from "@/game/connectome/loader";
 import { inspectOfficialFlywireStage } from "@/game/connectome/flywireStage";
+import { runFlywireWebGpuBenchmark, type FlywireWebGpuBenchmark } from "@/game/connectome/flywireWebGpuBenchmark";
 import { createGameScene, type GameHandle } from "@/game/scene";
 import type { DflyPackStatus, FlywireStageStatus, SimulationCommand, SimulationSnapshot } from "@/game/shared/types";
 import SimulationHud from "./SimulationHud";
@@ -21,6 +22,7 @@ export default function GameCanvas() {
   const [packUrl, setPackUrl] = useState<string | null>(null);
   const [cacheProgress, setCacheProgress] = useState<{ completed: number; total: number } | null>(null);
   const [flywireStage] = useState<FlywireStageStatus>(() => inspectOfficialFlywireStage());
+  const [benchmark, setBenchmark] = useState<{ state: "IDLE" | "RUNNING" | "MEASURED" | "ERROR"; message: string; result?: FlywireWebGpuBenchmark }>({ state: "IDLE", message: "No official WebGPU measurement has run in this browser session." });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -103,10 +105,17 @@ export default function GameCanvas() {
       .catch((error: unknown) => setPackStatus({ state: "ERROR", message: error instanceof Error ? error.message : "Unable to cache DFLY chunks." }))
       .finally(() => setCacheProgress(null));
   };
+  const runOfficialBenchmark = () => {
+    if (benchmark.state === "RUNNING") return;
+    setBenchmark({ state: "RUNNING", message: "Fetching checksum-verified v783 CSR columns and measuring a sparse WebGPU step. This does not activate FlyWire or body control." });
+    void runFlywireWebGpuBenchmark("/manus-storage/manifest-web_191438ae.json")
+      .then((result) => setBenchmark({ state: "MEASURED", result, message: `Measured ${result.meanStepMs.toFixed(2)} ms per sparse step across ${result.edgeCount.toLocaleString()} proofread connections.` }))
+      .catch((error: unknown) => setBenchmark({ state: "ERROR", message: error instanceof Error ? error.message : "Official WebGPU benchmark failed." }));
+  };
 
   return <main className="digital-fly-shell">
     <canvas ref={canvasRef} className="lab-canvas" aria-label={`${snapshot?.species.displayName ?? "Specimen"} live simulation canvas`} />
     <svg className="axon-overlay" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true"><path d="M122 266C270 270 344 352 522 436S750 614 927 572" /><path d="M169 314C318 332 406 409 571 446S804 561 1095 422" /></svg>
-    <SimulationHud snapshot={snapshot} onCommand={onCommand} packStatus={packStatus} cacheProgress={cacheProgress} flywireStage={flywireStage} onConfigurePack={configurePack} onCachePack={cachePack} />
+    <SimulationHud snapshot={snapshot} onCommand={onCommand} packStatus={packStatus} cacheProgress={cacheProgress} flywireStage={flywireStage} onConfigurePack={configurePack} onCachePack={cachePack} benchmark={benchmark} onRunOfficialBenchmark={runOfficialBenchmark} />
   </main>;
 }

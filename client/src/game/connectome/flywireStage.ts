@@ -6,14 +6,14 @@ export type FlywireStageStatus = {
   neuronCount: number;
   synapseCount: number;
   packMiB: number;
-  license: "CC BY-NC 4.0";
+  license: "CC BY 4.0";
   sourceUrl: string;
   message: string;
 };
 
 const FLYWIRE_NEURONS = 139_255;
 const FLYWIRE_EDGES = 16_847_997;
-const FLYWIRE_PACK_MIB = 356;
+const FLYWIRE_PACK_MIB = 163;
 
 export function inspectOfficialFlywireStage(webGpuAvailable = hasWebGpu()): FlywireStageStatus {
   return {
@@ -21,10 +21,10 @@ export function inspectOfficialFlywireStage(webGpuAvailable = hasWebGpu()): Flyw
     neuronCount: FLYWIRE_NEURONS,
     synapseCount: FLYWIRE_EDGES,
     packMiB: FLYWIRE_PACK_MIB,
-    license: "CC BY-NC 4.0",
+    license: "CC BY 4.0",
     sourceUrl: "https://zenodo.org/records/10676866",
     message: webGpuAvailable
-      ? "Official v783 DFLY pack is staged outside the public app. Sparse WebGPU benchmark and a separately reviewed delivery gate are required before activation; CPU execution is forbidden."
+      ? "Official v783 connectivity-only benchmark pack is staged outside the public app. This environment exposes navigator.gpu but rejected its adapter request; no measured GPU step exists and CPU execution is forbidden."
       : "Official v783 DFLY pack is staged outside the public app. This browser does not expose WebGPU, so the 140k-neuron pack remains unavailable; CPU execution is forbidden.",
   };
 }

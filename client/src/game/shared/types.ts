@@ -115,7 +115,7 @@ export type FlywireStageStatus = {
   neuronCount: number;
   synapseCount: number;
   packMiB: number;
-  license: "CC BY-NC 4.0";
+  license: "CC BY 4.0" | "CC BY-NC 4.0";
   sourceUrl: string;
   message: string;
 };
