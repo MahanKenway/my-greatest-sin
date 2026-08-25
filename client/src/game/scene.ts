@@ -35,13 +35,13 @@ export async function createGameScene(
   const camera = new ArcRotateCamera(
     "calibration-camera",
     -Math.PI / 2.45,
-    0.84,
-    10.9,
-    new Vector3(0, 0.1, 0),
+    0.78,
+    9.65,
+    new Vector3(0.35, 0.26, -0.05),
     scene,
   );
   camera.attachControl(canvas, true);
-  camera.lowerRadiusLimit = 7;
+  camera.lowerRadiusLimit = 6.7;
   camera.upperRadiusLimit = 18;
   const ambient = new HemisphericLight("lab-ambient", new Vector3(0, 1, 0), scene);
   ambient.intensity = 0.3;

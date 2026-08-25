@@ -4,13 +4,10 @@ import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { PointLight } from "@babylonjs/core/Lights/pointLight";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import type { Scene } from "@babylonjs/core/scene";
 import type { EnvironmentPresentation, SensorFrame } from "@/game/shared/types";
 import { GardenScenery } from "./GardenScenery";
-
-const FLOOR_URL = "/manus-storage/digital-fly-specimen-floor_c2cc3595.png";
 
 export class Arena {
   private foodAmount = 0.76;
@@ -18,7 +15,7 @@ export class Arena {
   private lightAmount = 0.62;
   private touchPulse = 0;
   private temperatureShift = 0;
-  private readonly environment: EnvironmentPresentation = { daylight: 0.18, waterfall: 0.62, provenance: "MODELLED MAPPING" };
+  private readonly environment: EnvironmentPresentation = { daylight: 0.34, waterfall: 0.62, provenance: "MODELLED MAPPING" };
   private readonly foodPosition = new Vector3(2.35, 0.14, 1.5);
   private readonly lightPosition = new Vector3(-2.8, 0.06, -1.1);
   private readonly foodMesh;
@@ -26,13 +23,13 @@ export class Arena {
   private readonly garden: GardenScenery;
 
   constructor(private readonly scene: Scene) {
-    const ground = MeshBuilder.CreateGround("specimen-ground", { width: 9.8, height: 8.6, subdivisions: 2 }, scene);
+    const ground = MeshBuilder.CreateGround("specimen-ground", { width: 17.6, height: 15.2, subdivisions: 24 }, scene);
+    ground.position.y = -0.025;
     const groundMaterial = new StandardMaterial("mineral-ground", scene);
-    const floorTexture = new Texture(FLOOR_URL, scene, true, false);
-    floorTexture.uScale = 4;
-    floorTexture.vScale = 4;
-    groundMaterial.diffuseTexture = floorTexture;
+    groundMaterial.diffuseColor = Color3.FromHexString("#1C4326");
+    groundMaterial.emissiveColor = Color3.FromHexString("#07160B");
     groundMaterial.specularColor = Color3.Black();
+    groundMaterial.disableLighting = true;
     ground.material = groundMaterial;
 
     this.foodMesh = MeshBuilder.CreateSphere("food-sample", { diameter: 0.34, segments: 16 }, scene);
@@ -62,7 +59,7 @@ export class Arena {
     wallMaterial.diffuseColor = Color3.FromHexString("#11212D");
     wallMaterial.alpha = 0.82;
     const walls = [
-      [0, -4.3, 9.8, 0.12], [0, 4.3, 9.8, 0.12], [-4.9, 0, 0.12, 8.6], [4.9, 0, 0.12, 8.6],
+      [0, -7.55, 17.6, 0.12], [0, 7.55, 17.6, 0.12], [-8.75, 0, 0.12, 15.2], [8.75, 0, 0.12, 15.2],
     ] as const;
     for (const [x, z, width, depth] of walls) {
       const wall = MeshBuilder.CreateBox("arena-boundary", { width, depth, height: 0.18 }, scene);

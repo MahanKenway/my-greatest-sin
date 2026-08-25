@@ -25,7 +25,7 @@ export class FlyBody implements BodyController {
 
   constructor(scene: Scene) {
     this.root = new TransformNode("drosophila-neuromechfly-body", scene);
-    this.root.position.set(-0.65, 0.78, -0.5);
+    this.root.position.set(0.48, 0.78, -0.38);
     const materials = this.createPresentationMaterials(scene);
     this.visual = loadPresentationMesh(
       scene,
@@ -39,8 +39,8 @@ export class FlyBody implements BodyController {
       },
     );
     this.visual.scaling.setAll(380);
-    // NeuroMechFly publishes anatomical height on Z; Babylon uses Y as up.
-    this.visual.rotation.x = -Math.PI / 2;
+    // NeuroMechFly publishes anatomical height on Z; this sign puts its legs toward the garden floor.
+    this.visual.rotation.x = Math.PI / 2;
   }
 
   update(motor: MotorFrame, dt: number): void {
@@ -72,7 +72,7 @@ export class FlyBody implements BodyController {
   getHeading(): number { return this.heading; }
 
   reset(): void {
-    this.root.position.set(-0.65, 0.78, -0.5);
+    this.root.position.set(0.48, 0.78, -0.38);
     this.heading = 0.2;
     this.gaitPhase = 0;
     this.visual.position.y = 0;

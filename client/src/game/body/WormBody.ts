@@ -19,7 +19,7 @@ export class WormBody implements BodyController {
 
   constructor(scene: Scene) {
     this.root = new TransformNode("c-elegans-wormbase-cuticle-body", scene);
-    this.root.position.set(-0.15, 0.32, -0.35);
+    this.root.position.set(0.32, 0.32, -0.28);
     const cuticle = new StandardMaterial("c-elegans-wormbase-hypodermis-presentation", scene);
     cuticle.diffuseColor = Color3.FromHexString("#381116");
     cuticle.specularColor = Color3.FromHexString("#251014");
@@ -56,7 +56,7 @@ export class WormBody implements BodyController {
   getHeading(): number { return this.heading; }
 
   reset(): void {
-    this.root.position.set(-0.15, 0.32, -0.35);
+    this.root.position.set(0.32, 0.32, -0.28);
     this.heading = 0.2;
     this.gaitPhase = 0;
     this.visual.position.y = 0;
