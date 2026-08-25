@@ -19,7 +19,7 @@ export class WormBody implements BodyController {
 
   constructor(scene: Scene) {
     this.root = new TransformNode("c-elegans-wormbase-cuticle-body", scene);
-    this.root.position.set(0.32, 0.32, -0.28);
+    this.root.position.set(0.32, 0.16, -0.28);
     const cuticle = new StandardMaterial("c-elegans-wormbase-hypodermis-presentation", scene);
     cuticle.diffuseColor = Color3.FromHexString("#381116");
     cuticle.specularColor = Color3.FromHexString("#251014");
@@ -37,14 +37,14 @@ export class WormBody implements BodyController {
       },
     );
     this.visual.scaling.setAll(0.25);
-    // glTF export maps the Virtual Worm long axis to Z; rotate it into the garden plane.
-    this.visual.rotation.y = Math.PI / 2;
+    // The glTF long axis is -Z. This maps its head toward the root's +X forward direction.
+    this.visual.rotation.y = -Math.PI / 2;
   }
 
   update(motor: MotorFrame, dt: number): void {
     this.gaitPhase += dt * (1.4 + motor.gait * 7.6);
     this.heading += motor.turn * dt * 1.18;
-    const stride = (0.008 + motor.forward * 0.08) * dt;
+    const stride = (0.035 + motor.forward * 0.36) * dt;
     this.root.position.x = Math.max(-4.35, Math.min(4.35, this.root.position.x + Math.cos(this.heading) * stride));
     this.root.position.z = Math.max(-3.65, Math.min(3.65, this.root.position.z + Math.sin(this.heading) * stride));
     this.root.rotation.y = -this.heading;
@@ -61,7 +61,7 @@ export class WormBody implements BodyController {
   getHeading(): number { return this.heading; }
 
   reset(): void {
-    this.root.position.set(0.32, 0.32, -0.28);
+    this.root.position.set(0.32, 0.16, -0.28);
     this.heading = 0.2;
     this.gaitPhase = 0;
     this.visual.position.y = 0;

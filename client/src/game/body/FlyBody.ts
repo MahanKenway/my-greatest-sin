@@ -39,14 +39,14 @@ export class FlyBody implements BodyController {
       },
     );
     this.visual.scaling.setAll(380);
-    // NeuroMechFly publishes anatomical height on Z; this sign puts its legs toward the garden floor.
+    // The glTF Y-up conversion inverts the Blender inspection sign; +90° puts the imported tarsi toward Babylon's ground.
     this.visual.rotation.x = Math.PI / 2;
   }
 
   update(motor: MotorFrame, dt: number): void {
     this.gaitPhase += dt * (2.4 + motor.gait * 7.8);
     this.heading += motor.turn * dt * 1.25;
-    const stride = (0.018 + motor.forward * 0.17) * dt;
+    const stride = (0.08 + motor.forward * 0.52) * dt;
     this.root.position.x = Math.max(-4.45, Math.min(4.45, this.root.position.x + Math.cos(this.heading) * stride));
     this.root.position.z = Math.max(-3.85, Math.min(3.85, this.root.position.z + Math.sin(this.heading) * stride));
     this.root.rotation.y = -this.heading;
@@ -61,9 +61,11 @@ export class FlyBody implements BodyController {
     LEG_PREFIXES.forEach((prefix, index) => {
       const alternatingPhase = index % 2 === 0 ? 1 : -1;
       const swing = Math.sin(this.gaitPhase * 4.6 + index * 1.9) * (0.13 + motor.forward * 0.42) * alternatingPhase;
+      // The source rest pose already contains a stable standing stance. Only small
+      // alternating offsets are added; fixed bends here had distorted the real legs.
       this.setJoint(`${prefix}Coxa`, Axis.X, swing);
-      this.setJoint(`${prefix}Femur`, Axis.X, -0.44 + swing * 0.7);
-      this.setJoint(`${prefix}Tibia`, Axis.X, 0.36 - swing * 0.58);
+      this.setJoint(`${prefix}Femur`, Axis.X, -swing * 0.48);
+      this.setJoint(`${prefix}Tibia`, Axis.X, swing * 0.36);
     });
   }
 
