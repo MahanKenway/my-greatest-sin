@@ -56,6 +56,29 @@
 [4]: https://natverse.org/fafbseg/reference/flywire_cave_query.html "CAVE materialization versions and v783 LTS guidance"
 [5]: https://fafbseg-py.readthedocs.io/en/latest/_modules/fafbseg/flywire/synapses.html "fafbseg FlyWire synapse and transmitter query implementation"
 
+## corridor ساختاری چهارهop به MN9 — ۲۶ اوت ۲۰۲۶
+
+زیرگراف دوگام برای پاسخ MN9 ناکافی بود، بنابراین یک corridor ساختاری جدید مستقیم از CSR رسمی proofread v783 استخراج شد. این artifact تمام مسیرهای با حداکثر چهار connection row، حداقل سه synapse در هر row، از ۲۰ root sugar-GRN موجود تا MN9 را حفظ می‌کند. خروجی **۱٬۱۱۵ نورون، ۱۳٬۳۴۶ یال** و sign site-level معتبر برای تمام nodeهای retained دارد. انتخاب حداقل سه synapse و طول چهار hop، یک bound محاسباتی برای validation است؛ این افراد واسط را neuronهای علّیِ اثبات‌شده یا یک مدار کامل feeding نمی‌نامد.
+
+روی همین corridor، مدل آفلاین با ۳۰ trial seeded و پارامترهای Shiu اجرا شد. baseline با ۰، ۲۵، ۵۰، ۱۰۰، ۱۵۰ و ۲۰۰ Hz به‌ترتیب میانگین نرخ MN9 برابر **۰٫۰، ۶۲٫۳، ۱۱۷٫۲، ۱۵۴٫۴، ۱۷۶٫۲ و ۱۹۰٫۶ Hz** داد. کنترل input-ablation در تمام نرخ‌ها ۰٫۰ Hz ماند. این نشان می‌دهد که در **این تقریب LIF محدود**، مسیرهای اضافی ساختاری برای انتقال ورودی sugar به MN9 کافی‌اند و بستن injection خارجی آن را حذف می‌کند.
+
+این یک نتیجهٔ آفلاین مدل‌محور است، نه اندازه‌گیری حیوان، پیش‌بینی معتبرِ firing rate MN9 یا کنترل زیستی خرطوم. جمعیت ورودی sugar از notebook عمومی مقاله گرفته شده، اما external Poisson encoding، Forward-Euler solver، آستانهٔ سه-synapse و corridor selection همچنان `MODELLED MAPPING` هستند. GameWorld FlyWire روی `0 N / 0 E` باقی می‌ماند و هیچ خروجی به FlyBody ارسال نشده است.
+
+## مسیر حس‌های افزوده
+
+برای گسترش حسی، ابتدا باید root IDهای release-783 را از منبعی قابل‌ردیابی استخراج کنیم. گزینهٔ مکانیکی نزدیک‌تر به مدار feeding، md-Cهای cibarium با بیان مشترک `Tmc`/`nompC` هستند که به SEZ و مدار swallow گزارش شده‌اند؛ اما مقالهٔ مربوطه هویت دقیق rootهای v783 را به‌صورت فهرست عمومی ارائه نمی‌کند، پس هنوز نباید آن‌ها را به runtime تزریق کرد [6]. مکانورسپتورهای labellar bristle و peg نیز رفتارهای feeding متفاوتی دارند [7]. برای ورودی بویایی، ابتدا باید نوع ORN/PN، شناسه‌های v783 و مسیر رسیدن آن‌ها به SEZ/MN9 را به‌طور جداگانه مستند کنیم؛ بویایی نباید صرفاً جایگزین اسلایدر غذا شود.
+
+[6]: https://elifesciences.org/articles/88614 "Pharyngeal mechanosensory neurons control food swallow in Drosophila melanogaster"
+[7]: https://pmc.ncbi.nlm.nih.gov/articles/PMC6531006/ "Mechanosensory circuits coordinate two opposing motor actions in Drosophila feeding"
+
+## water-GRN corridor به MN9 — ۲۶ اوت ۲۰۲۶
+
+به‌عنوان نخستین گسترش ورودی حسی با root IDهای عمومی و قابل‌بازبینی، ۱۸ water-sensing GRN لابلاییِ راست از notebook عمومی Shiu دوباره با v783 تطبیق داده شدند. corridor ساختاری چهارhop با همان bound حداقل سه synapse، **۹۶۱ نورون و ۱۱٬۲۳۱ یال** داشت و تمام nodeهای آن sign site-level معتبر داشتند.
+
+اجرای آفلاین ۳۰-trial، baseline MN9 را در نرخ‌های ۰، ۲۵، ۵۰، ۱۰۰، ۱۵۰ و ۲۰۰ Hz به‌ترتیب **۰٫۰، ۰٫۰، ۵٫۵، ۷۵٫۶، ۱۰۴٫۷ و ۱۱۷٫۵ Hz** داد. input-ablation در همهٔ نرخ‌ها ۰٫۰ Hz بود. این response در همان معنا یک **structural-model result محدود** است: خود input water و Poisson encoding مدل‌شده‌اند و این نتیجه هیچ ادعایی دربارهٔ حس آب واقعی، نوشیدن، رفتار یا کنترل خرطوم ندارد. با این‌حال، comparison با corridor sugar نشان می‌دهد که گسترش به مسیرهای چندhop واقعی می‌تواند خروجی MN9 متفاوتی تولید کند.
+
+md-Cهای pharyngeal و MSNs مکانیکی labellar گزینه‌های بعدی با ارتباط feeding مستقیم‌ترند، اما تا زمانی که فهرست root ID v783 آن‌ها از منبع قابل‌ردیابی منتشر یا به‌صورت بازتولیدپذیر annotation نشود، در شبیه‌سازی وارد نمی‌شوند.
+
 ## منابع
 
 [1]: https://pmc.ncbi.nlm.nih.gov/articles/PMC11446845/ "Shiu et al. (2024), A Drosophila computational brain model reveals sensorimotor processing"

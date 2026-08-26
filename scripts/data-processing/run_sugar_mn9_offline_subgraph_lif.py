@@ -73,7 +73,10 @@ def load_subgraph(path: Path) -> tuple[dict[str, Any], dict[str, int], np.ndarra
     target = np.array([index[str(edge["target"])] for edge in graph["edges"]], dtype=np.int32)
     counts = np.array([int(edge["synapseCount"]) for edge in graph["edges"]], dtype=np.float32)
     weights = counts * signs[source].astype(np.float32) * PARAMS["synapticWeightMilliVolts"]
-    sugar = sorted({index[str(edge["source"])] for edge in graph["edges"] if edge["edgeRole"] == "sugar_to_intermediate"})
+    declared_inputs = [str(root) for root in graph.get("inputRootIds", [])]
+    sugar = sorted(index[root] for root in declared_inputs if root in index)
+    if not sugar:
+        sugar = sorted({index[str(edge["source"])] for edge in graph["edges"] if edge.get("edgeRole") == "sugar_to_intermediate"})
     mn9 = index[str(graph["mn9RootId"])]
     return graph, index, source, target, weights, sugar, mn9
 
@@ -126,12 +129,22 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--subgraph", type=Path, required=True)
     parser.add_argument("--out-dir", type=Path, required=True)
+    parser.add_argument("--trials", type=int, default=PARAMS["trials"])
+    parser.add_argument("--rates", default=",".join(map(str, RATES_HZ)), help="Comma-separated requested Poisson input rates in Hz.")
     args = parser.parse_args()
     subgraph_path, out_dir = args.subgraph.resolve(), args.out_dir.resolve()
     if inside(out_dir, PROJECT_ROOT):
         raise SystemExit("Offline result output must remain outside the repository.")
     if out_dir.exists() and any(out_dir.iterdir()):
         raise SystemExit(f"Output directory must be empty: {out_dir}")
+    if args.trials < 1:
+        raise SystemExit("--trials must be positive.")
+    try:
+        rates = tuple(int(value.strip()) for value in args.rates.split(",") if value.strip())
+    except ValueError as error:
+        raise SystemExit("--rates must be a comma-separated sequence of integer Hz values.") from error
+    if not rates or any(rate < 0 for rate in rates):
+        raise SystemExit("--rates must contain at least one non-negative frequency.")
     graph, index, source, target, weights, sugar, mn9 = load_subgraph(subgraph_path)
     out_dir.mkdir(parents=True, exist_ok=True)
     # SYNTHETIC TEST FIXTURE only: this direct strong edge checks numerical propagation.
@@ -151,8 +164,8 @@ def main() -> int:
         raise RuntimeError("SYNTHETIC TEST FIXTURE failed: the LIF propagation kernel did not activate a direct strong edge.")
     rows: list[dict[str, object]] = []
     for condition, ablated in (("baseline", False), ("input-ablation", True)):
-        for rate in RATES_HZ:
-            for trial in range(PARAMS["trials"]):
+        for rate in rates:
+            for trial in range(args.trials):
                 seed = PARAMS["seed"] + (100000 if ablated else 0) + rate * 100 + trial
                 spikes = run_trial(len(index), source, target, weights, sugar, mn9, rate, ablated, seed)
                 rows.append({"status": "OFFLINE SUBGRAPH VALIDATION", "condition": condition, "requested_rate_hz": rate, "effective_rate_hz": 0 if ablated else rate, "trial": trial, "seed": seed, "mn9_spikes": spikes, "mn9_rate_hz": spikes / (PARAMS["durationMs"] / 1000.0)})
@@ -166,8 +179,8 @@ def main() -> int:
     summary = [{"condition": condition, "requestedRateHz": rate, "meanMn9RateHz": mean(values), "populationStdMn9RateHz": pstdev(values), "trialCount": len(values)} for (condition, rate), values in sorted(groups.items())]
     report = {
         "status": "OFFLINE SUBGRAPH VALIDATION — NOT FULL FLYWIRE EXECUTION OR WEBGPU BENCHMARK",
-        "scope": {"nodeCount": len(index), "edgeCount": int(source.size), "stimulatedSugarRootsInObservedPaths": len(sugar), "mn9RootId": graph["mn9RootId"]},
-        "parameters": PARAMS,
+        "scope": {"nodeCount": len(index), "edgeCount": int(source.size), "inputPopulation": graph.get("inputPopulation", "Right labellar sugar-sensing GRNs"), "stimulatedInputRootsInObservedPaths": len(sugar), "mn9RootId": graph["mn9RootId"]},
+        "parameters": {**PARAMS, "trials": args.trials, "requestedRatesHz": rates},
         "numericalMethod": "Forward-Euler approximation of the documented alpha-synapse LIF equations; not yet an equivalence validation against Brian2 linear integration.",
         "sourceArtifacts": {"signedSubgraph": str(subgraph_path), "signedSubgraphSha256": sha256_file(subgraph_path)},
         "kernelSanity": {"status": "SYNTHETIC TEST FIXTURE — NOT FLYWIRE RESULT", "directStrongEdgeSynapseCount": 1000, "inputRateHz": 200, "mn9Spikes": sanity_spikes},

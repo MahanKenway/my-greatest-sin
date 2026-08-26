@@ -245,3 +245,12 @@
 - [x] تعریف اجرای LIF آفلاین برای زیرگراف فقط با ثابت‌های منبع و ثبت seed/trial؛ هیچ شمارش FlyWire در GameWorld تغییر نکند.
 - [x] اجرای response sweep و input-ablation آفلاین، همراه با raw MN9 spike/rate و گزارش محدودیت‌ها.
 - [ ] برچسب‌گذاری همهٔ خروجی‌ها به‌صورت `OFFLINE SUBGRAPH VALIDATION` و جلوگیری از ارسال نتیجه به FlyBody یا WebGPU benchmark.
+
+## Sensory Expansion and Larger MN9 Subcircuit
+
+- [ ] گردآوری منابع و شناسه‌های root برای ورودی بویایی و مکانورسپتوریِ قابل‌ردیابی در release v783، با تفکیک SOURCE DATA از stimulus encoding مدل‌شده.
+- [x] تحلیل reachability چندگام از جمعیت‌های حسی منتخب به MN9 و انتخاب زیرمدار بر اساس مسیرهای واقعی، sign معتبر و اندازهٔ قابل‌اجرای آفلاین.
+- [ ] تعریف protocol بویایی/مکانیکیِ versioned با نرخ Poisson مدل‌شده، control و ablation؛ هیچ slider محیطی نباید بدون این برچسب به شبکه تزریق شود.
+- [x] اجرای LIF آفلاین روی زیرمدار بزرگ‌تر، ثبت raw MN9 output و مقایسه با کنترل منفی بدون ادعای رفتار زیستی کامل.
+- [ ] بررسی Neon، object storage و گزینه‌های GPU/WebGPU از نظر نقش صحیح در ذخیره، query یا محاسبه؛ تصمیم نباید دادهٔ خام را وارد repository کند.
+- [x] افزودن یک جمعیت حسیِ دارای root ID عمومی (water-GRN لابلایی) و اجرای corridor چهارhop مقایسه‌ای به MN9، با حفظ برچسب مدل‌شدهٔ stimulus encoding.
