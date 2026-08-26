@@ -47,6 +47,16 @@ export type BoundedCpuCorridorResult = {
   boundary: string;
 };
 
+export type BoundedCpuCorridorInput = {
+  foodIntensity: number;
+  protocol: SugarMn9PilotProtocol;
+  signal?: AbortSignal;
+};
+
+function throwIfAborted(signal?: AbortSignal) {
+  if (signal?.aborted) throw new DOMException("Bounded CPU corridor validation was cancelled.", "AbortError");
+}
+
 export function validateBoundedCpuCorridorPack(candidate: unknown): BoundedCpuCorridorPack {
   if (!candidate || typeof candidate !== "object") throw new Error("CPU corridor pack is not an object.");
   const pack = candidate as Partial<BoundedCpuCorridorPack>;
@@ -65,18 +75,25 @@ export function validateBoundedCpuCorridorPack(candidate: unknown): BoundedCpuCo
   return pack as BoundedCpuCorridorPack;
 }
 
-export function runBoundedCpuStructuralPropagation(pack: BoundedCpuCorridorPack, input: { foodIntensity: number; protocol: SugarMn9PilotProtocol }): BoundedCpuCorridorResult {
+export function runBoundedCpuStructuralPropagation(pack: BoundedCpuCorridorPack, input: BoundedCpuCorridorInput): BoundedCpuCorridorResult {
+  throwIfAborted(input.signal);
   const boundedFood = Number.isFinite(input.foodIntensity) ? Math.max(0, Math.min(1, input.foodIntensity)) : 0;
   const boundedRate = Number.isFinite(input.protocol.activationRateHz) ? Math.max(0, Math.min(200, input.protocol.activationRateHz)) : 0;
   const injection = input.protocol.inputAblation === "CLOSED" ? 0 : boundedFood * (boundedRate / 200);
   let state = new Float32Array(pack.nodeCount);
   let next = new Float32Array(pack.nodeCount);
   const accumulated = new Float32Array(pack.nodeCount);
+  const inputNodes = new Uint8Array(pack.nodeCount);
+  for (const node of pack.inputIndices) inputNodes[node] = 1;
   for (let step = 0; step < BOUNDED_CPU_SUGAR_CORRIDOR.propagationSteps; step += 1) {
+    throwIfAborted(input.signal);
     accumulated.fill(0);
-    for (let edge = 0; edge < pack.edgeCount; edge += 1) accumulated[pack.targetIndices[edge]] += state[pack.sourceIndices[edge]] * pack.signedSynapseCounts[edge];
+    for (let edge = 0; edge < pack.edgeCount; edge += 1) {
+      if ((edge & 1023) === 0) throwIfAborted(input.signal);
+      accumulated[pack.targetIndices[edge]] += state[pack.sourceIndices[edge]] * pack.signedSynapseCounts[edge];
+    }
     for (let node = 0; node < pack.nodeCount; node += 1) {
-      const sensor = pack.inputIndices.includes(node) ? injection : 0;
+      const sensor = inputNodes[node] ? injection : 0;
       next[node] = Math.max(0, state[node] * 0.95 + sensor + Math.min(accumulated[node] * 0.0005, 1));
     }
     [state, next] = [next, state];
@@ -97,10 +114,12 @@ export function runBoundedCpuStructuralPropagation(pack: BoundedCpuCorridorPack,
   };
 }
 
-export async function runBoundedCpuSugarCorridor(input: { foodIntensity: number; protocol: SugarMn9PilotProtocol }): Promise<BoundedCpuCorridorResult> {
-  const response = await fetch(BOUNDED_CPU_SUGAR_CORRIDOR.url, { cache: "no-store", headers: { Accept: "application/json" } });
+export async function runBoundedCpuSugarCorridor(input: BoundedCpuCorridorInput): Promise<BoundedCpuCorridorResult> {
+  throwIfAborted(input.signal);
+  const response = await fetch(BOUNDED_CPU_SUGAR_CORRIDOR.url, { cache: "no-store", headers: { Accept: "application/json" }, signal: input.signal });
   if (!response.ok) throw new Error(`Bounded CPU corridor returned HTTP ${response.status}.`);
   const bytes = await response.arrayBuffer();
+  throwIfAborted(input.signal);
   if (await sha256Hex(bytes) !== BOUNDED_CPU_SUGAR_CORRIDOR.sha256) throw new Error("Bounded CPU corridor failed SHA-256 verification.");
   return runBoundedCpuStructuralPropagation(validateBoundedCpuCorridorPack(JSON.parse(new TextDecoder().decode(bytes))), input);
 }

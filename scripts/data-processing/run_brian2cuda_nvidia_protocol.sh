@@ -14,4 +14,5 @@ python3 -m venv "$VENV_DIR"
 "$VENV_DIR/bin/python" -m pip install --upgrade pip
 "$VENV_DIR/bin/python" -m pip install -r "$PROJECT_ROOT/scripts/data-processing/requirements-brian2cuda-nvidia.txt"
 "$VENV_DIR/bin/python" "$PROJECT_ROOT/scripts/data-processing/brian2cuda_upstream_smoke.py"
+"$VENV_DIR/bin/python" "$PROJECT_ROOT/scripts/data-processing/brian2cuda_corridor_fixture_smoke.py"
 "$VENV_DIR/bin/python" "$PROJECT_ROOT/scripts/data-processing/run_v783_corridor_brian2cuda.py" --corridor "$CORRIDOR_PATH" --build-dir "$BUILD_DIR" --rate-hz "$RATE_HZ"

@@ -20,6 +20,7 @@ export default function GameCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const startedRef = useRef(false);
   const handleRef = useRef<GameHandle | null>(null);
+  const cpuAbortRef = useRef<AbortController | null>(null);
   const [snapshot, setSnapshot] = useState<SimulationSnapshot | null>(null);
   const [packStatus, setPackStatus] = useState<DflyPackStatus>({ state: "UNCONFIGURED", message: "No DFLY manifest has been selected." });
   const [packUrl, setPackUrl] = useState<string | null>(null);
@@ -79,6 +80,7 @@ export default function GameCanvas() {
 
     return () => {
       disposed = true;
+      cpuAbortRef.current?.abort();
       window.removeEventListener("resize", onResize);
       engine.stopRenderLoop();
       unsubscribe?.();
@@ -133,15 +135,19 @@ export default function GameCanvas() {
   const runCpuCorridor = () => {
     if (cpuCorridor.state === "RUNNING") return;
     const foodIntensity = snapshot?.species.id === "DROSOPHILA" ? snapshot.sensor.odor : 0;
+    const controller = new AbortController();
+    cpuAbortRef.current = controller;
     setCpuCorridor({ state: "RUNNING", message: "Verifying the 1,115-node signed corridor, then running four bounded CPU structural-propagation steps. This does not activate FlyWire, GameWorld or FlyBody." });
-    void runBoundedCpuSugarCorridor({ foodIntensity, protocol: pilotProtocol })
+    void runBoundedCpuSugarCorridor({ foodIntensity, protocol: pilotProtocol, signal: controller.signal })
       .then((result) => setCpuCorridor({ state: "MEASURED", result, message: "Checksum-verified CPU subgraph completed. Its signed structural score is an offline validation result, not LIF physiology or body control." }))
-      .catch((error: unknown) => setCpuCorridor({ state: "ERROR", message: error instanceof Error ? error.message : "Bounded CPU corridor validation failed." }));
+      .catch((error: unknown) => setCpuCorridor({ state: "ERROR", message: error instanceof Error && error.name === "AbortError" ? "CPU corridor validation was cancelled before any body or full-graph action." : error instanceof Error ? error.message : "Bounded CPU corridor validation failed." }))
+      .finally(() => { if (cpuAbortRef.current === controller) cpuAbortRef.current = null; });
   };
+  const cancelCpuCorridor = () => cpuAbortRef.current?.abort();
 
   return <main className="digital-fly-shell">
     <canvas ref={canvasRef} className="lab-canvas" aria-label={`${snapshot?.species.displayName ?? "Specimen"} live simulation canvas`} />
     <svg className="axon-overlay" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true"><path d="M122 266C270 270 344 352 522 436S750 614 927 572" /><path d="M169 314C318 332 406 409 571 446S804 561 1095 422" /></svg>
-    <SimulationHud snapshot={snapshot} onCommand={onCommand} packStatus={packStatus} cacheProgress={cacheProgress} flywireStage={flywireStage} onConfigurePack={configurePack} onCachePack={cachePack} benchmark={benchmark} onRunOfficialBenchmark={runOfficialBenchmark} pilot={pilot} cpuCorridor={cpuCorridor} pilotProtocol={pilotProtocol} onPilotActivationRateChange={(activationRateHz) => setPilotProtocol((current) => ({ ...current, activationRateHz }))} onPilotInputAblationChange={(inputAblation: SugarMn9InputAblation) => setPilotProtocol((current) => ({ ...current, inputAblation }))} onRunPilot={runPilot} onRunCpuCorridor={runCpuCorridor} />
+    <SimulationHud snapshot={snapshot} onCommand={onCommand} packStatus={packStatus} cacheProgress={cacheProgress} flywireStage={flywireStage} onConfigurePack={configurePack} onCachePack={cachePack} benchmark={benchmark} onRunOfficialBenchmark={runOfficialBenchmark} pilot={pilot} cpuCorridor={cpuCorridor} pilotProtocol={pilotProtocol} onPilotActivationRateChange={(activationRateHz) => setPilotProtocol((current) => ({ ...current, activationRateHz }))} onPilotInputAblationChange={(inputAblation: SugarMn9InputAblation) => setPilotProtocol((current) => ({ ...current, inputAblation }))} onRunPilot={runPilot} onRunCpuCorridor={runCpuCorridor} onCancelCpuCorridor={cancelCpuCorridor} />
   </main>;
 }

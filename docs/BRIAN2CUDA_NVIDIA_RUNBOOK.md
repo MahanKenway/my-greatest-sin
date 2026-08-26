@@ -8,16 +8,16 @@ This runbook executes the already bounded, checksum-verified v783 corridor throu
 
 The official Brian2CUDA installation guidance requires Linux, an NVIDIA CUDA GPU, a CUDA Toolkit with `nvcc`, and a Brian2 version compatible with the installed Brian2CUDA release [1]. The current reproducible top-level environment uses `Brian2Cuda==1.0b1`; its installer resolves the matching Brian2 version. The main sandbox is correctly blocked because `nvidia-smi`, `nvcc`, Brian2 and Brian2CUDA are absent.
 
-The reproducible assets are `requirements-brian2cuda-nvidia.txt`, `brian2cuda_upstream_smoke.py`, `run_brian2cuda_nvidia_protocol.sh` and the Colab notebook. Their syntax and JSON were validated on ۲۶ اوت ۲۰۲۶. The smoke script returned the expected `BLOCKED` state in this sandbox before any model code ran, because the NVIDIA driver and `nvcc` are absent. This is an installation/hardware result only, not an MN9 or LIF measurement.
+The reproducible assets are `requirements-brian2cuda-nvidia.txt`, `brian2cuda_upstream_smoke.py`, `brian2cuda_corridor_fixture_smoke.py`, `run_brian2cuda_nvidia_protocol.sh` and the Colab notebook. The fixture performs a compile/run only on a tiny synthetic signed graph after the upstream smoke; it proves CUDA-path integrity, not FlyWire or MN9 biology. The real runner accepts only signed v783 corridors up to **2,000 nodes / 25,000 edges**, validates a supplied expected SHA-256 when present and rejects rates outside 0–200 Hz. The smoke script returned the expected `BLOCKED` state in this sandbox before any model code ran, because the NVIDIA driver and `nvcc` are absent. This is an installation/hardware result only, not an MN9 or LIF measurement.
 
 ## Colab route
 
 Open `scripts/data-processing/brian2cuda_v783_colab.ipynb` in Colab, choose an NVIDIA GPU runtime, run the upstream smoke cell, then upload:
 
-1. `run_v783_corridor_brian2cuda.py` from this repository; and
+1. `run_v783_corridor_brian2cuda.py` and `brian2cuda_corridor_fixture_smoke.py` from this repository; and
 2. one signed corridor JSON generated outside the repository.
 
-The final cell runs the CUDA-only prototype at 100 Hz and writes `/content/v783-cuda-build/run-report.json`. If `nvidia-smi`, `nvcc`, the upstream test, sign completeness, or the corridor gate fails, stop and record `BLOCKED`; do not change the script to run a CPU replacement.
+The final cell requires an explicit uploaded filename and a 64-character expected corridor SHA-256, validates it before model code, runs the synthetic CUDA fixture, then runs the CUDA-only prototype at 100 Hz and writes `/content/v783-cuda-build/run-report.json`. If `nvidia-smi`, `nvcc`, the upstream test, fixture, checksum, sign completeness or corridor gate fails, stop and record `BLOCKED`; do not change the script to run a CPU replacement.
 
 ## md-C root selection status
 

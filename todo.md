@@ -281,7 +281,8 @@
 ## NVIDIA Brian2CUDA and md-C Continuation
 
 - [x] ایجاد محیط pinned برای Brian2CUDA/NVIDIA و اجرای preflight شامل driver، `nvidia-smi`، `nvcc`، Brian2 و Brian2CUDA؛ در نبود GPU نتیجه باید blocked بماند.
-- [ ] افزودن smoke test checksum-verified برای یک corridor کوچک که build/run CUDA و خروجی raw MN9 را فقط روی NVIDIA معتبر می‌سنجد.
+- [x] پیاده‌سازی smoke test checksum-verified برای fixture کوچک CUDA، capهای corridor و گزارش raw MN9 فقط روی NVIDIA معتبر؛ sandbox بدون GPU درست `BLOCKED` شد.
+- [ ] اجرای واقعی smoke fixture و corridor checksum-verified روی میزبان NVIDIA/Colab معتبر و ثبت GPU/driver/CUDA/report checksum.
 - [ ] یافتن root IDهای md-C از annotation یا منبع version-aligned v783؛ بررسی مقاله، Dryad و annotation pin‌شدهٔ v783 به نتیجه نرسید و نام ژنتیکی/مقاله به‌تنهایی کافی نیست.
 - [ ] استخراج corridor md-C→MN9، بررسی root presence و signهای طبقه‌بندی‌نشده، و اجرای LIF فقط پس از گذر از gate.
 - [ ] ثبت جداگانهٔ نتایج Brian2CUDA، runner آفلاین و WebGPU؛ هیچ‌کدام نباید بدون معیار معتبر به FlyBody متصل شود.
@@ -296,4 +297,11 @@
 - [x] اجرای baseline/ablation روی corridor تأییدشدهٔ sugar→MN9، نه md-C؛ UI در نبود rootهای md-C/MN11/MN12 نتیجهٔ `BLOCKED: NO VERSION-ALIGNED ROOT CROSSWALK` را حفظ می‌کند.
 - [x] دریافت و جست‌وجوی TSV رسمی `flywire_annotations` در tag v3.1.0 هم‌نسخه با v783؛ `md-C`، `MN11`، `MN12` و `cibarium` هیچ hit عمومی نداشتند.
 - [x] نمایش gate غیرقابل‌اجرا برای `md-C → MN11/MN12` در HUD و افزودن آزمون regression؛ gate صراحتاً substitute pharyngeal و `MN9` را رد می‌کند.
-- [ ] در صورت بزرگ‌ترشدن pack محدود در آینده، اجرای worker/cancellation واقعی اضافه شود؛ مسیر فعلی چهار step و ۱۳٬۳۴۶ edge است و در مرورگر freeze ایجاد نکرد.
+- [x] افزودن cancellation واقعی به CPU corridor با `AbortController` برای fetch و propagation، کنترل `CANCEL CPU CORRIDOR` و آزمون pre-abort؛ هیچ مسیر GameWorld/FlyBody افزوده نشد.
+
+## Independent Completion Pass — Awaiting Authentication Only Where Required
+
+- [ ] ممیزی نهایی همهٔ مسیرهای عمومی crosswalk و ثبت دقیق آخرین blockerهای Codex/CAVE و CATMAID در سند پژوهش.
+- [x] افزودن cancellation واقعی به اجرای CPU محدود، همراه با آزمون توقف و تضمین تداوم `0 N / 0 E` برای FlyWire.
+- [x] تکمیل smoke-test و راهنمای checksum برای Brian2CUDA/Colab، بدون اجرای CUDA روی سخت‌افزار نامعتبر یا fallback پنهان CPU.
+- [ ] اجرای type check، کل آزمون‌ها، build، browser validation، checkpoint و همگام‌سازی مخزن خصوصی پس از این pass.

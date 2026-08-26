@@ -16,4 +16,10 @@ describe("bounded CPU corridor", () => {
   it("rejects any pack outside the CPU safety cap", () => {
     expect(() => validateBoundedCpuCorridorPack({ ...pack, nodeCount: 2001 })).toThrow(/forbidden/i);
   });
+
+  it("honours cancellation before any structural propagation begins", () => {
+    const controller = new AbortController();
+    controller.abort();
+    expect(() => runBoundedCpuStructuralPropagation(pack, { foodIntensity: 1, protocol: { activationRateHz: 200, inputAblation: "OPEN" }, signal: controller.signal })).toThrow(/cancelled/i);
+  });
 });

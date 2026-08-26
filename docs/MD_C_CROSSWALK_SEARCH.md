@@ -40,5 +40,15 @@ endpoint رسمی Codex مشخصاً FAFB **v783** را با ۱۳۹٬۲۵۵ neur
 
 بازبینی session در ۲۶ اوت ۲۰۲۶ پس از درخواست ادامه نیز همچنان صفحهٔ `Sign in with Google` را نشان داد؛ بنابراین ورود در این browser session تکمیل نشده یا persistent نبوده است. در نتیجه هیچ query server-side یا Map Root IDs اجرا نشد.
 
+## تکمیل ممیزی منابع عمومی — ۲۶ اوت ۲۰۲۶
+
+صفحهٔ رسمی Dryad به‌طور دقیق فایل‌ها را `behavior.zip`، `calcium_imaging.zip` و `confocal.zip` می‌نامد. محتوای آن‌ها به‌ترتیب خروجی GraphPad/پیوند ویدئو، imaging کلسیم MN11/MN12 و md-C، و raw confocal/GRASP است؛ هیچ skeleton، neuron table، FlyWire root ID، CATMAID skeleton ID یا materialization mapping در فهرست/README توصیف نشده است [4]. بنابراین دانلود ۱۷٫۰۷ GB imaging نمی‌تواند یک crosswalk v783 معتبر بسازد.
+
+FlyBase برای `nompC` یک gene-level record و reporterهای متعدد عرضه می‌کند؛ این اطلاعات expression یا driver-level است و هویت همان intersection سلولی `Tmc-GAL4 ∩ nompC-QF` را در connectome مشخص نمی‌کند [5]. افزون بر آن، ارزیابی eLife ارتباط حسی–حرکتی مقاله را از نظر evidence کاملاً کامل نمی‌داند [6]. در نتیجه، gene/reporter metadata یا نزدیکی GRASP به‌هیچ‌وجه مجوز ساختن edge یا انتخاب root md-C نیست.
+
+[4]: https://datadryad.org/dataset/doi:10.5061/dryad.vdncjsz4q "Dryad: files and data structure for Qin et al."
+[5]: https://flybase.org/reports/FBgn0016920 "FlyBase gene report: Dmel nompC"
+[6]: https://elifesciences.org/articles/88614 "eLife assessment of Qin et al. (2024)"
+
 [2]: https://github.com/flyconnectome/flywire_annotations "FlyWire systematic annotations and versioned releases"
 [3]: https://pmc.ncbi.nlm.nih.gov/articles/PMC11616994/ "Qin et al. (2024), Pharyngeal mechanosensory neurons control food swallow"
