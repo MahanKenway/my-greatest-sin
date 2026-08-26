@@ -90,6 +90,7 @@ See the project records for detail:
 - [`docs/FLYWIRE_LIF_MODEL_BOUNDARY.md`](docs/FLYWIRE_LIF_MODEL_BOUNDARY.md) — LIF assumptions, transmitter signs and corridor results.
 - [`docs/FLYWIRE_SENSORY_EXPANSION.md`](docs/FLYWIRE_SENSORY_EXPANSION.md) — source versus modelled sensory expansion.
 - [`docs/GITHUB_FLYWIRE_OPTIONS.md`](docs/GITHUB_FLYWIRE_OPTIONS.md) — reviewed query and GPU/server options.
+- [`docs/BRIAN2CUDA_NVIDIA_RUNBOOK.md`](docs/BRIAN2CUDA_NVIDIA_RUNBOOK.md) — pinned NVIDIA/Colab smoke-test path and its hardware gates.
 - [`ASSETS.md`](ASSETS.md) — asset, license and scientific-boundary manifest.
 
 ## Attribution and licences

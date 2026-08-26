@@ -1,0 +1,6 @@
+# Pinned top-level environment for server-side v783 corridor experiments.
+# Brian2CUDA installs the Brian2 version with which this backend is compatible.
+Brian2Cuda==1.0b1
+pandas==2.2.3
+pyarrow==18.1.0
+

@@ -276,4 +276,13 @@
 - [x] ممیزی remote، URLهای مستندات و نام‌های نمایشی پیش از تغییر نام مخزن خصوصی به `my-greatest-sin`.
 - [x] بازنویسی README با معرفی پروژه، وضعیت علمی دقیق، راه‌اندازی محلی، معماری داده، مسیرهای validation و مرزهای مدل.
 - [x] تغییر نام مخزن خصوصی GitHub از `digital-fly` به `my-greatest-sin` و بررسی به‌روزرسانی remote محلی.
-- [ ] ثبت checkpoint، push نام/README جدید و بازبینی قابل‌دسترسی‌بودن URL مخزن تازه.
+- [x] ثبت checkpoint، push نام/README جدید و بازبینی قابل‌دسترسی‌بودن URL مخزن تازه.
+
+## NVIDIA Brian2CUDA and md-C Continuation
+
+- [x] ایجاد محیط pinned برای Brian2CUDA/NVIDIA و اجرای preflight شامل driver، `nvidia-smi`، `nvcc`، Brian2 و Brian2CUDA؛ در نبود GPU نتیجه باید blocked بماند.
+- [ ] افزودن smoke test checksum-verified برای یک corridor کوچک که build/run CUDA و خروجی raw MN9 را فقط روی NVIDIA معتبر می‌سنجد.
+- [ ] یافتن root IDهای md-C از annotation یا منبع version-aligned v783؛ بررسی مقاله، Dryad و annotation pin‌شدهٔ v783 به نتیجه نرسید و نام ژنتیکی/مقاله به‌تنهایی کافی نیست.
+- [ ] استخراج corridor md-C→MN9، بررسی root presence و signهای طبقه‌بندی‌نشده، و اجرای LIF فقط پس از گذر از gate.
+- [ ] ثبت جداگانهٔ نتایج Brian2CUDA، runner آفلاین و WebGPU؛ هیچ‌کدام نباید بدون معیار معتبر به FlyBody متصل شود.
+- [ ] یافتن crosswalk بازتولیدپذیر rootهای md-C و هدف‌های صحیح MN11/MN12 برای v783؛ md-C نباید به MN9 نگاشت شود.
