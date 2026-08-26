@@ -17,7 +17,7 @@ React frame (one full-screen GameCanvas)
        ├── WormBody (segmented procedural mesh + modelled undulation)
        ├── Arena (food, light, wind, wall, touch, temperature, odor fields)
        │    └── GardenScenery (procedural habitat + sky rig; visual-only `MODELLED MAPPING`)
-       ├── WormNavigator (C. elegans-only food target, forage-rock avoidance and bounded modelled steering)
+       ├── WormNavigator (C. elegans-only multi-food selection, bounded memory, rest/exploration, forage-rock avoidance and modelled steering)
        ├── BrainView (sampled thin instances, region summaries, selection)
        └── ExperimentStore (commands, seeded events, export/replay metadata)
 ```
@@ -88,3 +88,5 @@ Simulation time advances in fixed `dt` increments under a seeded PRNG. Rendering
 ## C. elegans Navigation Contract
 
 `WormNavigator` runs only after the active C. elegans source topology produces its ordinary `MotorFrame`. It receives a modelled food-bearing/target-distance observation and a modelled forage-rock proximity observation from `Arena`, then limits its steering correction and forward speed before `WormBody` updates. The same obstacle proximity also contributes to the existing reactive sensory input. The source graph, edge columns and neuron counts are never changed; food seeking, collision zone, motor merge and body translation are all visibly `MODELLED MAPPING`.
+
+`WormNavigator` retains at most twelve sampled path points and four food-visit entries. Those buffers are per-session, resettable and never serialised as biological memory. They control target recency, a short rest interval after feeding and a deterministic exploration arc only when every food field is below threshold. `WormBody` smooths the final modelled turn/stride signal; it does not alter neural activity or source edges.

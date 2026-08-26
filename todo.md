@@ -349,3 +349,11 @@
 - [x] پیاده‌سازی steering، حالت رفتاری و حس مرز/مانع فقط برای C. elegans؛ مسیر FlyWire staged مگس ثابت ماند.
 - [x] افزودن بازخورد UI حداقلی برای علت رفتار، مقصد غذا و avoid شدن مانع، بدون نسبت دادن شناخت یا اراده به کرم.
 - [x] اعتبارسنجی رفتارها در مرورگر، تعویض گونه، console، TypeScript، ۳۱ test، build و screenshot پیش از checkpoint.
+
+## C. elegans Multi-Food, Short-Term Memory and Rest Revision
+
+- [x] مشاهدهٔ حرکت فعلی C. elegans در seek/avoid و ثبت نقاط غیرطبیعیِ سرعت، چرخش یا موج بدن پیش از اصلاح.
+- [x] تعریف غذاهای نمایشی چندارزشی، معیار انتخاب target، حافظهٔ کوتاه‌مدت مسیر و TTL بازدیدها؛ همه با برچسب `MODELLED MAPPING`.
+- [x] افزودن حالت‌های `RESTING` و `EXPLORING` با جست‌وجوی deterministic و محدود، بدون تغییر source topology یا نسبت‌دادن اراده/حیات به کرم.
+- [x] بهبود smoothing حرکت و وزن موج بدن بر اساس حالت رفتاری؛ هدف، خوانایی و طبیعی‌ترشدن presentation است نه ادعای biomechanics معتبر.
+- [x] نمایش حداقلی food target/ارزش، memory و علت حالت در UI؛ اعتبارسنجی مرورگر، console، TypeScript، ۳۲ test، build و screenshot پیش از checkpoint.

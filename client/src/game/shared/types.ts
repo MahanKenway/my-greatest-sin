@@ -41,10 +41,13 @@ export type EnvironmentPresentation = {
 };
 
 export type WormNavigationFrame = {
-  mode: "IDLE" | "SEEKING FOOD" | "AVOIDING OBSTACLE" | "FEEDING";
+  mode: "IDLE" | "SEEKING FOOD" | "AVOIDING OBSTACLE" | "FEEDING" | "RESTING" | "EXPLORING";
   foodDistance: number;
   obstacleClearance: number;
   targetLabel: string;
+  targetValue: number;
+  memoryAgeSeconds: number;
+  memorySlots: number;
   obstacleLabel: string;
   provenance: "MODELLED MAPPING";
 };
@@ -145,7 +148,7 @@ export type SimulationSnapshot = {
   sensor: SensorFrame;
   motor: MotorFrame;
   environment: EnvironmentPresentation;
-  behavior: "ORIENTING" | "FORAGING" | "BRACING" | "IDLE" | "SEEKING FOOD" | "AVOIDING OBSTACLE" | "FEEDING";
+  behavior: "ORIENTING" | "FORAGING" | "BRACING" | "IDLE" | "SEEKING FOOD" | "AVOIDING OBSTACLE" | "FEEDING" | "RESTING" | "EXPLORING";
   wormNavigation: WormNavigationFrame;
   neuronActivity: Float32Array;
   timeline: Float32Array;

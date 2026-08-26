@@ -100,7 +100,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
       <section className="world-caption">
         <p className="micro-label">{flywireStaged ? "FLYWIRE V783 / NETWORK PARKED" : "LIVE SOURCE LOOP / MODELLED EMBODIMENT"}</p>
         <div className="behavior-title"><span className="state-hash">//</span><strong>{flywireStaged ? "DISPLAY GAIT" : snapshot?.behavior ?? "INITIALIZING"}</strong></div>
-        {wormNavigation && <div className={`worm-navigation ${wormNavigation.mode.toLowerCase().replaceAll(" ", "-")}`}><span>MODELLED NAVIGATION</span><strong>{wormNavigation.mode}</strong><small>{wormNavigation.targetLabel} {wormNavigation.foodDistance.toFixed(1)} U · {wormNavigation.obstacleLabel} {Math.max(0, wormNavigation.obstacleClearance).toFixed(1)} U</small></div>}
+        {wormNavigation && <div className={`worm-navigation ${wormNavigation.mode.toLowerCase().replaceAll(" ", "-")}`}><span>MODELLED NAVIGATION</span><strong>{wormNavigation.mode}</strong><small>{wormNavigation.targetLabel} · VALUE {Math.round(wormNavigation.targetValue * 100)}% · {Number.isFinite(wormNavigation.foodDistance) ? wormNavigation.foodDistance.toFixed(1) : "—"} U</small><em>PATH {wormNavigation.memorySlots}/12 · VISIT {Number.isFinite(wormNavigation.memoryAgeSeconds) ? `${wormNavigation.memoryAgeSeconds.toFixed(1)} S` : "—"}</em></div>}
         <p>{flywireStaged ? "A visual specimen in a presentation garden. No FlyWire network, body-control claim, or hidden substitute is active." : "The source topology is active; field encoding and body decode remain explicitly modelled."}</p>
       </section>
 

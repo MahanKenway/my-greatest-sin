@@ -5,18 +5,27 @@ import { PointLight } from "@babylonjs/core/Lights/pointLight";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
+import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import type { Scene } from "@babylonjs/core/scene";
 import type { EnvironmentPresentation, SensorFrame } from "@/game/shared/types";
+import type { WormFoodTarget } from "@/game/behavior/WormNavigator";
 import { GardenScenery } from "./GardenScenery";
 
 export type WormNavigationObservation = Readonly<{
-  foodX: number;
-  foodZ: number;
-  foodSignal: number;
+  foodTargets: ReadonlyArray<WormFoodTarget>;
   obstacleX: number;
   obstacleZ: number;
   obstacleRadius: number;
   obstacleClearance: number;
+}>;
+
+type FoodTargetVisual = Readonly<{
+  id: string;
+  label: string;
+  value: number;
+  position: Vector3;
+  mesh: Mesh;
+  baseScale: number;
 }>;
 
 export class Arena {
@@ -26,11 +35,10 @@ export class Arena {
   private touchPulse = 0;
   private temperatureShift = 0;
   private readonly environment: EnvironmentPresentation = { daylight: 0.68, waterfall: 0.62, provenance: "MODELLED MAPPING" };
-  private readonly foodPosition = new Vector3(2.35, 0.14, 1.5);
+  private readonly foodTargets: FoodTargetVisual[] = [];
   private readonly forageRockPosition = new Vector3(1.45, 0.22, 0.66);
   private readonly forageRockRadius = 0.5;
   private readonly lightPosition = new Vector3(-2.8, 0.06, -1.1);
-  private readonly foodMesh;
   private readonly lightMesh;
   private readonly garden: GardenScenery;
 
@@ -44,12 +52,9 @@ export class Arena {
     groundMaterial.disableLighting = false;
     ground.material = groundMaterial;
 
-    this.foodMesh = MeshBuilder.CreateSphere("food-sample", { diameter: 0.34, segments: 16 }, scene);
-    this.foodMesh.position.copyFrom(this.foodPosition);
-    const foodMaterial = new StandardMaterial("food-material", scene);
-    foodMaterial.diffuseColor = Color3.FromHexString("#E7B854");
-    foodMaterial.emissiveColor = Color3.FromHexString("#5D4210");
-    this.foodMesh.material = foodMaterial;
+    this.addFoodTarget("bacterial-lawn", "BACTERIAL LAWN", 1, new Vector3(2.35, 0.14, 1.5), 0.34, "#E7B854", "#5D4210");
+    this.addFoodTarget("yeast-flake", "YEAST FLAKE", 0.62, new Vector3(-2.18, 0.13, 2.45), 0.26, "#D77AB6", "#582342");
+    this.addFoodTarget("mineral-drop", "MINERAL DROP", 0.38, new Vector3(-0.75, 0.11, -2.36), 0.22, "#74D6E7", "#1A5260");
 
     const forageRock = MeshBuilder.CreateIcoSphere("c-elegans-forage-rock", { radius: this.forageRockRadius, subdivisions: 2 }, scene);
     forageRock.position.copyFrom(this.forageRockPosition);
@@ -122,15 +127,16 @@ export class Arena {
 
   sample(position: Vector3, heading: number, dt: number): SensorFrame {
     this.touchPulse = Math.max(0, this.touchPulse - dt * 1.9);
-    const foodField = this.fieldAt(position, this.foodPosition, 6.2) * this.foodAmount;
+    const foodSamples = this.foodTargets.map((target) => ({ target, signal: this.fieldAt(position, target.position, 6.2) * this.foodAmount * target.value }));
+    const foodField = Math.max(0, ...foodSamples.map((sample) => sample.signal));
     const lightField = this.fieldAt(position, this.lightPosition, 7.4) * this.lightAmount;
-    const foodAngle = Math.atan2(this.foodPosition.z - position.z, this.foodPosition.x - position.x) - heading;
     const lightAngle = Math.atan2(this.lightPosition.z - position.z, this.lightPosition.x - position.x) - heading;
-    const direction = Math.sin(foodAngle) * foodField + Math.sin(lightAngle) * lightField * 0.35;
+    const foodDirection = foodSamples.reduce((sum, sample) => sum + Math.sin(Math.atan2(sample.target.position.z - position.z, sample.target.position.x - position.x) - heading) * sample.signal, 0);
+    const direction = foodDirection + Math.sin(lightAngle) * lightField * 0.35;
     const boundaryTouch = Math.max(0, Math.abs(position.x) - 4.35, Math.abs(position.z) - 3.75) * 4;
     const obstacleClearance = this.forageRockClearance(position);
     const obstacleTouch = Math.max(0, Math.min(1, (0.62 - obstacleClearance) / 0.62));
-    this.foodMesh.scaling.setAll(0.45 + this.foodAmount * 0.7);
+    for (const target of this.foodTargets) target.mesh.scaling.setAll(target.baseScale * (0.72 + this.foodAmount * 0.48));
     this.lightMesh.scaling.setAll(0.55 + this.lightAmount * 0.65);
 
     return {
@@ -149,9 +155,7 @@ export class Arena {
 
   wormNavigation(position: Vector3): WormNavigationObservation {
     return {
-      foodX: this.foodPosition.x,
-      foodZ: this.foodPosition.z,
-      foodSignal: this.fieldAt(position, this.foodPosition, 6.2) * this.foodAmount,
+      foodTargets: this.foodTargets.map((target) => ({ id: target.id, label: target.label, x: target.position.x, z: target.position.z, value: target.value, signal: this.fieldAt(position, target.position, 6.2) * this.foodAmount })),
       obstacleX: this.forageRockPosition.x,
       obstacleZ: this.forageRockPosition.z,
       obstacleRadius: this.forageRockRadius,
@@ -173,6 +177,17 @@ export class Arena {
 
   private fieldAt(position: Vector3, source: Vector3, radius: number): number {
     return Math.max(0, 1 - Vector3.Distance(position, source) / radius);
+  }
+
+  private addFoodTarget(id: string, label: string, value: number, position: Vector3, diameter: number, diffuse: string, emissive: string): void {
+    const mesh = MeshBuilder.CreateSphere(`c-elegans-food-${id}`, { diameter, segments: 16 }, this.scene);
+    mesh.position.copyFrom(position);
+    const material = new StandardMaterial(`c-elegans-food-${id}-material`, this.scene);
+    material.diffuseColor = Color3.FromHexString(diffuse);
+    material.emissiveColor = Color3.FromHexString(emissive);
+    material.specularColor = Color3.Black();
+    mesh.material = material;
+    this.foodTargets.push({ id, label, value, position, mesh, baseScale: 1 });
   }
 
   private forageRockClearance(position: Vector3): number {

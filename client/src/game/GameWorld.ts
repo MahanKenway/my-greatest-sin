@@ -7,7 +7,7 @@ import { FlyBody } from "@/game/body/FlyBody";
 import { WormBody } from "@/game/body/WormBody";
 import type { BodyController } from "@/game/body/types";
 import { Arena } from "@/game/environment/Arena";
-import { navigateWorm } from "@/game/behavior/WormNavigator";
+import { WormNavigator } from "@/game/behavior/WormNavigator";
 import { NeuralEngine } from "@/game/neural/engine";
 import { SPECIES_PROFILES } from "@/game/species/profiles";
 import type { ConnectomeColumns, ConnectomeExecution, MotorFrame, NeuralRouting, SensorFrame, SimulationCommand, SimulationSnapshot, SpeciesId, WormNavigationFrame } from "@/game/shared/types";
@@ -22,6 +22,7 @@ export class GameWorld {
   private neural: NeuralEngine;
   private readonly fly: FlyBody;
   private readonly worm: WormBody;
+  private readonly wormNavigator = new WormNavigator();
   private activeBody: BodyController;
   private brain: BrainView;
   private readonly timeline = new Float32Array(64);
@@ -40,7 +41,7 @@ export class GameWorld {
   private connectomeExecution: ConnectomeExecution = stagedFlywireExecution();
   private lastSensor: SensorFrame = { food: 0, odor: 0, light: 0, leftCue: 0, rightCue: 0, wind: 0, touch: 0, temperature: 0, taste: 0, provenance: "MODELLED MAPPING" };
   private lastMotor: MotorFrame = { forward: 0, turn: 0, wingLift: 0, gait: 0, provenance: "MODELLED MAPPING" };
-  private lastWormNavigation: WormNavigationFrame = { mode: "IDLE", foodDistance: 0, obstacleClearance: 0, targetLabel: "FOOD SAMPLE", obstacleLabel: "FORAGE ROCK", provenance: "MODELLED MAPPING" };
+  private lastWormNavigation: WormNavigationFrame = { mode: "IDLE", foodDistance: 0, obstacleClearance: 0, targetLabel: "NO FOOD FIELD", targetValue: 0, memoryAgeSeconds: 0, memorySlots: 0, obstacleLabel: "FORAGE ROCK", provenance: "MODELLED MAPPING" };
 
   constructor(private readonly scene: Scene) {
     this.arena = new Arena(scene);
@@ -125,7 +126,8 @@ export class GameWorld {
     this.spikes = this.neural.step(dt, this.lastSensor);
     const decodedMotor = this.decodeMotor();
     const observation = this.arena.wormNavigation(this.activeBody.getPosition());
-    const navigation = navigateWorm({
+    const navigation = this.wormNavigator.update({
+      timeSeconds: this.simTime,
       positionX: this.activeBody.getPosition().x,
       positionZ: this.activeBody.getPosition().z,
       heading: this.activeBody.getHeading(),
@@ -135,16 +137,20 @@ export class GameWorld {
       mode: navigation.mode,
       foodDistance: navigation.foodDistance,
       obstacleClearance: navigation.obstacleClearance,
-      targetLabel: "FOOD SAMPLE",
+      targetLabel: navigation.targetLabel,
+      targetValue: navigation.targetValue,
+      memoryAgeSeconds: navigation.memoryAgeSeconds,
+      memorySlots: navigation.memorySlots,
       obstacleLabel: "FORAGE ROCK",
       provenance: "MODELLED MAPPING",
     };
+    const resting = navigation.mode === "RESTING";
     this.lastMotor = {
       ...decodedMotor,
-      forward: Math.max(0.025, decodedMotor.forward * navigation.speedScale),
-      turn: Math.max(-1, Math.min(1, decodedMotor.turn * 0.32 + navigation.turnBias * 0.88)),
-      gait: Math.max(0.08, decodedMotor.gait * (0.42 + navigation.speedScale * 0.58)),
-      wingLift: Math.max(0.08, decodedMotor.wingLift * (0.42 + navigation.speedScale * 0.58)),
+      forward: resting ? 0 : Math.max(0.018, decodedMotor.forward * navigation.speedScale),
+      turn: Math.max(-1, Math.min(1, decodedMotor.turn * 0.18 + navigation.turnBias * 0.76)),
+      gait: resting ? 0.05 : Math.max(0.06, decodedMotor.gait * (0.38 + navigation.speedScale * 0.62)),
+      wingLift: resting ? 0.05 : Math.max(0.06, decodedMotor.wingLift * (0.38 + navigation.speedScale * 0.62)),
     };
     this.activeBody.update(this.lastMotor, dt);
     this.arena.constrainWormPosition(this.activeBody.getPosition());
@@ -192,6 +198,7 @@ export class GameWorld {
     this.active = 0;
     this.timeline.fill(0);
     this.neural.reset();
+    this.wormNavigator.reset();
     this.fly.reset();
     this.worm.reset();
     this.demo = false;
