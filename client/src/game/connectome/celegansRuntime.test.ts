@@ -27,11 +27,13 @@ describe("C. elegans runtime hydration", () => {
     });
     expect(runtime.columns.provenance).toBe("SOURCE DATA");
     expect(runtime.columns.incomingOffsets.at(-1)).toBe(3);
-    expect(runtime.columns.incomingWeights[1]).toBeCloseTo(0.1, 5);
+    expect(runtime.columns.incomingWeights[1]).toBeCloseTo(0.15, 5);
     expect(runtime.routing.sensory.food).toEqual([0]);
     expect(runtime.routing.motor.reactive).toEqual([1]);
     expect(runtime.routing.motor.forward).toEqual([2]);
     expect(runtime.routing.motor.right).toEqual([3]);
+    expect(runtime.routing.motor.dorsalForward).toEqual([]);
+    expect(runtime.routing.motor.ventralForward).toEqual([2]);
     expect(runtime.execution.topology).toBe("SOURCE DATA");
   });
 });

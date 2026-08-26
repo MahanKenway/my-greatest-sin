@@ -8,6 +8,7 @@ import { WormBody } from "@/game/body/WormBody";
 import type { BodyController } from "@/game/body/types";
 import { Arena } from "@/game/environment/Arena";
 import { NeuralEngine } from "@/game/neural/engine";
+import { decodeMotorFrame } from "@/game/neural/motorDecoder";
 import { SPECIES_PROFILES } from "@/game/species/profiles";
 import type { ConnectomeColumns, ConnectomeExecution, MotorFrame, NeuralRouting, SensorFrame, SimulationCommand, SimulationSnapshot, SpeciesId } from "@/game/shared/types";
 import { BrainView } from "@/game/visualization/BrainView";
@@ -133,24 +134,7 @@ export class GameWorld {
   }
 
   private decodeMotor(): MotorFrame {
-    const mean = (indices: ReadonlyArray<number>) => {
-      let value = 0;
-      for (const index of indices) value += this.neural.cpu.firingRate[index] ?? 0;
-      return indices.length ? value / indices.length : 0;
-    };
-    const sourceForward = Math.min(1, mean(this.neural.routing.motor.forward) * 8.8);
-    const left = mean(this.neural.routing.motor.left) * 10;
-    const right = mean(this.neural.routing.motor.right) * 10;
-    const reactive = mean(this.neural.routing.motor.reactive) * 8;
-    const forward = sourceForward;
-    const bodyWave = Math.min(1, forward + reactive * 0.3);
-    return {
-      forward,
-      turn: Math.max(-1, Math.min(1, left - right)),
-      wingLift: this.species === "DROSOPHILA" ? Math.min(1, reactive) : bodyWave,
-      gait: bodyWave,
-      provenance: "MODELLED MAPPING",
-    };
+    return decodeMotorFrame(this.species, this.neural.routing, this.neural.cpu.firingRate);
   }
 
   private runDemoSchedule(): void {

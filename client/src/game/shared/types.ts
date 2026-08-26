@@ -55,7 +55,14 @@ export type ConnectomeColumns = {
 
 export type NeuralRouting = {
   sensory: { food: ReadonlyArray<number>; leftCue: ReadonlyArray<number>; rightCue: ReadonlyArray<number>; reactive: ReadonlyArray<number> };
-  motor: { forward: ReadonlyArray<number>; left: ReadonlyArray<number>; right: ReadonlyArray<number>; reactive: ReadonlyArray<number> };
+  motor: {
+    forward: ReadonlyArray<number>;
+    left: ReadonlyArray<number>;
+    right: ReadonlyArray<number>;
+    reactive: ReadonlyArray<number>;
+    dorsalForward?: ReadonlyArray<number>;
+    ventralForward?: ReadonlyArray<number>;
+  };
 };
 
 export type ConnectomeExecution = {

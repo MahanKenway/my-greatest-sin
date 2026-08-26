@@ -365,3 +365,10 @@
 - [x] بررسی پروژه‌های متن‌باز مرتبط با C. elegans برای روش/دادهٔ دارای مجوز و provenance؛ `openworm/c302` با MIT فقط مرجع معماری است و `CE_locomotion` به‌دلیل نبود license metadata استفاده نشد.
 - [x] بازنگری UI برای نشان‌دادن اینکه حرکت از C. elegans source topology + MODELLED MOTOR DECODER می‌آید و هیچ تصمیم navigation مستقل فعال نیست.
 - [x] اعتبارسنجی حرکت بدون reset، تعویض گونه، console، TypeScript، ۲۸ test، build، diff check و checkpoint؛ فقط هشدار bundle-size موجود باقی ماند.
+
+## C. elegans Motor-Output Recovery
+
+- [x] بازتولید و اندازه‌گیری علت صفرماندن گروه‌های موتور در source runtime با ورودی‌های field موجود؛ مسیر source تا AVB/PVC و DB/VB وجود داشت اما scale خطی activity موتور تولید نمی‌کرد.
+- [x] طراحی decoder فقط با فعالیت گروه‌های نورونی و اتصال‌های source topology؛ DB/VB منبع forward و عدم‌تقارن DB/VB turn را می‌سازند و هیچ forward floor، steering هدف، wind turn یا policy مستقل افزوده نشد.
+- [x] پیاده‌سازی مسیر motor output قابل‌مشاهده و regression test برای سکون در خروجی صفر و حرکت در خروجی شبکهٔ غیرصفر؛ ۳۰ آزمون گذشت و preview خروجی motor غیرصفر نشان داد.
+- [ ] اعتبارسنجی مرورگر، TypeScript، آزمون‌ها، build، console و checkpoint پس از مشاهدهٔ حرکت C. elegans.

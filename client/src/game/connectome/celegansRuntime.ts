@@ -13,6 +13,7 @@ export type CElegansRuntime = {
 };
 
 type BinaryParts = Record<string, ArrayBuffer>;
+const CELEGANS_CONDUCTANCE_GAIN = 1.5;
 
 export async function loadCElegansRuntime(manifestUrl = CELEGANS_MANIFEST_URL): Promise<CElegansRuntime> {
   const response = await fetch(manifestUrl, { cache: "no-store", headers: { Accept: "application/json" } });
@@ -45,11 +46,13 @@ export function buildCElegansRuntime(manifest: ConnectomeManifest, parts: Binary
   if (offsets[offsets.length - 1] !== manifest.synapseCount) throw new Error("C. elegans incoming CSR offsets do not end at the source edge count.");
   for (let index = 0; index < indices.length; index += 1) if (indices[index] !== index) throw new Error("C. elegans cell-index column is not compact and ordered.");
   const maxRawWeight = Math.max(1, ...rawWeights);
+  const logMaxRawWeight = Math.log1p(maxRawWeight);
   const runtimeWeights = new Float32Array(rawWeights.length);
   const runtimeFlags = new Uint8Array(kinds.length);
   for (let edge = 0; edge < rawWeights.length; edge += 1) {
     runtimeFlags[edge] = kinds[edge] === 1 ? 1 : 0;
-    runtimeWeights[edge] = (rawWeights[edge] / maxRawWeight) * (runtimeFlags[edge] ? 0.1 : 0.16);
+    // Source counts are retained; their conductance scale is a disclosed modelled mapping.
+    runtimeWeights[edge] = (Math.log1p(rawWeights[edge]) / logMaxRawWeight) * (runtimeFlags[edge] ? 0.1 : 0.16) * CELEGANS_CONDUCTANCE_GAIN;
   }
   const positions = modelledWormPositions(cells.length);
   const columns: ConnectomeColumns = {
@@ -70,7 +73,7 @@ export function buildCElegansRuntime(manifest: ConnectomeManifest, parts: Binary
     execution: {
       topology: "SOURCE DATA",
       label: "C. ELEGANS SOURCE CONNECTOME",
-      detail: `${manifest.neuronCount} connected source neurons and ${manifest.synapseCount.toLocaleString()} source edges execute on CPU. Sensory routing, weight normalization, delay, motor grouping and body motion remain modelled mappings.`,
+      detail: `${manifest.neuronCount} connected source neurons and ${manifest.synapseCount.toLocaleString()} source edges execute on CPU. Sensory routing, log-compressed conductance normalization, delay, motor grouping and body motion remain modelled mappings.`,
     },
     manifest,
   };
@@ -90,6 +93,8 @@ function buildRouting(cells: ReadonlyArray<string>): NeuralRouting {
       left: byPrefix("VA", "DA"),
       right: byPrefix("VD", "DD"),
       reactive: byPrefix("AVA", "AVB", "AVD", "PVC"),
+      dorsalForward: byPrefix("DB"),
+      ventralForward: byPrefix("VB"),
     },
   };
 }
