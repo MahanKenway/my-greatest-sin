@@ -294,4 +294,6 @@
 - [x] ساخت CPU runner فقط برای corridor کوچک checksum-verified با schema، bound سخت شمار node/edge و label `CPU OFFLINE SUBGRAPH VALIDATION`.
 - [x] تضمین با آزمون و audit مسیر که runner pack بزرگ‌تر از ۲٬۰۰۰ node را رد می‌کند، input-ablation را صفر می‌کند و فقط state React را به‌روزرسانی می‌کند؛ `GameWorld` و FlyBody خروجی ندارند.
 - [x] اجرای baseline/ablation روی corridor تأییدشدهٔ sugar→MN9، نه md-C؛ UI در نبود rootهای md-C/MN11/MN12 نتیجهٔ `BLOCKED: NO VERSION-ALIGNED ROOT CROSSWALK` را حفظ می‌کند.
+- [x] دریافت و جست‌وجوی TSV رسمی `flywire_annotations` در tag v3.1.0 هم‌نسخه با v783؛ `md-C`، `MN11`، `MN12` و `cibarium` هیچ hit عمومی نداشتند.
+- [x] نمایش gate غیرقابل‌اجرا برای `md-C → MN11/MN12` در HUD و افزودن آزمون regression؛ gate صراحتاً substitute pharyngeal و `MN9` را رد می‌کند.
 - [ ] در صورت بزرگ‌ترشدن pack محدود در آینده، اجرای worker/cancellation واقعی اضافه شود؛ مسیر فعلی چهار step و ۱۳٬۳۴۶ edge است و در مرورگر freeze ایجاد نکرد.
