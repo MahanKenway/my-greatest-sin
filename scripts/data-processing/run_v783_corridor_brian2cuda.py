@@ -18,7 +18,18 @@ import sys
 from pathlib import Path
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+SCRIPT_PATH = Path(__file__).resolve()
+
+
+def repository_root(start: Path) -> Path | None:
+    """Return the enclosing Git project when the runner is not a standalone payload."""
+    for candidate in (start, *start.parents):
+        if (candidate / ".git").exists():
+            return candidate
+    return None
+
+
+PROJECT_ROOT = repository_root(SCRIPT_PATH.parent)
 V0_MV, VRESET_MV, VTH_MV, TM_MS, TAU_MS, REFRACTORY_MS, DELAY_MS, WSYN_MV, POISSON_SCALE = (-52.0, -52.0, -45.0, 20.0, 5.0, 2.2, 1.8, 0.275, 250)
 MAX_NODES, MAX_EDGES = 2_000, 25_000
 
@@ -48,6 +59,11 @@ def preflight() -> dict[str, object]:
 
 
 def require_output_outside_project(path: Path) -> None:
+    if PROJECT_ROOT is None:
+        # The checksum-verified Colab payload is intentionally copied to /content
+        # without repository metadata.  Its build directory is ephemeral and does
+        # not need the repository-output guard used in local development.
+        return
     try:
         path.resolve().relative_to(PROJECT_ROOT)
     except ValueError:

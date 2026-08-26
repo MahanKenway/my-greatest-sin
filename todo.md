@@ -282,7 +282,7 @@
 
 - [x] ایجاد محیط pinned برای Brian2CUDA/NVIDIA و اجرای preflight شامل driver، `nvidia-smi`، `nvcc`، Brian2 و Brian2CUDA؛ در نبود GPU نتیجه باید blocked بماند.
 - [x] پیاده‌سازی smoke test checksum-verified برای fixture کوچک CUDA، capهای corridor و گزارش raw MN9 فقط روی NVIDIA معتبر؛ sandbox بدون GPU درست `BLOCKED` شد.
-- [ ] اجرای واقعی smoke fixture و corridor checksum-verified روی میزبان NVIDIA/Colab معتبر و ثبت GPU/driver/CUDA/report checksum.
+- [x] اجرای واقعی smoke fixture و corridor checksum-verified روی Tesla T4/Colab معتبر و ثبت GPU/driver/CUDA/report checksum؛ corridor ۱٬۱۱۵ node / ۱۳٬۳۴۶ edge در ۱۰۰ Hz، ۱۱۰ spike مدل‌شدهٔ MN9 و SHA-256 گزارش `c95254c4dfbb9fd8310cb2b81611311240c178ed97e4a26adf5b0ff6ff4dcdf1` دارد. این نتیجه فقط server-side bounded model است.
 - [ ] یافتن root IDهای md-C از annotation یا منبع version-aligned v783؛ بررسی مقاله، Dryad و annotation pin‌شدهٔ v783 به نتیجه نرسید و نام ژنتیکی/مقاله به‌تنهایی کافی نیست.
 - [ ] استخراج corridor md-C→MN9، بررسی root presence و signهای طبقه‌بندی‌نشده، و اجرای LIF فقط پس از گذر از gate.
 - [ ] ثبت جداگانهٔ نتایج Brian2CUDA، runner آفلاین و WebGPU؛ هیچ‌کدام نباید بدون معیار معتبر به FlyBody متصل شود.
@@ -301,7 +301,27 @@
 
 ## Independent Completion Pass — Awaiting Authentication Only Where Required
 
-- [ ] ممیزی نهایی همهٔ مسیرهای عمومی crosswalk و ثبت دقیق آخرین blockerهای Codex/CAVE و CATMAID در سند پژوهش.
+- [x] ممیزی نهایی همهٔ مسیرهای عمومی crosswalk و ثبت دقیق آخرین blockerهای Codex/CAVE و CATMAID در سند پژوهش؛ queryهای authenticated static Codex برای md-C، MN11، MN12 و intersection ژنی همگی صفر بودند و CAVE token همچنان در دسترس نیست.
 - [x] افزودن cancellation واقعی به اجرای CPU محدود، همراه با آزمون توقف و تضمین تداوم `0 N / 0 E` برای FlyWire.
 - [x] تکمیل smoke-test و راهنمای checksum برای Brian2CUDA/Colab، بدون اجرای CUDA روی سخت‌افزار نامعتبر یا fallback پنهان CPU.
 - [ ] اجرای type check، کل آزمون‌ها، build، browser validation، checkpoint و همگام‌سازی مخزن خصوصی پس از این pass.
+
+## Materialization, Codex/CAVE and T4 Execution Request
+
+- [x] تأیید شمارهٔ materialization و release رسمی FAFB v783 از FAQ Codex، annotation releases و مستندات CAVE؛ static snapshot و LTS materialization هر دو ۷۸۳ هستند.
+- [ ] پس از authentication، ثبت timestamp/query provenance دقیق CAVE همراه با export و SHA-256 پیش از پذیرش هر root-ID.
+- [x] آغاز ورود Google به Codex در browser session و اجرای structured queryهای `md-C`، `Tmc`، `nompC`، `MN11` و `MN12`؛ همهٔ matchهای دقیق/تقاطع ژنی صفر بود و هیچ root-ID افزوده نشد.
+- [ ] پس از ورود، ذخیرهٔ export/version/materialization و افزودن crosswalk فقط اگر یک mapping دقیق، قابل‌بازتولید و biologically targeted به MN11/MN12 پیدا شد.
+- [x] اجرای notebook در Colab Tesla T4/NVIDIA و ثبت `nvidia-smi`/`nvcc`، fixture PASS، corridor SHA-256 و report SHA-256؛ جزئیات کامل در `docs/BRIAN2CUDA_NVIDIA_RUNBOOK.md` است و هیچ خروجی به FlyBody/GameWorld وصل نشده است.
+
+## CAVE Token Access Blocker
+
+- [x] تأیید ورود Google به Codex و اجرای static queryهای v783؛ md-C، MN11، MN12 و intersection ژنی نتیجهٔ صفر داشتند.
+- [ ] درخواست یا ایجاد رسمی token CAVE/FlyWire از صفحهٔ Account؛ user گزارش داد token موجود ندارد و token هرگز در چت ثبت نمی‌شود.
+- [ ] اجرای Map Root IDs فقط پس از مجوز رسمی CAVE و ثبت datastack/materialization/query/export checksum.
+
+## FlyWire Access Request — Consent Gate
+
+- [x] استخراج و ثبت شرایط رسمی درخواست `brain_access`، دامنهٔ مجوز و اطلاعات موردنیاز؛ ارسال فقط پس از تأیید صریح کاربر انجام شد و receipt مشاهده نشد.
+- [x] تهیهٔ متن دقیق و حداقلی برای کاربرد پژوهشی non-commercialِ root mapping/materialization 783، بدون ادعای کنترل حیوان یا اجرای full graph.
+- [x] تکمیل فیلدهای غیرحساس فرم و دریافت تأیید کاربر پیش از submission؛ وضعیت دقیق `SUBMISSION ATTEMPTED — RECEIPT NOT OBSERVED` است و فرم تکرار نمی‌شود.

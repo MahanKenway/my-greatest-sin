@@ -50,5 +50,41 @@ FlyBase برای `nompC` یک gene-level record و reporterهای متعدد ع�
 [5]: https://flybase.org/reports/FBgn0016920 "FlyBase gene report: Dmel nompC"
 [6]: https://elifesciences.org/articles/88614 "eLife assessment of Qin et al. (2024)"
 
+## تأیید materialization — ۲۶ اوت ۲۰۲۶
+
+شرط نسخه اکنون روشن و تأییدشده است: FAQ رسمی Codex، FAFB را static snapshot **v783** (اکتبر ۲۰۲۳) معرفی می‌کند و repository رسمی annotation نیز releaseهای v2.1.0 تا v3.1.0 را بر پایهٔ FlyWire/CAVE **materialization 783** مستند می‌سازد [7] [8]. مستندات `fafbseg` نیز v783 را نسخهٔ long-term-support مناسبِ تحلیل منتشرشده توضیح می‌دهد و نمونهٔ query صریح `version = 783` را نشان می‌دهد [9].
+
+این تأیید فقط شرط version-alignment را برآورده می‌کند؛ **root crosswalk را تولید نمی‌کند**. برای افزودن mapping هنوز باید پس از ورود authenticated، query/exportی با datastack، `version=783` یا timestamp معادل، متن query، نتیجهٔ root-ID و SHA-256 export ثبت شود. تا آن زمان `md-C → MN11/MN12` همچنان `BLOCKED: NO VERSION-ALIGNED ROOT CROSSWALK` باقی می‌ماند.
+
+[7]: https://codex.flywire.ai/faq "Codex FAQ: FAFB static snapshot v783"
+[8]: https://github.com/flyconnectome/flywire_annotations "FlyWire annotations: releases based on materialization 783"
+[9]: https://natverse.org/fafbseg/reference/flywire_cave_query.html "fafbseg: CAVE materialization versions and v783 LTS"
+
+## Codex authenticated query log — ۲۶ اوت ۲۰۲۶
+
+یک session authenticated در Codex روی selector صریح **FAFB v783** در دسترس شد. صفحهٔ نتیجه همان snapshot را با ۱۳۹٬۲۵۵ cell، ۵۰٬۶۶۶٬۶۴۸ synapse و timestamp دادهٔ «Updated 2025-06-23» نمایش داد. queryهای ساختاریافتهٔ زیر با match دقیق اجرا شدند:
+
+| Query | نتیجهٔ Codex | نتیجهٔ پژوهشی |
+|---|---:|---|
+| `label == "md-C"` | ۰ match | هیچ root-ID برای md-C در static snapshot ندارد. |
+| `label == "MN11"` | ۰ match | هیچ root-ID دقیق MN11 در static snapshot ندارد. |
+| `label == "MN12"` | ۰ match | هیچ root-ID دقیق MN12 در static snapshot ندارد. |
+| `gene == Tmc && gene == nompC` | ۰ match؛ diagnostics هر دو clause را unmatched دانست | Codex gene field این intersection ژنتیکی را به cell/root در v783 نگاشت نکرده است. |
+
+این queryها وجود session و materialization ثابت Codex را تأیید می‌کنند، اما نه CAVE Map Root IDs را و نه crosswalk را. بنابراین `md-C → MN11/MN12` با شواهد **صفر root-ID** همچنان blocked است و هیچ root به runtime افزوده نشده است.
+
+## شرایط رسمی درخواست CAVE/FlyWire access — ۲۶ اوت ۲۰۲۶
+
+فرم رسمی `brain_access` دسترسی production را برای **مشارکت در proofreading/annotation** می‌خواهد و اعلام می‌کند که پس از درخواست، جلسهٔ onboarding، مرور FlyWire Principles و setup ابزار/داده برگزار می‌شود [10]. فرم فقط Name، Email و Affiliation می‌خواهد، اما Terms تصریح می‌کند که کاربر زیر ۱۸ سال باید رضایت ولی داشته باشد؛ edit/annotation می‌تواند همراه username و زمان عمومی شود و مشارکت‌ها با CC-BY-NC 4.0 منتشر می‌شوند [11].
+
+بنابراین درخواست فقط با اطلاعات حقیقی و تأیید کاربر ارسال می‌شود. دلیل کاربردی پروژه به‌صورت حداقلی این است: بررسی بازتولیدپذیر root-ID/materialization 783 برای یک crosswalk پژوهشی محدود، نه کنترل حیوان، نه اجرای کامل graph و نه تجاری‌سازی. نام، email و affiliation در فرم یا این سند ذخیره نشده‌اند.
+
+[10]: https://flywire.ai/brain_access "FlyWire Female Adult Brain proofreading access request"
+[11]: https://flywire.ai/tos "FlyWire Terms of Service & Privacy Notice"
+
+## وضعیت درخواست access — ۲۶ اوت ۲۰۲۶
+
+کاربر شرایط proofreading/annotation را تأیید و affiliation «Independent researcher» را اعلام کرد؛ فرم رسمی پس از تأیید صریح کاربر ارسال شد. رابط پس از click فیلدها را پاک کرد و browser به صفحهٔ خالی رفت، اما هیچ receipt یا message قابل‌استخراجی نشان نداد. پس وضعیت دقیق به‌صورت **`SUBMISSION ATTEMPTED — RECEIPT NOT OBSERVED`** ثبت می‌شود؛ برای پرهیز از درخواست تکراری، فرم دوباره ارسال نخواهد شد. onboarding یا token فقط پس از پاسخ رسمی FlyWire فعال فرض می‌شود.
+
 [2]: https://github.com/flyconnectome/flywire_annotations "FlyWire systematic annotations and versioned releases"
 [3]: https://pmc.ncbi.nlm.nih.gov/articles/PMC11616994/ "Qin et al. (2024), Pharyngeal mechanosensory neurons control food swallow"

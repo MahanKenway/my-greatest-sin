@@ -6,5 +6,6 @@ describe("md-C crosswalk gate", () => {
     expect(MD_C_CROSSWALK_STATUS.executionAllowed).toBe(false);
     expect(MD_C_CROSSWALK_STATUS.correctTargets).toEqual(["MN11", "MN12"]);
     expect(MD_C_CROSSWALK_STATUS.forbiddenSubstitutions).toContain("MN9");
+    expect(MD_C_CROSSWALK_STATUS.materialization).toContain("783");
   });
 });
