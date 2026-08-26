@@ -270,3 +270,10 @@
 - [x] استخراج corridor چهارhop مکانیکی→MN9، گزارش root presence، sign و size، و اجرا فقط در صورت عبور gate.
 - [x] ساخت prototype مستقل Brian2CUDA با equationهای مرجع، manifest-verified input و تشخیص صریح GPU/CUDA؛ بدون GPU نباید fallback کامل اجرا شود.
 - [x] مستندسازی تفاوت دقیق بین runner آفلاین NumPy، Brian2CUDA و WebGPU browser قبل از هر ادعای performance یا کنترل بدن.
+
+## Repository Identity and README
+
+- [x] ممیزی remote، URLهای مستندات و نام‌های نمایشی پیش از تغییر نام مخزن خصوصی به `my-greatest-sin`.
+- [x] بازنویسی README با معرفی پروژه، وضعیت علمی دقیق، راه‌اندازی محلی، معماری داده، مسیرهای validation و مرزهای مدل.
+- [x] تغییر نام مخزن خصوصی GitHub از `digital-fly` به `my-greatest-sin` و بررسی به‌روزرسانی remote محلی.
+- [ ] ثبت checkpoint، push نام/README جدید و بازبینی قابل‌دسترسی‌بودن URL مخزن تازه.
