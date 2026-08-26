@@ -13,6 +13,8 @@ import { layerPixelShader } from "@babylonjs/core/Shaders/layer.fragment.js";
 import { layerVertexShader } from "@babylonjs/core/Shaders/layer.vertex.js";
 import { pbrPixelShader } from "@babylonjs/core/Shaders/pbr.fragment.js";
 import { pbrVertexShader } from "@babylonjs/core/Shaders/pbr.vertex.js";
+import { rgbdDecodePixelShader } from "@babylonjs/core/Shaders/rgbdDecode.fragment.js";
+import { rgbdEncodePixelShader } from "@babylonjs/core/Shaders/rgbdEncode.fragment.js";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { PointLight } from "@babylonjs/core/Lights/pointLight";
 import { Color4 } from "@babylonjs/core/Maths/math.color";
@@ -31,6 +33,8 @@ for (const shader of [
   layerVertexShader,
   pbrPixelShader,
   pbrVertexShader,
+  rgbdDecodePixelShader,
+  rgbdEncodePixelShader,
 ]) {
   ShaderStore.ShadersStore[shader.name] ??= shader.shader;
 }

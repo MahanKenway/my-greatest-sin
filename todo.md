@@ -379,3 +379,9 @@
 - [x] تعریف قرارداد کالیبراسیون کاملاً مدل‌سازی‌شده برای تبدیل activity DB/VB به سرعت و turn، بدون baseline motion یا navigation policy؛ سرعت مرجع ۰٫۳۰ mm/s و cap منحنی پیوسته ۰٫۴۵ rad/s فقط مقیاس display هستند.
 - [x] افزودن نمودار زندهٔ DB/VB با دادهٔ مستقیم از `firingRate` source runtime، برچسب مدل‌سازی‌شده و وضعیت خالی برای FlyWire staged.
 - [x] افزودن آزمون‌های deterministic برای تبدیل DB/VB و حدود calibration؛ TypeScript، ۳۲ آزمون، build، diff check، preview browser و console پاک پیش از checkpoint تأیید شدند.
+
+## Vite HMR and Babylon Shader Recovery
+
+- [x] بازتولید خطای HMR WebSocket و شناسایی `rgbdDecode` به‌عنوان shaderی که HTML entrypoint Vite را به جای GLSL دریافت می‌کرد.
+- [x] اصلاح بارگذاری shader با ثبت bundle-sideeffect `rgbdDecode` و `rgbdEncode` و غیرفعال‌سازی HMR وابسته به proxy؛ محتوای علمی و موتور C. elegans تغییر نکرد.
+- [x] تأیید رندر Babylon و console پاک در reload تازه برای FlyWire staged و C. elegans؛ TypeScript، ۳۲ آزمون، build، diff check و checkpoint انجام شد.

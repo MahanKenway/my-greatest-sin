@@ -230,6 +230,9 @@ export default defineConfig({
     port: 3000,
     strictPort: false, // Will find next available port if 3000 is busy
     host: true,
+    // The managed preview proxy serves HTTP but does not guarantee a direct HMR WebSocket.
+    // Disable HMR rather than emitting a false connection failure in the observation console.
+    hmr: false,
     allowedHosts: [
       ".manuspre.computer",
       ".manus.computer",
