@@ -34,3 +34,9 @@
 [2]: https://pmc.ncbi.nlm.nih.gov/articles/PMC6531006/ "Mechanosensory circuits coordinate two opposing motor actions in Drosophila feeding"
 
 [3]: https://elifesciences.org/articles/88614 "Pharyngeal mechanosensory neurons control food swallow in Drosophila melanogaster"
+
+## annotation pin و JO-A راست
+
+برای جلوگیری از ترکیب annotationهای متغیر، release `v2.1.0` مخزن `flyconnectome/flywire_annotations` که با materialization 783 گزارش شده است، خارج از repository pin شد: commit `ebd66db2596fcc39c6950fb54ea3efa00f7fe8a0` و SHA-256 فایل annotation برابر `30be6c73975a70c56d930e27911f36455d3886e15abf383b78edd2a5d679e0b6` است. از این داده، با فیلتر دقیق `super_class=sensory`، `cell_class=mechanosensory`، `cell_type=JO-A` و `side=right`، **۴۶ root ID** برای Johnston-organ JO-A راست استخراج شد.
+
+corridor ساختاری چهارhop این جمعیت به MN9، ۷۸۷ نورون و ۵٬۷۴۱ یال داشت؛ ۳۷ input root در مسیرهای retained بودند و همهٔ nodeها sign site-level معتبر داشتند. اجرای آفلاین با ۳۰ trial seeded در ۰ تا ۲۰۰ Hz، MN9 را در همهٔ نرخ‌ها ۰ Hz داد؛ input-ablation نیز ۰ Hz ماند. این یک یافتهٔ منفی محدود برای **JO-A auditory/mechanosensory corridor منتخب** است و نه نتیجه‌گیری دربارهٔ همهٔ مکانورسپتورها، hearing، feeding یا رفتار مگس. JO-A به‌دلیل availability annotation انتخاب شد؛ برای مدار feeding، md-C یا labellar MSN با root ID معتبر گزینهٔ زیستی نزدیک‌تری خواهند بود.

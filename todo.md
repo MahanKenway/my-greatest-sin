@@ -262,3 +262,11 @@
 - [x] بررسی README، مجوز، فعالیت، نیاز سخت‌افزاری، وابستگی به version داده و امکان بازتولید گزینه‌های برتر.
 - [x] رد صریح پروژه‌هایی که شبیه‌سازی عمومی/AI دارند اما source-data، provenance یا validation لازم برای FlyWire ندارند.
 - [x] ثبت shortlist و معماری پیشنهادی: object storage، data/query API، server/GPU و frontend، بدون ورود دادهٔ حجیم به repository.
+
+## v783 Annotation Pin and Mechanical Sensor Continuation
+
+- [x] دریافت و checksum-verify کردن release tag مشخص از `flywire_annotations` که با materialization 783 هم‌تراز است؛ آن را خارج از repository نگه دار.
+- [x] جست‌وجوی annotation pinned برای یک جمعیت مکانورسپتوریِ دارای root ID عمومی و بازتولیدپذیر؛ در نبود آن، JON list عمومی Shiu را فقط به‌عنوان candidate جداگانه بررسی کن.
+- [x] استخراج corridor چهارhop مکانیکی→MN9، گزارش root presence، sign و size، و اجرا فقط در صورت عبور gate.
+- [x] ساخت prototype مستقل Brian2CUDA با equationهای مرجع، manifest-verified input و تشخیص صریح GPU/CUDA؛ بدون GPU نباید fallback کامل اجرا شود.
+- [x] مستندسازی تفاوت دقیق بین runner آفلاین NumPy، Brian2CUDA و WebGPU browser قبل از هر ادعای performance یا کنترل بدن.

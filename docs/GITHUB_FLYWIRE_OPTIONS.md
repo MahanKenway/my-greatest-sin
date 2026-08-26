@@ -24,6 +24,10 @@
 
 پیشنهاد اول **`fafbseg-py` + `flywire_annotations`** برای حل annotationهای حسی است؛ سپس با **`Drosophila_brain_model` + Brian2CUDA** یک port server-side محدودِ v783 برای همان corridorها انجام می‌دهیم. این مسیر کوتاه‌ترین فاصله را از مدل مرجع به GPU دارد، ولی تا benchmark و validation مستقل، خروجی فقط `OFFLINE/SERVER STRUCTURAL-MODEL VALIDATION` خواهد بود.
 
+## وضعیت prototype Brian2CUDA
+
+یک prototype مستقل ساخته شد که معادلهٔ alpha-synapse LIF، آستانه، reset، delay، refractory، Poisson input و وزن `neuron-sign × synapse-count × 0.275 mV` را از مدل مرجع می‌گیرد و تنها یک corridor checksum-verified v783 را می‌پذیرد. preflight در محیط فعلی `BLOCKED` بود: `nvidia-smi`، `nvcc`، `brian2` و `brian2cuda` موجود نیستند. این یک توقف صریح سخت‌افزاری است؛ prototype عمداً CPU fallback ندارد و هیچ خروجی علمی یا body-control تولید نکرد.
+
 ## References
 
 [1]: https://github.com/flyconnectome/flywire_annotations "FlyWire annotations for public release 783"
