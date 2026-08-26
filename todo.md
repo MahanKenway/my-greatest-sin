@@ -385,3 +385,10 @@
 - [x] بازتولید خطای HMR WebSocket و شناسایی `rgbdDecode` به‌عنوان shaderی که HTML entrypoint Vite را به جای GLSL دریافت می‌کرد.
 - [x] اصلاح بارگذاری shader با ثبت bundle-sideeffect `rgbdDecode` و `rgbdEncode` و غیرفعال‌سازی HMR وابسته به proxy؛ محتوای علمی و موتور C. elegans تغییر نکرد.
 - [x] تأیید رندر Babylon و console پاک در reload تازه برای FlyWire staged و C. elegans؛ TypeScript، ۳۲ آزمون، build، diff check و checkpoint انجام شد.
+
+## Target Browser Graphics Validation
+
+- [x] ثبت browser/engineهای واقعاً در دسترس و مرز دقیق نتایج؛ فقط Chromium 151 در دسترس بود و نتیجه به Firefox یا Safari تعمیم داده نشد.
+- [x] اندازه‌گیری جداگانهٔ رندر WebGL2 برای FlyWire staged و C. elegans live؛ WebGL2 در canvas فعال بود اما renderer SwiftShader نرم‌افزاری است، پس FPS/benchmark سخت‌افزاری گزارش نشد.
+- [x] اجرای preflight و استعلام مستقیم WebGPU در Chromium؛ API موجود اما `requestAdapter()` rejected است، بنابراین هیچ مسیر FlyWire فعال یا عدد performance ساختگی ثبت نشد.
+- [x] تولید گزارش نتایج و محدودیت‌ها در `BROWSER_GRAPHICS_VALIDATION.md`؛ console پاک و reload تازه تأیید شد، و checkpoint در گام نهایی ثبت می‌شود.
