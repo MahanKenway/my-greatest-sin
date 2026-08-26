@@ -254,3 +254,11 @@
 - [x] اجرای LIF آفلاین روی زیرمدار بزرگ‌تر، ثبت raw MN9 output و مقایسه با کنترل منفی بدون ادعای رفتار زیستی کامل.
 - [ ] بررسی Neon، object storage و گزینه‌های GPU/WebGPU از نظر نقش صحیح در ذخیره، query یا محاسبه؛ تصمیم نباید دادهٔ خام را وارد repository کند.
 - [x] افزودن یک جمعیت حسیِ دارای root ID عمومی (water-GRN لابلایی) و اجرای corridor چهارhop مقایسه‌ای به MN9، با حفظ برچسب مدل‌شدهٔ stimulus encoding.
+
+## GitHub Service and Simulation Search
+
+- [x] جست‌وجوی GitHub برای کلاینت/API معتبر FlyWire/CAVE و ابزارهای query نسخه‌محور دادهٔ connectome.
+- [x] جست‌وجوی GitHub برای runnerهای GPU/server و شبیه‌سازی sparse که license، نگهداری و معماری‌شان برای v783 قابل‌ارزیابی باشد.
+- [x] بررسی README، مجوز، فعالیت، نیاز سخت‌افزاری، وابستگی به version داده و امکان بازتولید گزینه‌های برتر.
+- [x] رد صریح پروژه‌هایی که شبیه‌سازی عمومی/AI دارند اما source-data، provenance یا validation لازم برای FlyWire ندارند.
+- [x] ثبت shortlist و معماری پیشنهادی: object storage، data/query API، server/GPU و frontend، بدون ورود دادهٔ حجیم به repository.
