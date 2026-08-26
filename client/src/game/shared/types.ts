@@ -34,6 +34,12 @@ export type MotorFrame = {
   provenance: Provenance;
 };
 
+export type MotorGroupReadout = {
+  dorsalDB: number;
+  ventralVB: number;
+  provenance: "MODELLED MAPPING";
+};
+
 export type EnvironmentPresentation = {
   daylight: number;
   waterfall: number;
@@ -142,6 +148,8 @@ export type SimulationSnapshot = {
   species: SpeciesProfile;
   sensor: SensorFrame;
   motor: MotorFrame;
+  motorGroups: MotorGroupReadout;
+  motorGroupTimeline: { db: Float32Array; vb: Float32Array };
   environment: EnvironmentPresentation;
   behavior: "ORIENTING" | "FORAGING" | "BRACING" | "IDLE";
   neuronActivity: Float32Array;

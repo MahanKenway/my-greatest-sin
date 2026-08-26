@@ -8,7 +8,7 @@ import { WormBody } from "@/game/body/WormBody";
 import type { BodyController } from "@/game/body/types";
 import { Arena } from "@/game/environment/Arena";
 import { NeuralEngine } from "@/game/neural/engine";
-import { decodeMotorFrame } from "@/game/neural/motorDecoder";
+import { decodeMotorFrame, readCElegansMotorActivity } from "@/game/neural/motorDecoder";
 import { SPECIES_PROFILES } from "@/game/species/profiles";
 import type { ConnectomeColumns, ConnectomeExecution, MotorFrame, NeuralRouting, SensorFrame, SimulationCommand, SimulationSnapshot, SpeciesId } from "@/game/shared/types";
 import { BrainView } from "@/game/visualization/BrainView";
@@ -25,6 +25,8 @@ export class GameWorld {
   private activeBody: BodyController;
   private brain: BrainView;
   private readonly timeline = new Float32Array(64);
+  private readonly dbMotorTimeline = new Float32Array(48);
+  private readonly vbMotorTimeline = new Float32Array(48);
   private readonly listeners = new Set<(snapshot: SimulationSnapshot) => void>();
   private elapsed = 0;
   private accumulator = 0;
@@ -40,6 +42,7 @@ export class GameWorld {
   private connectomeExecution: ConnectomeExecution = stagedFlywireExecution();
   private lastSensor: SensorFrame = { food: 0, odor: 0, light: 0, leftCue: 0, rightCue: 0, wind: 0, touch: 0, temperature: 0, taste: 0, provenance: "MODELLED MAPPING" };
   private lastMotor: MotorFrame = { forward: 0, turn: 0, wingLift: 0, gait: 0, provenance: "MODELLED MAPPING" };
+  private lastMotorGroups = { dorsalDB: 0, ventralVB: 0, provenance: "MODELLED MAPPING" as const };
 
   constructor(private readonly scene: Scene) {
     this.arena = new Arena(scene);
@@ -119,14 +122,22 @@ export class GameWorld {
       this.activeBody.update(this.lastMotor, dt);
       this.timeline.copyWithin(0, 1);
       this.timeline[this.timeline.length - 1] = 0;
+      this.dbMotorTimeline.fill(0);
+      this.vbMotorTimeline.fill(0);
+      this.lastMotorGroups = { dorsalDB: 0, ventralVB: 0, provenance: "MODELLED MAPPING" };
       return;
     }
     this.spikes = this.neural.step(dt, this.lastSensor);
     const decodedMotor = this.decodeMotor();
     this.lastMotor = decodedMotor;
+    this.lastMotorGroups = { ...readCElegansMotorActivity(this.neural.routing, this.neural.cpu.firingRate), provenance: "MODELLED MAPPING" };
     this.activeBody.update(this.lastMotor, dt);
     this.timeline.copyWithin(0, 1);
     this.timeline[this.timeline.length - 1] = Math.min(1, this.spikes / Math.max(18, this.activeConnectome.neuronCount * 0.12));
+    this.dbMotorTimeline.copyWithin(0, 1);
+    this.vbMotorTimeline.copyWithin(0, 1);
+    this.dbMotorTimeline[this.dbMotorTimeline.length - 1] = Math.min(1, this.lastMotorGroups.dorsalDB * 8.8);
+    this.vbMotorTimeline[this.vbMotorTimeline.length - 1] = Math.min(1, this.lastMotorGroups.ventralVB * 8.8);
     this.active = 0;
     for (let neuron = 0; neuron < this.neural.cpu.firingRate.length; neuron += 1) {
       if (this.neural.cpu.firingRate[neuron] > 0.035) this.active += 1;
@@ -151,6 +162,9 @@ export class GameWorld {
     this.spikes = 0;
     this.active = 0;
     this.timeline.fill(0);
+    this.dbMotorTimeline.fill(0);
+    this.vbMotorTimeline.fill(0);
+    this.lastMotorGroups = { dorsalDB: 0, ventralVB: 0, provenance: "MODELLED MAPPING" };
     this.neural.reset();
     this.fly.reset();
     this.worm.reset();
@@ -182,6 +196,8 @@ export class GameWorld {
       species: SPECIES_PROFILES[this.species],
       sensor: this.lastSensor,
       motor: this.lastMotor,
+      motorGroups: this.lastMotorGroups,
+      motorGroupTimeline: { db: this.dbMotorTimeline, vb: this.vbMotorTimeline },
       environment: this.arena.getPresentation(),
       behavior,
       neuronActivity: this.neural.cpu.firingRate,

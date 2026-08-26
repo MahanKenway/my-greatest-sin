@@ -372,3 +372,10 @@
 - [x] طراحی decoder فقط با فعالیت گروه‌های نورونی و اتصال‌های source topology؛ DB/VB منبع forward و عدم‌تقارن DB/VB turn را می‌سازند و هیچ forward floor، steering هدف، wind turn یا policy مستقل افزوده نشد.
 - [x] پیاده‌سازی مسیر motor output قابل‌مشاهده و regression test برای سکون در خروجی صفر و حرکت در خروجی شبکهٔ غیرصفر؛ ۳۰ آزمون گذشت و preview خروجی motor غیرصفر نشان داد.
 - [ ] اعتبارسنجی مرورگر، TypeScript، آزمون‌ها، build، console و checkpoint پس از مشاهدهٔ حرکت C. elegans.
+
+## C. elegans DB/VB Live Readout and Behavioural Decoder Calibration
+
+- [x] گردآوری و ثبت منابع رفتاریِ منتشرشده برای سرعت پیش‌روی و نرخ/دامنهٔ چرخش یا خم‌شدن C. elegans، همراه با محیط آزمایش و محدودیت انتقال به Garden؛ Rabets 2014، Park 2008 و Stephens 2010 در `CELEGANS_DECODER_CALIBRATION.md` ثبت شدند.
+- [x] تعریف قرارداد کالیبراسیون کاملاً مدل‌سازی‌شده برای تبدیل activity DB/VB به سرعت و turn، بدون baseline motion یا navigation policy؛ سرعت مرجع ۰٫۳۰ mm/s و cap منحنی پیوسته ۰٫۴۵ rad/s فقط مقیاس display هستند.
+- [x] افزودن نمودار زندهٔ DB/VB با دادهٔ مستقیم از `firingRate` source runtime، برچسب مدل‌سازی‌شده و وضعیت خالی برای FlyWire staged.
+- [x] افزودن آزمون‌های deterministic برای تبدیل DB/VB و حدود calibration؛ TypeScript، ۳۲ آزمون، build، diff check، preview browser و console پاک پیش از checkpoint تأیید شدند.

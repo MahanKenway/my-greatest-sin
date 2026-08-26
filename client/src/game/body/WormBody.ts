@@ -4,6 +4,7 @@ import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import type { Scene } from "@babylonjs/core/scene";
 import type { MotorFrame } from "@/game/shared/types";
+import { CELEGANS_DECODER_CALIBRATION } from "@/game/neural/celegansCalibration";
 import { loadPresentationMesh } from "./loadPresentationMesh";
 import { SPECIMEN_PRESENTATION_ASSETS } from "./presentationAssets";
 import type { BodyController } from "./types";
@@ -49,8 +50,8 @@ export class WormBody implements BodyController {
     this.smoothedForward += (motor.forward - this.smoothedForward) * strideBlend;
     this.smoothedGait += (motor.gait - this.smoothedGait) * strideBlend;
     this.gaitPhase += dt * (this.smoothedGait * 6.8);
-    this.heading += this.smoothedTurn * dt * 0.84;
-    const stride = this.smoothedForward <= 0.002 ? 0 : (0.022 + this.smoothedForward * 0.31) * dt;
+    this.heading += this.smoothedTurn * dt * CELEGANS_DECODER_CALIBRATION.continuousCurveRadiansPerSecondAtFullDrive;
+    const stride = this.smoothedForward <= 0.002 ? 0 : this.smoothedForward * CELEGANS_DECODER_CALIBRATION.gardenStrideUnitsPerSecondAtFullDrive * dt;
     this.root.position.x = Math.max(-4.35, Math.min(4.35, this.root.position.x + Math.cos(this.heading) * stride));
     this.root.position.z = Math.max(-3.65, Math.min(3.65, this.root.position.z + Math.sin(this.heading) * stride));
     this.root.rotation.y = -this.heading;

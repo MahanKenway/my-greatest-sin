@@ -1,6 +1,6 @@
 /** Luminous Connectome Lab: motor decoding never invents a body command; C. elegans B-motor activity is the only forward source. */
 import { describe, expect, it } from "vitest";
-import { decodeMotorFrame } from "./motorDecoder";
+import { decodeMotorFrame, readCElegansMotorActivity } from "./motorDecoder";
 import type { NeuralRouting } from "@/game/shared/types";
 
 const routing: NeuralRouting = {
@@ -19,5 +19,11 @@ describe("network-first C. elegans motor decoder", () => {
     expect(motor.forward).toBeGreaterThan(0);
     expect(motor.gait).toBeGreaterThan(0);
     expect(motor.turn).toBeGreaterThan(0);
+  });
+
+  it("exposes unmodified DB/VB group means for the live readout", () => {
+    const activity = readCElegansMotorActivity(routing, new Float32Array([0.12, 0.04, 0, 0]));
+    expect(activity.dorsalDB).toBeCloseTo(0.12, 6);
+    expect(activity.ventralVB).toBeCloseTo(0.04, 6);
   });
 });

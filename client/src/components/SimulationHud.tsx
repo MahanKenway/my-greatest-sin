@@ -10,6 +10,7 @@ import type { BoundedCpuCorridorResult } from "@/game/connectome/boundedCpuCorri
 import { MD_C_CROSSWALK_STATUS } from "@/game/connectome/mdCCrosswalkStatus";
 import { SUGAR_MN9_OFFLINE_VALIDATION } from "@/game/connectome/sugarMn9OfflineValidation";
 import { SUGAR_MN9_MULTIHOP_CORRIDOR_VALIDATION } from "@/game/connectome/sugarMn9MultiHopCorridorValidation";
+import { CELEGANS_DECODER_CALIBRATION } from "@/game/neural/celegansCalibration";
 import { createHudActivitySlots } from "./hudActivitySlots";
 
 const MARK_URL = "/manus-storage/connectome-aperture-mark-v2_4089ca2b.png";
@@ -121,6 +122,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
           <DecodeBar label="FORWARD" value={motor?.forward ?? 0} />
           <DecodeBar label="TURN" value={Math.abs(motor?.turn ?? 0)} />
           <DecodeBar label={snapshot?.species.id === "C_ELEGANS" ? "BODY WAVE" : "WING LIFT"} value={motor?.wingLift ?? 0} />
+          {snapshot?.species.id === "C_ELEGANS" ? <><MotorGroupChart db={snapshot.motorGroupTimeline.db} vb={snapshot.motorGroupTimeline.vb} dorsalDB={snapshot.motorGroups.dorsalDB} ventralVB={snapshot.motorGroups.ventralVB} /><p className="motor-calibration">{CELEGANS_DECODER_CALIBRATION.referenceCrawlSpeedMmPerSec.toFixed(2)} MM/S CRAWL REFERENCE · {CELEGANS_DECODER_CALIBRATION.continuousCurveRadiansPerSecondAtFullDrive.toFixed(2)} RAD/S CURVE CAP</p></> : <div className="motor-group-empty"><span>DB / VB ACTIVITY</span><strong>STAGED UNAVAILABLE</strong></div>}
           <p className="pane-note">{controlPath}</p>
         </section>
       </aside>
@@ -152,4 +154,13 @@ function Stimulus({ label, value, color, onChange }: { label: string; value: num
 
 function DecodeBar({ label, value }: { label: string; value: number }) {
   return <div className="decode-row"><span>{label}</span><div><i style={{ width: percentage(value) }} /></div><strong>{percentage(value)}</strong></div>;
+}
+
+function MotorGroupChart({ db, vb, dorsalDB, ventralVB }: { db: Float32Array; vb: Float32Array; dorsalDB: number; ventralVB: number }) {
+  const chartPoints = (values: Float32Array) => Array.from(values, (value, index) => `${index * (180 / Math.max(1, values.length - 1))},${36 - Math.min(1, value) * 30}`).join(" ");
+  return <div className="motor-group-chart" aria-label="Rolling activity chart for DB and VB C. elegans motor groups">
+    <div className="motor-group-heading"><span>DB / VB ACTIVITY</span><em>MODELLED LIF READOUT</em></div>
+    <svg viewBox="0 0 180 40" preserveAspectRatio="none" role="img" aria-label="DB cyan and VB magenta motor-group activity over the latest 48 simulation samples"><path className="motor-chart-grid" d="M0 10H180M0 25H180M0 39H180" /><polyline className="motor-chart-db" points={chartPoints(db)} /><polyline className="motor-chart-vb" points={chartPoints(vb)} /><line className="motor-chart-now" x1="178" y1="2" x2="178" y2="38" /></svg>
+    <div className="motor-group-key"><span><i className="db" />DB / DORSAL <strong>{numeric(dorsalDB, 3)}</strong></span><span><i className="vb" />VB / VENTRAL <strong>{numeric(ventralVB, 3)}</strong></span></div>
+  </div>;
 }
