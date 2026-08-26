@@ -46,20 +46,20 @@ export async function createGameScene(
   canvas: HTMLCanvasElement,
 ): Promise<GameHandle> {
   const scene = new Scene(engine);
-  scene.clearColor = new Color4(0.027, 0.063, 0.094, 1);
+  scene.clearColor = new Color4(0.027, 0.063, 0.094, 0);
   scene.autoClear = true;
   scene.autoClearDepthAndStencil = true;
 
   const camera = new ArcRotateCamera(
     "calibration-camera",
     -Math.PI / 2.45,
-    0.78,
-    9.65,
-    new Vector3(0.35, 0.26, -0.05),
+    0.9,
+    10.25,
+    new Vector3(0.15, 0.3, -0.35),
     scene,
   );
   camera.attachControl(canvas, true);
-  camera.lowerRadiusLimit = 6.7;
+  camera.lowerRadiusLimit = 7.6;
   camera.upperRadiusLimit = 18;
   const ambient = new HemisphericLight("lab-ambient", new Vector3(0, 1, 0), scene);
   ambient.intensity = 0.3;

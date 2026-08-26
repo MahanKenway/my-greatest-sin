@@ -52,6 +52,7 @@ export class FlyBody implements BodyController {
   update(motor: MotorFrame, dt: number): void {
     this.gaitPhase += dt * (2.2 + motor.gait * 7.4);
     this.heading += motor.turn * dt * 1.25;
+    this.steerInsideObservationGarden(dt, motor.forward);
     const stride = (0.06 + motor.forward * 0.48) * dt;
     const calibratedHeading = this.heading + FLYBODY_FORWARD_OFFSET;
     this.root.position.x = Math.max(-4.45, Math.min(4.45, this.root.position.x + Math.cos(calibratedHeading) * stride));
@@ -118,5 +119,16 @@ export class FlyBody implements BodyController {
     const joint = this.joints.get(name);
     if (!joint) return;
     joint.node.rotationQuaternion = joint.rest.multiply(Quaternion.RotationAxis(axis, angle));
+  }
+
+  /** Keeps the display-only gait legible inside the observation clearing; never reads FlyWire state. */
+  private steerInsideObservationGarden(dt: number, forward: number): void {
+    const extent = Math.max(Math.abs(this.root.position.x) / 2.85, Math.abs(this.root.position.z) / 2.45);
+    if (extent < 0.72) return;
+    const worldHeading = this.heading + FLYBODY_FORWARD_OFFSET;
+    const towardClearing = Math.atan2(-this.root.position.z, -this.root.position.x);
+    const delta = Math.atan2(Math.sin(towardClearing - worldHeading), Math.cos(towardClearing - worldHeading));
+    const strength = Math.min(1, dt * (1.6 + forward * 3.4) * Math.max(0, (extent - 0.72) * 3.8));
+    this.heading += delta * strength;
   }
 }

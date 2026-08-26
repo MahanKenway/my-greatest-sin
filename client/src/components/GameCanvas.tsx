@@ -41,6 +41,7 @@ export default function GameCanvas() {
     startedRef.current = true;
     const engine = new Engine(canvas, true, {
       // Keep the WebGL frame available for review screenshots of public specimen assets.
+      alpha: true,
       preserveDrawingBuffer: true,
       stencil: true,
       adaptToDeviceRatio: true,
@@ -70,7 +71,7 @@ export default function GameCanvas() {
         if (!disposed) setSnapshot(nextSnapshot);
       });
       engine.runRenderLoop(() => {
-        engine.clear(new Color4(0.027, 0.063, 0.094, 1), true, true, true);
+        engine.clear(new Color4(0.027, 0.063, 0.094, 0), true, true, true);
         sceneHandle.scene.render();
       });
     });
@@ -146,6 +147,7 @@ export default function GameCanvas() {
   const cancelCpuCorridor = () => cpuAbortRef.current?.abort();
 
   return <main className="digital-fly-shell">
+    <div className="scene-primer" aria-hidden="true"><span>OBSERVATION GARDEN / INITIALIZING</span></div>
     <canvas ref={canvasRef} className="lab-canvas" aria-label={`${snapshot?.species.displayName ?? "Specimen"} live simulation canvas`} />
     <svg className="axon-overlay" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true"><path d="M122 266C270 270 344 352 522 436S750 614 927 572" /><path d="M169 314C318 332 406 409 571 446S804 561 1095 422" /></svg>
     <SimulationHud snapshot={snapshot} onCommand={onCommand} packStatus={packStatus} cacheProgress={cacheProgress} flywireStage={flywireStage} onConfigurePack={configurePack} onCachePack={cachePack} benchmark={benchmark} onRunOfficialBenchmark={runOfficialBenchmark} pilot={pilot} cpuCorridor={cpuCorridor} pilotProtocol={pilotProtocol} onPilotActivationRateChange={(activationRateHz) => setPilotProtocol((current) => ({ ...current, activationRateHz }))} onPilotInputAblationChange={(inputAblation: SugarMn9InputAblation) => setPilotProtocol((current) => ({ ...current, inputAblation }))} onRunPilot={runPilot} onRunCpuCorridor={runCpuCorridor} onCancelCpuCorridor={cancelCpuCorridor} />

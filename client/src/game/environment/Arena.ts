@@ -1,4 +1,4 @@
-/** Luminous Connectome Lab: an explicit modelled environmental field, never a claim of source-derived physiology. */
+/** Luminous Connectome Lab / Field Garden: presentation is modelled and never changes source physiology. */
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { PointLight } from "@babylonjs/core/Lights/pointLight";
@@ -29,7 +29,7 @@ export class Arena {
     groundMaterial.diffuseColor = Color3.FromHexString("#1C4326");
     groundMaterial.emissiveColor = Color3.FromHexString("#07160B");
     groundMaterial.specularColor = Color3.Black();
-    groundMaterial.disableLighting = true;
+    groundMaterial.disableLighting = false;
     ground.material = groundMaterial;
 
     this.foodMesh = MeshBuilder.CreateSphere("food-sample", { diameter: 0.34, segments: 16 }, scene);
@@ -133,14 +133,26 @@ export class Arena {
     const specimenLight = this.scene.getLightByName("specimen-light");
     const gardenFill = this.scene.getLightByName("garden-fill");
     const gardenRim = this.scene.getLightByName("garden-rim");
+    const night = 1 - daylight;
+    const twilight = 1 - Math.min(1, Math.abs(daylight - 0.5) * 2);
     if (ambient instanceof HemisphericLight) {
-      ambient.intensity = 0.16 + daylight * 0.5;
-      ambient.diffuse.set(0.2 + daylight * 0.35, 0.3 + daylight * 0.32, 0.4 + daylight * 0.25);
-      ambient.groundColor.set(0.014 + daylight * 0.065, 0.025 + daylight * 0.08, 0.04 + daylight * 0.08);
+      ambient.intensity = 0.18 + daylight * 0.57;
+      ambient.diffuse.set(0.14 + daylight * 0.58 + twilight * 0.08, 0.22 + daylight * 0.48, 0.36 + daylight * 0.34);
+      ambient.groundColor.set(0.012 + daylight * 0.08, 0.022 + daylight * 0.1, 0.038 + daylight * 0.095);
     }
-    if (specimenLight instanceof PointLight) specimenLight.intensity = 2 + (1 - daylight) * 5;
-    if (gardenFill instanceof PointLight) gardenFill.intensity = 0.12 + daylight * 0.48;
-    if (gardenRim instanceof PointLight) gardenRim.intensity = 0.1 + (1 - daylight) * 0.32;
-    this.scene.clearColor = new Color4(0.012 + daylight * 0.06, 0.03 + daylight * 0.085, 0.05 + daylight * 0.09, 1);
+    if (specimenLight instanceof PointLight) {
+      specimenLight.intensity = 2.15 + night * 4.25 + twilight * 0.7;
+      specimenLight.diffuse.set(0.82 + twilight * 0.16, 0.44 + daylight * 0.34, 0.24 + daylight * 0.34);
+    }
+    if (gardenFill instanceof PointLight) {
+      gardenFill.intensity = 0.14 + daylight * 0.64;
+      gardenFill.diffuse.set(0.16 + daylight * 0.16, 0.44 + daylight * 0.32, 0.48 + daylight * 0.26);
+    }
+    if (gardenRim instanceof PointLight) {
+      gardenRim.intensity = 0.15 + night * 0.54 + twilight * 0.12;
+      gardenRim.diffuse.set(0.36 + twilight * 0.42, 0.38 + twilight * 0.2, 0.62 + night * 0.2);
+    }
+    this.garden.setDaylight(daylight);
+    this.scene.clearColor = new Color4(0.014 + daylight * 0.09, 0.028 + daylight * 0.11, 0.055 + daylight * 0.15, 0);
   }
 }

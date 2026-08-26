@@ -28,6 +28,15 @@ The active garden uses procedural Babylon geometry only: moss beds, a reflective
 
 `DAYLIGHT` changes the background and named Babylon light intensities. `WATERFALL FLOW` changes waterfall opacity and animation rate. They are visibly labelled `GARDEN PRESENTATION / MODELLED` and deliberately do not modify `LIGHT FIELD`, neural data, source topology, sensory routing, or motor mapping.
 
+### Garden World visual refresh
+
+| Asset | Source | Active use | Runtime boundary |
+|---|---|---|---|
+| Dawn Garden Panorama | Manus-generated managed image `/manus-storage/garden-dawn-panorama_712067d9.png` | Wide morning/late-afternoon sky backdrop for the Garden sky rig. | Decorative `MODELLED PRESENTATION`; not sensory light or a data source. |
+| Night Garden Panorama | Manus-generated managed image `/manus-storage/garden-night-panorama_62e31c61.png` | Wide night-sky backdrop used only when daylight is low. | Decorative `MODELLED PRESENTATION`; not a time-of-day simulation input. |
+| Garden Observation Reference | Manus-generated managed image `/manus-storage/garden-observation-reference_a8464675.png` | Internal visual QA target for density, hierarchy and garden composition. | Not rendered as data or biological evidence. |
+| Connectome Aperture Mark v2 | Manus-generated managed image `/manus-storage/connectome-aperture-mark-v2_4089ca2b.png` | Header mark and visible application identity. | Brand presentation only. |
+
 ## Official FlyWire Benchmark Staging
 
 The official Zenodo v783 inputs (`proofread_root_ids_783.npy` and `proofread_connections_783.feather`) were downloaded outside the repository and verified against the published MD5 values. A connectivity-only, checksum-verified CSR derivative contains **139,255 proofread root IDs** and **16,847,997 directed connection rows**. The staged WebGPU benchmark uses only root IDs, incoming offsets, source indices and synapse counts; it omits unexercised transmitter probabilities from GPU upload.

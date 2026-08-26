@@ -24,3 +24,13 @@
 - Do not claim consciousness, literal life, or biologically validated behavior without evidence.
 - The project may only support non-commercial uses while it depends on public FlyWire release data, unless independent rights are established.
 - Body assets and a `C. elegans` display do not establish that the current 96-neuron fixture is real C. elegans data.
+
+## Garden World Revision
+
+- The Garden World is a visually richer field-garden presentation, not a new neural subsystem. Sunrise/night and all landscape treatments remain `MODELLED PRESENTATION`.
+- `DAYLIGHT` must be communicated as a sky-cycle control and must not be confused with the separate sensory `LIGHT FIELD` control.
+- The UI must use `SimulationSnapshot` as its only execution source of truth: staged FlyWire never gains causal fly-body claims; C. elegans remains the only active source topology.
+- New visual assets are managed-storage URLs only; the project tree does not contain generated panorama files.
+- در preview مرورگر، PBR materialهای GLB در مسیر readiness پایدار render نمی‌شدند. loader اکنون رنگ/texture منبع را به `StandardMaterial` هم‌نور با Garden تبدیل می‌کند؛ پس از آن FlyBody و C. elegans هر دو در clearing مرکزی دیده و تعویض گونه تأیید شد.
+- حالت `NIGHT GARDEN` در daylight پنج‌درصد با panorama شب، ستاره‌ها، Garden کم‌نور و بدن خوانای C. elegans در مرورگر دیده شد؛ مقدار daylight فقط presentation را تغییر داد و label UI نیز همین مرز را حفظ کرد.
+- حالت `OPEN DAYLIGHT` در daylight نوددرصد نیز با panorama صبح، روشنایی متعادل و C. elegans خوانا تأیید شد. تغییر daylight به `LIGHT FIELD` یا شمارش‌های ۲۷۹ N / ۶٬۲۶۱ E دست نزد.

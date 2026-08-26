@@ -61,3 +61,17 @@ The interface follows the visual target: a central specimen arena, a left brain 
 5. Curated sensory, descending, and motor annotations; explicit evaluation protocols.
 6. STDP and neuromodulated delta buffers that preserve immutable source weights.
 7. GitHub Pages and Cloudflare Pages release automation after public repository creation.
+
+## Garden World, Sky Cycle and Runtime-Synchronous UI
+
+### 6. Presentation-only sky cycle and garden composition
+
+- **Why isolated:** Existing `DAYLIGHT` affects only a clear color and named light intensities. A visual sky upgrade must not reduce specimen legibility or contaminate any source/runtime contract.
+- **Approach:** Build a `GardenScenery` sky rig from managed dawn/night panorama plates, procedural sun, crescent moon, subtle stars, firefly intensity and scene-light interpolation. Rework the habitat through low-allocation procedural groups: path, pond, bridge, waterfall, stone clusters, layered vegetation, flowers and mushroom accents. All values remain presentation-only.
+- **Verify:** At low, middle and high daylight, both specimens remain silhouetted against a readable sky; bridge, waterfall and garden layers remain visible; species selection and simulation controls keep working.
+
+### 7. Context-aware observation interface
+
+- **Why isolated:** The same static controls currently appear for two materially different execution states. Rearranging the HUD could accidentally imply that the staged FlyWire graph drives the fly.
+- **Approach:** Derive compact, species-specific operation copy from `SimulationSnapshot`; label the sky control explicitly as presentation; surface the causal boundary next to the active body readout; reserve operational buttons for their actual supported path.
+- **Verify:** Fly remains visibly `0 N / 0 E` and display-only. C. elegans remains visibly source topology `279 N / 6,261 E` with modelled sensor/motor boundaries. UI has no overflow or console errors on desktop and compact layouts.

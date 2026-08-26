@@ -16,7 +16,7 @@ React frame (one full-screen GameCanvas)
        ├── FlyBody (procedural mesh + modelled kinematics/dynamics)
        ├── WormBody (segmented procedural mesh + modelled undulation)
        ├── Arena (food, light, wind, wall, touch, temperature, odor fields)
-       │    └── GardenScenery (CC0 GLB habitat dressing; visual-only `MODELLED MAPPING`)
+       │    └── GardenScenery (procedural habitat + sky rig; visual-only `MODELLED MAPPING`)
        ├── BrainView (sampled thin instances, region summaries, selection)
        └── ExperimentStore (commands, seeded events, export/replay metadata)
 ```
@@ -79,3 +79,7 @@ The scene uses procedural meshes for the fly, worm, stimulus fields, and neural 
 ## Determinism Policy
 
 Simulation time advances in fixed `dt` increments under a seeded PRNG. Rendering may interpolate body and camera state but never mutates the simulation. A demo mode replays an event list rather than choosing random actions at render time. GPU and CPU modes expose their backend identity and do not claim bitwise equivalence until platform-specific validation establishes it.
+
+## Garden Presentation Contract
+
+`Arena` owns the `EnvironmentPresentation` bridge. Its daylight value drives only the `GardenScenery` sky rig and named presentation lights: dawn panorama, night panorama, sun, moon, stars, fireflies and material tint. `GardenScenery` owns all decorative meshes and must not call `Arena.sample`, `GameWorld`, neural code or body controllers. `SimulationHud` only dispatches the existing typed `environment` command and reads the species/runtime state from `SimulationSnapshot`.

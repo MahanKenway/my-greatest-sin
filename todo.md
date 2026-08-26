@@ -325,3 +325,11 @@
 - [x] استخراج و ثبت شرایط رسمی درخواست `brain_access`، دامنهٔ مجوز و اطلاعات موردنیاز؛ ارسال فقط پس از تأیید صریح کاربر انجام شد و receipt مشاهده نشد.
 - [x] تهیهٔ متن دقیق و حداقلی برای کاربرد پژوهشی non-commercialِ root mapping/materialization 783، بدون ادعای کنترل حیوان یا اجرای full graph.
 - [x] تکمیل فیلدهای غیرحساس فرم و دریافت تأیید کاربر پیش از submission؛ وضعیت دقیق `SUBMISSION ATTEMPTED — RECEIPT NOT OBSERVED` است و فرم تکرار نمی‌شود.
+
+## Garden World, Day–Night and Runtime-Synchronous UI Revision
+
+- [x] بررسی مستقیمِ ساختار صحنهٔ Babylon، دارایی‌های Garden، کنترل‌های محیط و قراردادهای فعلی نمایش/دادهٔ دوگونه.
+- [x] طراحی و پیاده‌سازی چرخهٔ دیداریِ صبح، غروب و شب با sky panorama، نور خورشید/ماه، ستاره‌ها، firefly و نورهای محیطی؛ این چرخه فقط presentation-modelled ماند.
+- [x] ارتقای دارایی‌ها و ترکیب‌بندی Garden با مسیر سنگی، گیاهان، درخت‌ها، سنگ‌ها، آبشار نواری، حوض/پل چوبی، قارچ‌ها و clearing مرکزی با مقیاس مناسب برای هر دو بدن سه‌بعدی.
+- [x] بازطراحی HUD و کنترل‌ها به‌صورت context-aware تا حالت FlyWire staged مگس و source-topology فعال C. elegans را جدا، خوانا و هم‌راستا با قابلیت‌های واقعی نمایش دهد.
+- [x] اعتبارسنجی تعامل‌های روز/شب، تعویض گونه، حدود ۲۰–۲۸ FPS در preview، console، TypeScript، ۲۸ آزمون، build و screenshot پیش از checkpoint.
