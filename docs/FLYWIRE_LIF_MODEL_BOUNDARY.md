@@ -32,6 +32,30 @@
 
 مشتق رسمیِ موجود در این پروژه، probabilityهای `gaba_avg` تا `da_avg` را برای **connection rowهای خلاصه‌شده** دارد، نه شمارش siteهای خام با cleft-score. بنابراین نمی‌توان بدون یک preprocessor بازتولیدپذیر و دادهٔ site-level، طبقه‌بندی نورون‌به‌نورون مقاله را دقیقاً بازسازی کرد. گام LIF فعلاً عمداً blocked می‌ماند: مشتق آماده، checksum-verified و قابل‌دریافت است؛ اما تولید sign/weight برای kernel تا تعیین منبع site-level یا روش دقیقِ هم‌ارز فعال نمی‌شود.
 
+## منبع site-level v783 و مسیر اقدام — ۲۶ اوت ۲۰۲۶
+
+منبع رسمیِ موردنیاز در همان رکورد Zenodo v783 موجود است: `flywire_synapses_783.feather` با حدود ۱۳۰ میلیون synapse، `cleft_score` و احتمال‌های per-synapse برای شش ناقل. فایل نسخهٔ ۷۸۳٫۰، **۹٬۴۹۲٬۹۹۸٬۲۴۲ بایت** و MD5 رسمی `f8f1b97c9d4b0ea9b4c8b287f6b99091` دارد [2]. این جدول همان ورودی صحیح برای قاعدهٔ مقاله است؛ جدول `proofread_connections_783.feather` صرفاً خلاصهٔ هر neuron-pair/neuropil و ناقل‌های میانگین‌گرفته‌شده است.
+
+دانلود resumable این فایل خارج از repository آغاز شده است. ابزار `build_flywire_v783_neuron_signs.py` فقط پس از تأیید MD5، rootهای proofread v783 را به siteهای پیش‌سیناپسی هم‌نسخه join می‌کند، winner شش‌گانهٔ هر site با cleft-score حداقل ۵۰ را می‌شمارد و sign را به شکل `-1` مهاری، `+1` تحریکی یا `0` طبقه‌بندی‌نشده می‌نویسد. هیچ sign یا وزن LIF تا پایان این conversion و گزارش checksum فعال نمی‌شود.
+
+## منابع افزوده
+
+[2]: https://zenodo.org/records/10676866 "FlyWire Whole-brain Connectome Connectivity Data, release 783"
+[3]: https://fafbseg-py.readthedocs.io/en/latest/source/generated/fafbseg.flywire.synapses.get_transmitter_predictions.html "fafbseg transmitter prediction documentation"
+
+## signهای site-level و آزمون آفلاین محدود — ۲۶ اوت ۲۰۲۶
+
+دانلود رسمی site-level v783 تکمیل و MD5 Zenodo برای فایل ۹٫۴۹ GB تأیید شد. preprocessor روی ۱۳۹٬۲۵۵ root proofread، **۹۴٬۶۴۰ تحریکی**، **۴۴٬۰۱۱ مهاری** و **۶۰۴ طبقه‌بندی‌نشده** تولید کرد. manifest sign محلی checksum-verified است؛ طبقه‌بندی‌نشده‌ها عمداً موجب block اجرای LIF تمام‌گراف می‌شوند.
+
+برای جلوگیری از CPU fallback تمام‌مغز، تنها ۱۳ مسیر ساختاری دوگامِ منتشرشده به زیرگراف ۳۳ نورون و ۶۷ یال تبدیل شد. همهٔ ۳۳ نورون sign معتبر داشتند. اجرای آفلاین با ثابت‌های Shiu، ۳۰ trial seeded و sweep ۰ تا ۲۰۰ Hz انجام شد. نتیجهٔ MN9 در همهٔ نرخ‌ها صفر بود؛ input-ablation نیز صفر ماند. self-check عددیِ جداگانه با edge مصنوعی فراآستانه ۱٬۰۰۰ synapse، ۱۵۲ spike MN9 تولید کرد و فقط صحت propagation کد را نشان می‌دهد، نه نتیجهٔ FlyWire.
+
+این نتیجهٔ صفر یک **یافتهٔ منفیِ محدود** است: زیرگراف دوگام کوچک برای بازتولید پاسخ MN9 در مدل کامل کافی نیست. نباید آن را فقدان مسیر زیستی، نتیجهٔ مدل ۱۳۹k، benchmark WebGPU یا کنترل خرطوم تفسیر کرد. مدل کامل مقاله تمام نورون‌ها را شامل می‌شود؛ در مقابل، این artifact فقط `OFFLINE SUBGRAPH VALIDATION` است و GameWorld، FlyBody و شمارش FlyWire را تغییر نمی‌دهد.
+
+نسخهٔ materialization **783** به‌عنوان نسخهٔ LTS همراه مقالات FlyWire شناخته می‌شود. رابط CAVE/fafbseg برای queryهای کوچک مفید است و table filtered آن synapseهای cleft-score کمتر یا مساوی ۵۰ را حذف می‌کند، اما برای bulk table محدودیت ردیف و بازگشت نامرتب دارد [4] [5]. بنابراین برای sign preprocessor تمام‌مغز، فایل site-level رسمی Zenodo v783 با MD5 تأییدشده مبنای canonical باقی می‌ماند؛ live/latest CAVE نباید با root IDهای v783 مخلوط شود.
+
+[4]: https://natverse.org/fafbseg/reference/flywire_cave_query.html "CAVE materialization versions and v783 LTS guidance"
+[5]: https://fafbseg-py.readthedocs.io/en/latest/_modules/fafbseg/flywire/synapses.html "fafbseg FlyWire synapse and transmitter query implementation"
+
 ## منابع
 
 [1]: https://pmc.ncbi.nlm.nih.gov/articles/PMC11446845/ "Shiu et al. (2024), A Drosophila computational brain model reveals sensorimotor processing"

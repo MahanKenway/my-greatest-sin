@@ -227,3 +227,21 @@
 - [ ] اجرای protocol روی WebGPU adapter معتبر و ثبت raw MN9 readout، memory، latency و وضعیت timestamp-query.
 - [ ] اضافه‌کردن LIF گیت‌شده تنها پس از کامل‌شدن قرارداد ناقل و اجرای benchmark معتبر؛ تا آن زمان kernel ساختاری به‌صورت صریح non-physiological بماند.
 - [ ] یافتن یا تولید دادهٔ site-level دارای cleft-score و preprocessor بازتولیدپذیر برای طبقه‌بندی ناقل neuron-level مطابق روش Shiu et al.; probabilityهای connection-row به‌تنهایی برای این جایگزینی کافی نیستند.
+
+## WebGPU Re-execution and Site-Level LIF Validation
+
+- [ ] شناسایی یک محیط مرورگر دارای WebGPU adapter واقعی و ثبت vendor-independent capability/budget پیش از اجرای protocol.
+- [ ] اجرای baseline و input-ablation در نرخ‌های protocol روی adapter معتبر و ثبت raw MN9 readout، latency، حافظه و timestamp-query.
+- [ ] یافتن منبع رسمی یا API برای site-level neurotransmitter prediction و cleft-score مرتبط با release v783 یا مستندسازی دقیقِ نبود آن.
+- [ ] اعتبارسنجی schema، مجوز، version alignment و identifier alignment دادهٔ site-level پیش از ترکیب با pack v783.
+- [ ] ساخت preprocessor قطعی برای تعیین transmitter class در سطح نورون مطابق آستانهٔ مقاله، به‌همراه آزمون‌ها و گزارش checksum.
+- [ ] ساخت kernel LIF فقط پس از عبور preprocessor، با sign/weight provenance، تست kernel و مسیر blocked صریح برای دادهٔ ناکامل.
+- [ ] در صورت آماده‌شدن تغییرات، checkpoint و push به GitHub خصوصی main؛ انتشار عمومی جداگانه و فقط پس از تأیید کاربر انجام می‌شود.
+
+## Offline Site-Level Subcircuit Validation (Not Full-FlyWire Fallback)
+
+- [x] تکمیل download و MD5 رسمی `flywire_synapses_783.feather` و اجرای preprocessor sign neuron-level روی rootهای proofread v783.
+- [x] استخراج زیرگراف sugar-GRN → واسطه‌ها → MN9 از دادهٔ رسمی؛ اندازه، root IDs، یال‌ها و signهای طبقه‌بندی‌نشده را ثبت کن.
+- [x] تعریف اجرای LIF آفلاین برای زیرگراف فقط با ثابت‌های منبع و ثبت seed/trial؛ هیچ شمارش FlyWire در GameWorld تغییر نکند.
+- [x] اجرای response sweep و input-ablation آفلاین، همراه با raw MN9 spike/rate و گزارش محدودیت‌ها.
+- [ ] برچسب‌گذاری همهٔ خروجی‌ها به‌صورت `OFFLINE SUBGRAPH VALIDATION` و جلوگیری از ارسال نتیجه به FlyBody یا WebGPU benchmark.

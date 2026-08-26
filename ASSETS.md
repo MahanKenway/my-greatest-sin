@@ -36,6 +36,10 @@ The target browser fetched the managed, integrity-checked columns but rejected `
 
 The FlyBody derivative has a separate, limited mouthpart channel over the inspected source pivots `rostrum`, `haustellum`, `labrum_left`, and `labrum_right`. The food-to-sugar injection and monotonic MN9-score-to-mouthpart conversion are explicitly `MODELLED SENSOR INPUT` and `MODELLED MOTOR DECODER`; this channel has no code path to root motion, legs, gait, or wings. No successful source-driven readout or biological-response claim is recorded while the adapter remains blocked.
 
+The official site-level `flywire_synapses_783.feather` was subsequently downloaded outside the repository, verified against Zenodo MD5 `f8f1b97c9d4b0ea9b4c8b287f6b99091`, and converted into a local checksum-bearing v783 neuron-sign artifact. Using the published cleft-score ≥50 and strict-majority GABA/glutamate rule produced 94,640 excitatory, 44,011 inhibitory and 604 unclassified proofread roots. The unclassified roots block any full-graph LIF activation.
+
+One separately labelled **OFFLINE SUBGRAPH VALIDATION** used only 33 signed roots and 67 published two-hop structural edges between sugar-GRNs and MN9. Thirty seeded trials at each of 0–200 Hz returned 0 Hz MN9 in this narrow approximation, while a separate `SYNTHETIC TEST FIXTURE` verified numeric propagation. This negative result is not a behavioural, full-FlyWire, WebGPU or FlyBody result; it is shown in the HUD only as a bounded scientific record.
+
 ## Attribution and Distribution Rules
 
 The visible species metadata retains the FlyBody Apache-2.0 attribution and explicitly labels the handcrafted worm body as `MODELLED MAPPING`. The official FlyWire v783 connectivity record is **CC BY 4.0**; raw inputs and full derivatives remain outside the repository. The small connectivity-only benchmark derivative is in managed storage solely for the private benchmark path, with the source URL, manifest and SHA-256 checksums retained. Generated images, small UI textures and the accepted optimized specimen derivatives use managed `/manus-storage/...` URLs, never project-local media files.
