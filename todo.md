@@ -364,4 +364,4 @@
 - [x] ممیزی و حذف turn/forward steering مستقل از خروجی موتور شبکه؛ فقط motor decoder آشکار و smoothingی که از MotorFrame صفر حرکت نمی‌سازد باقی مانده است.
 - [x] بررسی پروژه‌های متن‌باز مرتبط با C. elegans برای روش/دادهٔ دارای مجوز و provenance؛ `openworm/c302` با MIT فقط مرجع معماری است و `CE_locomotion` به‌دلیل نبود license metadata استفاده نشد.
 - [x] بازنگری UI برای نشان‌دادن اینکه حرکت از C. elegans source topology + MODELLED MOTOR DECODER می‌آید و هیچ تصمیم navigation مستقل فعال نیست.
-- [ ] اعتبارسنجی حرکت بدون reset، تعویض گونه، console، TypeScript، tests، build و checkpoint.
+- [x] اعتبارسنجی حرکت بدون reset، تعویض گونه، console، TypeScript، ۲۸ test، build، diff check و checkpoint؛ فقط هشدار bundle-size موجود باقی ماند.
