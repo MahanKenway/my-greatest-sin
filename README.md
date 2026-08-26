@@ -12,7 +12,13 @@
 | FlyWire v783 | 139,255 proofread roots / 16,847,997 connection rows | Official data, CSR derivatives, site-level sign extraction and bounded offline corridors are verified outside the repository | `GameWorld` remains **0 N / 0 E** until a valid WebGPU run and separate scientific validation pass |
 | Fly body | Apache-2.0 source derivative with real presentation pivots | Garden presentation and isolated mouthpart rig | Gait, wings, root movement and all displayed body output remain modelled; no FlyWire result controls them |
 
-The current browser exposes `navigator.gpu`, but the target environment rejects `requestAdapter()`. The application therefore blocks real FlyWire execution rather than inventing a CPU fallback, a timing value, neural activity, or body command.
+The current browser exposes `navigator.gpu`, but the target environment rejects `requestAdapter()`. The application therefore blocks real FlyWire execution rather than inventing a full-graph CPU fallback, a timing value, neural activity, or body command.
+
+## Bounded CPU validation, not a full-graph fallback
+
+The HUD provides one separate **CPU OFFLINE SUBGRAPH VALIDATION** control for a checksum-verified sugar corridor stored outside the repository. It fetches only **1,115 nodes / 13,346 signed edges**, verifies SHA-256 `237e23b3f2ea9a32cc9650aadc376b348f0d98ecdcd9c24242c4a54cd1322c67`, enforces hard browser caps of 2,000 nodes and 25,000 edges, and performs four signed structural-propagation steps. The readout is deliberately **not LIF**, a firing rate, an animal measurement, a WebGPU benchmark, or a FlyBody command.
+
+With the live UI’s modelled sugar input open at 150 Hz, the current pack produced an MN9 structural score of `0.0016`; with the same input-ablation control closed, it produced `0.0000`. These observations validate only checksum delivery and bounded structural propagation. `GameWorld` stays at **0 N / 0 E** for FlyWire and the body remains display gait.
 
 ## What has been validated
 
@@ -75,6 +81,7 @@ Do not place raw FlyWire data in `client/public`, the project tree, or Git histo
 | `build_flywire_v783_pack.py` | Builds checksum-bearing CSR packs outside the repository |
 | `build_flywire_v783_neuron_signs.py` | Derives neuron-level excitatory/inhibitory signs from site-level data under the documented rule |
 | `extract_sugar_mn9_four_hop_corridor.py` | Extracts bounded source-structural corridors to MN9 |
+| `build_bounded_cpu_corridor_pack.py` | Converts one signed, bounded corridor into the CPU-only JSON contract with hard caps and provenance |
 | `run_sugar_mn9_offline_subgraph_lif.py` | Runs a seeded offline LIF protocol without touching `GameWorld` |
 | `run_v783_corridor_brian2cuda.py` | CUDA-only prototype using the reference Brian2 equations; it has no CPU fallback |
 
@@ -82,7 +89,7 @@ Every experimental report must retain the source release, annotation revision, i
 
 ## Research roadmap
 
-The next credible milestones are annotation-pinned labellar/pharyngeal mechanoreceptors, a separately documented olfactory population, a GPU worker run using Brian2CUDA on compatible NVIDIA hardware, and an independent comparison against the reference Brian2 integration. Full-body locomotion remains a later and harder question because relevant descending-neuron pathways are incomplete in FlyWire.
+The next credible milestones are annotation-pinned labellar/pharyngeal mechanoreceptors, a separately documented olfactory population, a GPU worker run using Brian2CUDA on compatible NVIDIA hardware, and an independent comparison against the reference Brian2 integration. The literature-defined cibarial md-C pathway stays **blocked** until an authenticated, version-aligned root-ID crosswalk can link md-C and its correct MN11/MN12 targets to v783; it must not be substituted with broad pharyngeal candidates or routed to MN9. Full-body locomotion remains a later and harder question because relevant descending-neuron pathways are incomplete in FlyWire.
 
 See the project records for detail:
 
@@ -91,6 +98,7 @@ See the project records for detail:
 - [`docs/FLYWIRE_SENSORY_EXPANSION.md`](docs/FLYWIRE_SENSORY_EXPANSION.md) — source versus modelled sensory expansion.
 - [`docs/GITHUB_FLYWIRE_OPTIONS.md`](docs/GITHUB_FLYWIRE_OPTIONS.md) — reviewed query and GPU/server options.
 - [`docs/BRIAN2CUDA_NVIDIA_RUNBOOK.md`](docs/BRIAN2CUDA_NVIDIA_RUNBOOK.md) — pinned NVIDIA/Colab smoke-test path and its hardware gates.
+- [`docs/MD_C_CROSSWALK_SEARCH.md`](docs/MD_C_CROSSWALK_SEARCH.md) — multi-source md-C/MN11/MN12 search and exact crosswalk blocker.
 - [`ASSETS.md`](ASSETS.md) — asset, license and scientific-boundary manifest.
 
 ## Attribution and licences

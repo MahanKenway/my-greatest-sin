@@ -83,3 +83,11 @@ md-Cهای pharyngeal و MSNs مکانیکی labellar گزینه‌های بعد
 
 [1]: https://pmc.ncbi.nlm.nih.gov/articles/PMC11446845/ "Shiu et al. (2024), A Drosophila computational brain model reveals sensorimotor processing"
 [2]: https://github.com/philshiu/Drosophila_brain_model "Drosophila Brain Model — source code and activation/silencing tutorial"
+
+## CPU structural propagation محدود — ۲۶ اوت ۲۰۲۶
+
+برای آن‌که نبود WebGPU به‌معنای توقف کامل رابط کاربری نباشد، یک artifact جداگانه و کوچک به نام `my-greatest-sin.cpu-corridor.v1` فقط از corridor قندِ چهارhop ساخته شد. این artifact **۱٬۱۱۵ node، ۱۳٬۳۴۶ edge** و SHA-256 برابر `237e23b3f2ea9a32cc9650aadc376b348f0d98ecdcd9c24242c4a54cd1322c67` دارد. UI پیش از parsing هش را کنترل می‌کند و سپس schema، dimensionها، indexهای داخلی و سقف‌های سخت **۲٬۰۰۰ node / ۲۵٬۰۰۰ edge** را رد یا قبول می‌کند. root IDها در محاسبه وارد نمی‌شوند؛ فقط indexهای داخلی و signed synapse countها استفاده می‌شوند.
+
+محاسبهٔ browser چهار بار عبارت زیر را اعمال می‌کند: `max(0, 0.95 × state + input + min(0.0005 × signedIncoming, 1))`. این یک **signed structural propagation score** کوچک و deterministic است؛ LIF، Poisson trial، voltage، spike، نرخ firing یا جایگزین Brian2 نیست. input از کنترل مدل‌شدهٔ sugar با نرخ ۰ تا ۲۰۰ Hz می‌آید و `INPUT ABLATED` فقط همان injection خارجی را صفر می‌کند.
+
+در مرورگر فعلی، با input باز در ۱۵۰ Hz score خروجی MN9 برابر `0.0016` و با input-ablation برابر `0.0000` شد. این کنترل منفی فقط مسیر داده و bound را نشان می‌دهد. runner نه `GameWorld` را import می‌کند، نه `setFlywireProboscisReadout` را فراخوانی می‌کند و نه FlyBody را تغییر می‌دهد؛ FlyWire همچنان `0 N / 0 E` است.

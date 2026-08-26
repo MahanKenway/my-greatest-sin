@@ -286,3 +286,12 @@
 - [ ] استخراج corridor md-C→MN9، بررسی root presence و signهای طبقه‌بندی‌نشده، و اجرای LIF فقط پس از گذر از gate.
 - [ ] ثبت جداگانهٔ نتایج Brian2CUDA، runner آفلاین و WebGPU؛ هیچ‌کدام نباید بدون معیار معتبر به FlyBody متصل شود.
 - [ ] یافتن crosswalk بازتولیدپذیر rootهای md-C و هدف‌های صحیح MN11/MN12 برای v783؛ md-C نباید به MN9 نگاشت شود.
+
+## md-C Crosswalk and Bounded CPU Continuation
+
+- [x] جست‌وجوی چندمنبعی در Codex/CAVE، CATMAID/FAFB، مقاله، Dryad و repositoryهای مرتبط برای crosswalk md-C و MN11/MN12؛ نتیجهٔ فعلی `BLOCKED: NO VERSION-ALIGNED ROOT CROSSWALK` است و در `docs/MD_C_CROSSWALK_SEARCH.md` ثبت شد.
+- [x] ثبت منبع، version/materialization و نتیجهٔ هر مسیر جست‌وجو؛ هیچ candidate فاقد crosswalk به‌عنوان md-C یا MN11/MN12 اجرا نشد.
+- [x] ساخت CPU runner فقط برای corridor کوچک checksum-verified با schema، bound سخت شمار node/edge و label `CPU OFFLINE SUBGRAPH VALIDATION`.
+- [x] تضمین با آزمون و audit مسیر که runner pack بزرگ‌تر از ۲٬۰۰۰ node را رد می‌کند، input-ablation را صفر می‌کند و فقط state React را به‌روزرسانی می‌کند؛ `GameWorld` و FlyBody خروجی ندارند.
+- [x] اجرای baseline/ablation روی corridor تأییدشدهٔ sugar→MN9، نه md-C؛ UI در نبود rootهای md-C/MN11/MN12 نتیجهٔ `BLOCKED: NO VERSION-ALIGNED ROOT CROSSWALK` را حفظ می‌کند.
+- [ ] در صورت بزرگ‌ترشدن pack محدود در آینده، اجرای worker/cancellation واقعی اضافه شود؛ مسیر فعلی چهار step و ۱۳٬۳۴۶ edge است و در مرورگر freeze ایجاد نکرد.
