@@ -53,9 +53,9 @@ export async function createGameScene(
   const camera = new ArcRotateCamera(
     "calibration-camera",
     -Math.PI / 2.45,
-    0.9,
-    10.25,
-    new Vector3(0.15, 0.3, -0.35),
+    1.14,
+    10.65,
+    new Vector3(0.15, 0.45, -0.35),
     scene,
   );
   camera.attachControl(canvas, true);

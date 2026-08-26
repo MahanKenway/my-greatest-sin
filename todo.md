@@ -333,3 +333,11 @@
 - [x] ارتقای دارایی‌ها و ترکیب‌بندی Garden با مسیر سنگی، گیاهان، درخت‌ها، سنگ‌ها، آبشار نواری، حوض/پل چوبی، قارچ‌ها و clearing مرکزی با مقیاس مناسب برای هر دو بدن سه‌بعدی.
 - [x] بازطراحی HUD و کنترل‌ها به‌صورت context-aware تا حالت FlyWire staged مگس و source-topology فعال C. elegans را جدا، خوانا و هم‌راستا با قابلیت‌های واقعی نمایش دهد.
 - [x] اعتبارسنجی تعامل‌های روز/شب، تعویض گونه، حدود ۲۰–۲۸ FPS در preview، console، TypeScript، ۲۸ آزمون، build و screenshot پیش از checkpoint.
+
+## Sky Repair and Liquid-Glass Interface Revision
+
+- [x] بازتولید و ریشه‌یابی خرابی sky panorama در frame نخست و حالت‌های صبح/شب؛ panoramaهای باغ به sky-only domeهای دوربین‌پایدار تبدیل شدند و چرخهٔ presentation-only حفظ شد.
+- [x] مطالعهٔ نمونه‌های معتبر glassmorphism/liquid-glass و استخراج الگوی کم‌تراکم، خوانا و مناسب ابزار علمی؛ اصل انتخابی content-first، blur محدود، edge روشن و رنگ semantic است.
+- [x] جایگزینی هدر فعلی با نشان شناورِ کم‌حجم liquid-glass، هویت بصری روشن و حذف telemetry تکراری.
+- [x] حذف یا فشرده‌سازی کنترل‌ها و متن‌های غیرضروری؛ وضعیت گونه، کنترل‌های واقعی، گیت‌های علمی و feedback اجرایی حفظ شدند.
+- [x] اعتبارسنجی Sky صبح/شب، تعویض گونه، console خالی، TypeScript، ۲۸ test، build و screenshot پیش از checkpoint.

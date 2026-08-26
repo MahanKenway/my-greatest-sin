@@ -94,3 +94,7 @@ All visual, component, and canvas choices will reinforce the Luminous Connectome
 - The compound-eye aperture and `DIGITAL FLY` wordmark remain visible in the initial viewport. Copy describes explicit laboratory actions such as tracing a signal or stepping an experiment; it does not use generic marketing invitations.
 - The dual-species selector changes the central modelled specimen and its contextual evidence in one operation; it must never make the synthetic neural fixture appear to be a real species-specific connectome.
 - The visible body-reference licence is an evidence label, not a claim that a high-resolution source mesh or biological neural data is being executed.
+- Liquid glass is a functional material, not decoration: translucent surfaces keep a single hierarchy, use restrained blur and a fine bright edge, and never stack opaque cards over the specimen.
+- The header becomes a compact floating capsule containing only the aperture mark, specimen/runtime state and one contextual time-of-sky signal; repeated title and telemetry chrome are removed.
+- The sky must fill the full upper field at every camera angle. A camera-following equirectangular sky material replaces the current screen-layer blend; its day/night crossfade remains presentation-only.
+- The initial viewport must remain informative even if WebGL is still initializing or a capture tool cannot rasterize the canvas: the branded garden primer holds a visible world field beneath the transparent canvas, while the evidence rail, control rail and temporal strip retain their semantic accents.

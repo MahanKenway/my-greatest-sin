@@ -32,8 +32,8 @@ The active garden uses procedural Babylon geometry only: moss beds, a reflective
 
 | Asset | Source | Active use | Runtime boundary |
 |---|---|---|---|
-| Dawn Garden Panorama | Manus-generated managed image `/manus-storage/garden-dawn-panorama_712067d9.png` | Wide morning/late-afternoon sky backdrop for the Garden sky rig. | Decorative `MODELLED PRESENTATION`; not sensory light or a data source. |
-| Night Garden Panorama | Manus-generated managed image `/manus-storage/garden-night-panorama_62e31c61.png` | Wide night-sky backdrop used only when daylight is low. | Decorative `MODELLED PRESENTATION`; not a time-of-day simulation input. |
+| Dawn Sky Map | Manus-generated managed image `/manus-storage/garden-sky-dawn-equirectangular_4ab22523.png` | Sky-only texture for the camera-persistent morning sky dome; replaces the landscape panorama that warped on a sphere. | Decorative `MODELLED PRESENTATION`; not sensory light or a data source. |
+| Night Sky Map | Manus-generated managed image `/manus-storage/garden-sky-night-equirectangular_59dee875.png` | Sky-only texture for the camera-persistent night sky dome. | Decorative `MODELLED PRESENTATION`; not a time-of-day simulation input. |
 | Garden Observation Reference | Manus-generated managed image `/manus-storage/garden-observation-reference_a8464675.png` | Internal visual QA target for density, hierarchy and garden composition. | Not rendered as data or biological evidence. |
 | Connectome Aperture Mark v2 | Manus-generated managed image `/manus-storage/connectome-aperture-mark-v2_4089ca2b.png` | Header mark and visible application identity. | Brand presentation only. |
 

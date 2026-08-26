@@ -15,7 +15,7 @@ export class Arena {
   private lightAmount = 0.62;
   private touchPulse = 0;
   private temperatureShift = 0;
-  private readonly environment: EnvironmentPresentation = { daylight: 0.34, waterfall: 0.62, provenance: "MODELLED MAPPING" };
+  private readonly environment: EnvironmentPresentation = { daylight: 0.68, waterfall: 0.62, provenance: "MODELLED MAPPING" };
   private readonly foodPosition = new Vector3(2.35, 0.14, 1.5);
   private readonly lightPosition = new Vector3(-2.8, 0.06, -1.1);
   private readonly foodMesh;

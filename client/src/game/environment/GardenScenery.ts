@@ -5,14 +5,14 @@
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { Layer } from "@babylonjs/core/Layers/layer";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import type { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import type { Scene } from "@babylonjs/core/scene";
 
-const DAWN_PANORAMA_URL = "/manus-storage/garden-dawn-panorama_712067d9.png";
-const NIGHT_PANORAMA_URL = "/manus-storage/garden-night-panorama_62e31c61.png";
+const DAWN_PANORAMA_URL = "/manus-storage/garden-sky-dawn-equirectangular_4ab22523.png";
+const NIGHT_PANORAMA_URL = "/manus-storage/garden-sky-night-equirectangular_59dee875.png";
 
 type Firefly = Readonly<{ anchor: TransformNode; phase: number; mesh: Mesh }>;
 
@@ -23,10 +23,10 @@ export class GardenScenery {
   private readonly nightMaterials: StandardMaterial[] = [];
   private readonly dawnMaterials: StandardMaterial[] = [];
   private waterfallIntensity = 0.62;
-  private daylight = 0.34;
+  private daylight = 0.68;
   private waterfallMaterial: StandardMaterial | null = null;
-  private skyDawn: Layer | null = null;
-  private skyNight: Layer | null = null;
+  private skyDawn: StandardMaterial | null = null;
+  private skyNight: StandardMaterial | null = null;
   private sun: Mesh | null = null;
   private moon: Mesh | null = null;
 
@@ -77,8 +77,8 @@ export class GardenScenery {
     this.daylight = Math.max(0, Math.min(1, value));
     const night = 1 - this.daylight;
     const twilight = 1 - Math.min(1, Math.abs(this.daylight - 0.5) * 2);
-    if (this.skyDawn) this.skyDawn.color.a = 0.12 + this.daylight * 0.9;
-    if (this.skyNight) this.skyNight.color.a = Math.max(0, night * 0.96 - this.daylight * 0.08);
+    if (this.skyDawn) this.skyDawn.alpha = this.daylight;
+    if (this.skyNight) this.skyNight.alpha = 1;
     if (this.sun) this.sun.visibility = this.daylight > 0.06 ? 0.28 + this.daylight * 0.72 : 0;
     if (this.moon) this.moon.visibility = Math.max(0, night * 0.95 - this.daylight * 0.08);
     this.nightMaterials.forEach((material) => { material.alpha = 0.06 + night * 0.94; });
@@ -88,10 +88,10 @@ export class GardenScenery {
   }
 
   private createSkyRig(scene: Scene): void {
-    this.skyNight = new Layer("garden-sky-night", NIGHT_PANORAMA_URL, scene, true);
-    this.skyNight.color.a = 0.72;
-    this.skyDawn = new Layer("garden-sky-dawn", DAWN_PANORAMA_URL, scene, true);
-    this.skyDawn.color.a = 0.42;
+    this.skyNight = this.createSkyDome(scene, "garden-sky-night", NIGHT_PANORAMA_URL, 92);
+    this.skyNight.alpha = 0.72;
+    this.skyDawn = this.createSkyDome(scene, "garden-sky-dawn", DAWN_PANORAMA_URL, 90);
+    this.skyDawn.alpha = 0.42;
 
     const sunMaterial = this.material(scene, "garden-sun", "#F5BF6B", "#F5A643");
     sunMaterial.disableLighting = true;
@@ -99,6 +99,7 @@ export class GardenScenery {
     sunHalo.alpha = 0.24;
     sunHalo.disableLighting = true;
     this.sun = MeshBuilder.CreateSphere("garden-sun", { diameter: 0.64, segments: 16 }, scene);
+    this.sun.infiniteDistance = true;
     this.sun.position.set(4.7, 4.1, 5.9);
     this.sun.material = sunMaterial;
     const halo = MeshBuilder.CreateSphere("garden-sun-halo", { diameter: 1.15, segments: 16 }, scene);
@@ -108,6 +109,7 @@ export class GardenScenery {
     const moonMaterial = this.material(scene, "garden-moon", "#D8E8F2", "#7CC9E6");
     moonMaterial.disableLighting = true;
     this.moon = MeshBuilder.CreateSphere("garden-moon", { diameter: 0.44, segments: 16 }, scene);
+    this.moon.infiniteDistance = true;
     this.moon.position.set(-4.7, 4.05, 5.55);
     this.moon.material = moonMaterial;
 
@@ -123,6 +125,22 @@ export class GardenScenery {
       star.position.set(x, y, z);
       star.material = starMaterial;
     });
+  }
+
+  private createSkyDome(scene: Scene, name: string, textureUrl: string, diameter: number): StandardMaterial {
+    const dome = MeshBuilder.CreateSphere(name, { diameter, segments: 32, sideOrientation: Mesh.BACKSIDE }, scene);
+    dome.infiniteDistance = true;
+    dome.isPickable = false;
+    const material = new StandardMaterial(`${name}-material`, scene);
+    const texture = new Texture(textureUrl, scene);
+    texture.uScale = -1;
+    material.diffuseTexture = texture;
+    material.emissiveTexture = texture;
+    material.disableLighting = true;
+    material.backFaceCulling = false;
+    material.disableDepthWrite = true;
+    dome.material = material;
+    return material;
   }
 
   private createMossBeds(scene: Scene): void {

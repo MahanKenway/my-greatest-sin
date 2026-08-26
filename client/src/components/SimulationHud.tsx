@@ -69,17 +69,9 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
         <div className="brand-lockup">
           <img className="brand-mark" src={MARK_URL} alt="My Greatest Sin aperture mark" />
           <div>
-            <p className="micro-label">DUAL-SPECIES / OBSERVATION GARDEN</p>
+            <p className="micro-label">LIVE OBSERVATION BENCH</p>
             <h1>MY GREATEST SIN</h1>
           </div>
-        </div>
-        <div className="header-status">
-          <span className="status-dot" />
-          <span>{snapshot?.paused ? "PAUSED" : "OBSERVING"}</span>
-          <span className="header-rule" />
-          <span>{snapshot ? `${numeric(snapshot.fps, 0)} FPS` : "CALIBRATING"}</span>
-          <span className="header-rule" />
-          <span>{sky}</span>
         </div>
       </header>
 
@@ -98,15 +90,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
             <Readout label="SPIKES" value={`${snapshot?.spikeCount ?? 0} / STEP`} />
             <Readout label="RATE" value={numeric(snapshot?.averageRate ?? 0, 3)} />
           </div>
-          <p className="pane-note">{execution?.detail ?? "Rendering is sampled while the runtime prepares."}</p>
-        </section>
-
-        <section className="lab-pane contract-pane">
-          <p className="micro-label">CAUSAL CONTRACT</p>
-          <div className="contract-chain"><span className={usesSourceTopology ? "chain-on" : ""}>WORLD</span><i /> <span className={usesSourceTopology ? "chain-on" : ""}>NETWORK</span><i /> <span className={usesSourceTopology ? "chain-on" : ""}>BODY</span></div>
-          <p className="pane-note">{controlPath}</p>
-          <div className="source-readout"><span>BODY REFERENCE</span><strong>{snapshot?.species.sourceLicense ?? "—"}</strong></div>
-          <div className="source-readout"><span>EDGE COLUMNS</span><strong>{numeric(snapshot?.memoryEstimateMiB ?? 0)} MiB</strong></div>
+          <p className="pane-note causal-note">{controlPath}</p>
         </section>
 
         <EvidenceLedger showingFly={Boolean(showingFly)} usesSourceTopology={Boolean(usesSourceTopology)} executionLabel={execution?.label ?? "NO RUNTIME"} flywireStage={flywireStage} benchmark={benchmark} onRunOfficialBenchmark={onRunOfficialBenchmark} pilot={pilot} cpuCorridor={cpuCorridor} pilotProtocol={pilotProtocol} onPilotActivationRateChange={onPilotActivationRateChange} onPilotInputAblationChange={onPilotInputAblationChange} onRunPilot={onRunPilot} onRunCpuCorridor={onRunCpuCorridor} onCancelCpuCorridor={onCancelCpuCorridor} packStatus={packStatus} cacheProgress={cacheProgress} onConfigurePack={onConfigurePack} onCachePack={onCachePack} />
@@ -122,13 +106,11 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
         <section className="lab-pane control-pane">
           <div className="pane-heading"><div><p className="micro-label">02 / OBSERVATION CONTROLS</p><h2>Field console</h2></div><button className={snapshot?.paused ? "primary-button armed" : "primary-button"} onClick={() => onCommand({ type: "toggle" })}>{snapshot?.paused ? "RESUME" : "PAUSE"}</button></div>
           <div className="species-selector" role="group" aria-label="Select an observation specimen"><button className={snapshot?.species.id === "DROSOPHILA" ? "selected" : ""} onClick={() => onCommand({ type: "species", species: "DROSOPHILA" })}>FLY / STAGED</button><button className={snapshot?.species.id === "C_ELEGANS" ? "selected" : ""} onClick={() => onCommand({ type: "species", species: "C_ELEGANS" })}>C. ELEGANS / LIVE</button></div>
-          <div className="control-actions"><button onClick={() => onCommand({ type: "step" })}>STEP 5 MS</button><button onClick={() => onCommand({ type: "reset" })}>RESET VIEW</button><button className="demo-button" onClick={() => onCommand({ type: "demo" })}>{snapshot?.paused ? "ARM DEMO" : "AUTO DEMO"}</button></div>
+          <div className="control-actions"><button onClick={() => onCommand({ type: "reset" })}>RESET CAMERA</button><button className="demo-button" onClick={() => onCommand({ type: "demo" })}>{snapshot?.paused ? "ARM DEMO" : "AUTO DEMO"}</button></div>
           <div className="section-rule"><span>{flywireStaged ? "WORLD PROBES / VISUAL ONLY" : "FIELD PROBES / MODELLED INPUT"}</span></div>
           <Stimulus label="FOOD / ODOR" value={sensor?.odor ?? 0} color="gold" onChange={(amount) => onCommand({ type: "stimulus", stimulus: "food", amount })} />
           <Stimulus label="LIGHT FIELD" value={sensor?.light ?? 0} color="gold" onChange={(amount) => onCommand({ type: "stimulus", stimulus: "light", amount })} />
           <Stimulus label="WIND VECTOR" value={sensor?.wind ?? 0} color="cyan" onChange={(amount) => onCommand({ type: "stimulus", stimulus: "wind", amount })} />
-          <Stimulus label="TOUCH PULSE" value={sensor?.touch ?? 0} color="magenta" onChange={(amount) => onCommand({ type: "stimulus", stimulus: "touch", amount })} />
-          <Stimulus label="TEMPERATURE" value={(sensor?.temperature ?? 0 + 1) / 2} color="cyan" onChange={(amount) => onCommand({ type: "stimulus", stimulus: "temperature", amount })} />
           <div className="section-rule presentation"><span>SKY CYCLE / PRESENTATION ONLY</span><strong>{sky}</strong></div>
           <Stimulus label="DAYLIGHT" value={snapshot?.environment.daylight ?? 0.18} color="gold" onChange={(amount) => onCommand({ type: "environment", setting: "daylight", amount })} />
           <Stimulus label="WATERFALL FLOW" value={snapshot?.environment.waterfall ?? 0.62} color="cyan" onChange={(amount) => onCommand({ type: "environment", setting: "waterfall", amount })} />
