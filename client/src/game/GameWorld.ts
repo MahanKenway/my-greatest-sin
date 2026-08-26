@@ -7,10 +7,9 @@ import { FlyBody } from "@/game/body/FlyBody";
 import { WormBody } from "@/game/body/WormBody";
 import type { BodyController } from "@/game/body/types";
 import { Arena } from "@/game/environment/Arena";
-import { WormNavigator } from "@/game/behavior/WormNavigator";
 import { NeuralEngine } from "@/game/neural/engine";
 import { SPECIES_PROFILES } from "@/game/species/profiles";
-import type { ConnectomeColumns, ConnectomeExecution, MotorFrame, NeuralRouting, SensorFrame, SimulationCommand, SimulationSnapshot, SpeciesId, WormNavigationFrame } from "@/game/shared/types";
+import type { ConnectomeColumns, ConnectomeExecution, MotorFrame, NeuralRouting, SensorFrame, SimulationCommand, SimulationSnapshot, SpeciesId } from "@/game/shared/types";
 import { BrainView } from "@/game/visualization/BrainView";
 
 const DT = 0.005;
@@ -22,7 +21,6 @@ export class GameWorld {
   private neural: NeuralEngine;
   private readonly fly: FlyBody;
   private readonly worm: WormBody;
-  private readonly wormNavigator = new WormNavigator();
   private activeBody: BodyController;
   private brain: BrainView;
   private readonly timeline = new Float32Array(64);
@@ -41,7 +39,6 @@ export class GameWorld {
   private connectomeExecution: ConnectomeExecution = stagedFlywireExecution();
   private lastSensor: SensorFrame = { food: 0, odor: 0, light: 0, leftCue: 0, rightCue: 0, wind: 0, touch: 0, temperature: 0, taste: 0, provenance: "MODELLED MAPPING" };
   private lastMotor: MotorFrame = { forward: 0, turn: 0, wingLift: 0, gait: 0, provenance: "MODELLED MAPPING" };
-  private lastWormNavigation: WormNavigationFrame = { mode: "IDLE", foodDistance: 0, obstacleClearance: 0, targetLabel: "NO FOOD FIELD", targetValue: 0, memoryAgeSeconds: 0, memorySlots: 0, obstacleLabel: "FORAGE ROCK", provenance: "MODELLED MAPPING" };
 
   constructor(private readonly scene: Scene) {
     this.arena = new Arena(scene);
@@ -125,35 +122,8 @@ export class GameWorld {
     }
     this.spikes = this.neural.step(dt, this.lastSensor);
     const decodedMotor = this.decodeMotor();
-    const observation = this.arena.wormNavigation(this.activeBody.getPosition());
-    const navigation = this.wormNavigator.update({
-      timeSeconds: this.simTime,
-      positionX: this.activeBody.getPosition().x,
-      positionZ: this.activeBody.getPosition().z,
-      heading: this.activeBody.getHeading(),
-      ...observation,
-    });
-    this.lastWormNavigation = {
-      mode: navigation.mode,
-      foodDistance: navigation.foodDistance,
-      obstacleClearance: navigation.obstacleClearance,
-      targetLabel: navigation.targetLabel,
-      targetValue: navigation.targetValue,
-      memoryAgeSeconds: navigation.memoryAgeSeconds,
-      memorySlots: navigation.memorySlots,
-      obstacleLabel: "FORAGE ROCK",
-      provenance: "MODELLED MAPPING",
-    };
-    const resting = navigation.mode === "RESTING";
-    this.lastMotor = {
-      ...decodedMotor,
-      forward: resting ? 0 : Math.max(0.018, decodedMotor.forward * navigation.speedScale),
-      turn: Math.max(-1, Math.min(1, decodedMotor.turn * 0.18 + navigation.turnBias * 0.76)),
-      gait: resting ? 0.05 : Math.max(0.06, decodedMotor.gait * (0.38 + navigation.speedScale * 0.62)),
-      wingLift: resting ? 0.05 : Math.max(0.06, decodedMotor.wingLift * (0.38 + navigation.speedScale * 0.62)),
-    };
+    this.lastMotor = decodedMotor;
     this.activeBody.update(this.lastMotor, dt);
-    this.arena.constrainWormPosition(this.activeBody.getPosition());
     this.timeline.copyWithin(0, 1);
     this.timeline[this.timeline.length - 1] = Math.min(1, this.spikes / Math.max(18, this.activeConnectome.neuronCount * 0.12));
     this.active = 0;
@@ -172,11 +142,11 @@ export class GameWorld {
     const left = mean(this.neural.routing.motor.left) * 10;
     const right = mean(this.neural.routing.motor.right) * 10;
     const reactive = mean(this.neural.routing.motor.reactive) * 8;
-    const forward = Math.max(0.08, sourceForward);
+    const forward = sourceForward;
     const bodyWave = Math.min(1, forward + reactive * 0.3);
     return {
       forward,
-      turn: Math.max(-1, Math.min(1, left - right + (this.lastSensor.wind - 0.25) * 0.2)),
+      turn: Math.max(-1, Math.min(1, left - right)),
       wingLift: this.species === "DROSOPHILA" ? Math.min(1, reactive) : bodyWave,
       gait: bodyWave,
       provenance: "MODELLED MAPPING",
@@ -198,7 +168,6 @@ export class GameWorld {
     this.active = 0;
     this.timeline.fill(0);
     this.neural.reset();
-    this.wormNavigator.reset();
     this.fly.reset();
     this.worm.reset();
     this.demo = false;
@@ -211,9 +180,7 @@ export class GameWorld {
 
   private snapshot(): SimulationSnapshot {
     const averageRate = this.neural.cpu.firingRate.reduce((sum, value) => sum + value, 0) / Math.max(1, this.activeConnectome.neuronCount);
-    const behavior = this.species === "C_ELEGANS" && this.lastWormNavigation.mode !== "IDLE"
-      ? this.lastWormNavigation.mode
-      : this.lastSensor.wind > 0.65 || this.lastSensor.touch > 0.5
+    const behavior = this.lastSensor.wind > 0.65 || this.lastSensor.touch > 0.5
       ? "BRACING"
       : this.lastSensor.food > 0.28 ? "FORAGING" : this.lastSensor.leftCue + this.lastSensor.rightCue > 0.1 ? "ORIENTING" : "IDLE";
     return {
@@ -233,7 +200,6 @@ export class GameWorld {
       motor: this.lastMotor,
       environment: this.arena.getPresentation(),
       behavior,
-      wormNavigation: this.lastWormNavigation,
       neuronActivity: this.neural.cpu.firingRate,
       timeline: this.timeline,
     };

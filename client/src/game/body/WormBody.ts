@@ -1,4 +1,4 @@
-/** Natural specimen: continuous handcrafted body + MODELLED MAPPING wave from real MotorFrame values. */
+/** Natural specimen: visual smoothing only; translation, turn and body wave consume the decoded C. elegans MotorFrame without autonomous steering. */
 import type { AnimationGroup } from "@babylonjs/core/Animations/animationGroup";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
@@ -30,7 +30,10 @@ export class WormBody implements BodyController {
       ({ animationGroups }) => {
         this.wave = animationGroups.find((group) => group.name.includes("MODELLED_C_ELEGANS_BODY_WAVE"));
         this.wave?.start(true, 1.15);
-        this.wave?.setWeightForAllAnimatables(0.22);
+        if (this.wave) {
+          this.wave.speedRatio = 0;
+          this.wave.setWeightForAllAnimatables(0);
+        }
       },
     );
     this.visual.scaling.setAll(0.44);
@@ -45,7 +48,7 @@ export class WormBody implements BodyController {
     this.smoothedTurn += (motor.turn - this.smoothedTurn) * steeringBlend;
     this.smoothedForward += (motor.forward - this.smoothedForward) * strideBlend;
     this.smoothedGait += (motor.gait - this.smoothedGait) * strideBlend;
-    this.gaitPhase += dt * (0.74 + this.smoothedGait * 6.8);
+    this.gaitPhase += dt * (this.smoothedGait * 6.8);
     this.heading += this.smoothedTurn * dt * 0.84;
     const stride = this.smoothedForward <= 0.002 ? 0 : (0.022 + this.smoothedForward * 0.31) * dt;
     this.root.position.x = Math.max(-4.35, Math.min(4.35, this.root.position.x + Math.cos(this.heading) * stride));
@@ -53,9 +56,9 @@ export class WormBody implements BodyController {
     this.root.rotation.y = -this.heading;
     this.visual.position.y = Math.sin(this.gaitPhase * 1.7) * 0.008;
     if (this.wave) {
-      const waveStrength = Math.max(0.04, Math.min(1, this.smoothedGait));
-      this.wave.speedRatio = 0.16 + waveStrength * 2.35;
-      this.wave.setWeightForAllAnimatables(0.05 + waveStrength * 0.9);
+      const waveStrength = Math.max(0, Math.min(1, this.smoothedGait));
+      this.wave.speedRatio = waveStrength > 0.002 ? 0.16 + waveStrength * 2.35 : 0;
+      this.wave.setWeightForAllAnimatables(waveStrength);
     }
   }
 

@@ -8,16 +8,7 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import type { Scene } from "@babylonjs/core/scene";
 import type { EnvironmentPresentation, SensorFrame } from "@/game/shared/types";
-import type { WormFoodTarget } from "@/game/behavior/WormNavigator";
 import { GardenScenery } from "./GardenScenery";
-
-export type WormNavigationObservation = Readonly<{
-  foodTargets: ReadonlyArray<WormFoodTarget>;
-  obstacleX: number;
-  obstacleZ: number;
-  obstacleRadius: number;
-  obstacleClearance: number;
-}>;
 
 type FoodTargetVisual = Readonly<{
   id: string;
@@ -36,8 +27,6 @@ export class Arena {
   private temperatureShift = 0;
   private readonly environment: EnvironmentPresentation = { daylight: 0.68, waterfall: 0.62, provenance: "MODELLED MAPPING" };
   private readonly foodTargets: FoodTargetVisual[] = [];
-  private readonly forageRockPosition = new Vector3(1.45, 0.22, 0.66);
-  private readonly forageRockRadius = 0.5;
   private readonly lightPosition = new Vector3(-2.8, 0.06, -1.1);
   private readonly lightMesh;
   private readonly garden: GardenScenery;
@@ -55,15 +44,6 @@ export class Arena {
     this.addFoodTarget("bacterial-lawn", "BACTERIAL LAWN", 1, new Vector3(2.35, 0.14, 1.5), 0.34, "#E7B854", "#5D4210");
     this.addFoodTarget("yeast-flake", "YEAST FLAKE", 0.62, new Vector3(-2.18, 0.13, 2.45), 0.26, "#D77AB6", "#582342");
     this.addFoodTarget("mineral-drop", "MINERAL DROP", 0.38, new Vector3(-0.75, 0.11, -2.36), 0.22, "#74D6E7", "#1A5260");
-
-    const forageRock = MeshBuilder.CreateIcoSphere("c-elegans-forage-rock", { radius: this.forageRockRadius, subdivisions: 2 }, scene);
-    forageRock.position.copyFrom(this.forageRockPosition);
-    forageRock.scaling.set(1.12, 0.62, 0.92);
-    const forageRockMaterial = new StandardMaterial("c-elegans-forage-rock-material", scene);
-    forageRockMaterial.diffuseColor = Color3.FromHexString("#66584A");
-    forageRockMaterial.emissiveColor = Color3.FromHexString("#201912");
-    forageRockMaterial.specularColor = Color3.Black();
-    forageRock.material = forageRockMaterial;
 
     this.lightMesh = MeshBuilder.CreateCylinder("light-pool", { diameter: 1.25, height: 0.018, tessellation: 48 }, scene);
     this.lightMesh.position.copyFrom(this.lightPosition);
@@ -134,8 +114,6 @@ export class Arena {
     const foodDirection = foodSamples.reduce((sum, sample) => sum + Math.sin(Math.atan2(sample.target.position.z - position.z, sample.target.position.x - position.x) - heading) * sample.signal, 0);
     const direction = foodDirection + Math.sin(lightAngle) * lightField * 0.35;
     const boundaryTouch = Math.max(0, Math.abs(position.x) - 4.35, Math.abs(position.z) - 3.75) * 4;
-    const obstacleClearance = this.forageRockClearance(position);
-    const obstacleTouch = Math.max(0, Math.min(1, (0.62 - obstacleClearance) / 0.62));
     for (const target of this.foodTargets) target.mesh.scaling.setAll(target.baseScale * (0.72 + this.foodAmount * 0.48));
     this.lightMesh.scaling.setAll(0.55 + this.lightAmount * 0.65);
 
@@ -146,33 +124,11 @@ export class Arena {
       leftCue: Math.max(0, direction),
       rightCue: Math.max(0, -direction),
       wind: this.windAmount * (0.55 + 0.45 * Math.sin(heading + position.x * 0.7)),
-      touch: Math.min(1, this.touchPulse + boundaryTouch + obstacleTouch),
+      touch: Math.min(1, this.touchPulse + boundaryTouch),
       temperature: this.temperatureShift,
       taste: foodField > 0.85 ? foodField : 0,
       provenance: "MODELLED MAPPING",
     };
-  }
-
-  wormNavigation(position: Vector3): WormNavigationObservation {
-    return {
-      foodTargets: this.foodTargets.map((target) => ({ id: target.id, label: target.label, x: target.position.x, z: target.position.z, value: target.value, signal: this.fieldAt(position, target.position, 6.2) * this.foodAmount })),
-      obstacleX: this.forageRockPosition.x,
-      obstacleZ: this.forageRockPosition.z,
-      obstacleRadius: this.forageRockRadius,
-      obstacleClearance: this.forageRockClearance(position),
-    };
-  }
-
-  constrainWormPosition(position: Vector3): void {
-    const dx = position.x - this.forageRockPosition.x;
-    const dz = position.z - this.forageRockPosition.z;
-    const distance = Math.hypot(dx, dz);
-    const safeDistance = this.forageRockRadius + 0.14;
-    if (distance >= safeDistance) return;
-    const unitX = distance > 0.0001 ? dx / distance : 1;
-    const unitZ = distance > 0.0001 ? dz / distance : 0;
-    position.x = this.forageRockPosition.x + unitX * safeDistance;
-    position.z = this.forageRockPosition.z + unitZ * safeDistance;
   }
 
   private fieldAt(position: Vector3, source: Vector3, radius: number): number {
@@ -188,10 +144,6 @@ export class Arena {
     material.specularColor = Color3.Black();
     mesh.material = material;
     this.foodTargets.push({ id, label, value, position, mesh, baseScale: 1 });
-  }
-
-  private forageRockClearance(position: Vector3): number {
-    return Math.hypot(position.x - this.forageRockPosition.x, position.z - this.forageRockPosition.z) - this.forageRockRadius;
   }
 
   private applyDaylight(daylight: number): void {

@@ -342,7 +342,7 @@
 - [x] حذف یا فشرده‌سازی کنترل‌ها و متن‌های غیرضروری؛ وضعیت گونه، کنترل‌های واقعی، گیت‌های علمی و feedback اجرایی حفظ شدند.
 - [x] اعتبارسنجی Sky صبح/شب، تعویض گونه، console خالی، TypeScript، ۲۸ test، build و screenshot پیش از checkpoint.
 
-## C. elegans Food Seeking and Obstacle Avoidance Revision
+## C. elegans Food Seeking and Obstacle Avoidance Revision — Historical, Superseded
 
 - [x] بررسی مسیر موجود مدل‌سازی‌شدهٔ food/wind/light/touch، خروجی موتور و محدودیت‌های Garden برای تعیین نقطه‌های صحیح رفتار C. elegans.
 - [x] تعریف قرارداد رفتاریِ صریح و قابل‌مشاهده برای food-seeking و obstacle-avoidance، با برچسب `MODELLED MAPPING` و بدون دست‌کاری در topology منبع ۲۷۹ N / ۶٬۲۶۱ E.
@@ -350,10 +350,18 @@
 - [x] افزودن بازخورد UI حداقلی برای علت رفتار، مقصد غذا و avoid شدن مانع، بدون نسبت دادن شناخت یا اراده به کرم.
 - [x] اعتبارسنجی رفتارها در مرورگر، تعویض گونه، console، TypeScript، ۳۱ test، build و screenshot پیش از checkpoint.
 
-## C. elegans Multi-Food, Short-Term Memory and Rest Revision
+## C. elegans Multi-Food, Short-Term Memory and Rest Revision — Historical, Superseded
 
 - [x] مشاهدهٔ حرکت فعلی C. elegans در seek/avoid و ثبت نقاط غیرطبیعیِ سرعت، چرخش یا موج بدن پیش از اصلاح.
 - [x] تعریف غذاهای نمایشی چندارزشی، معیار انتخاب target، حافظهٔ کوتاه‌مدت مسیر و TTL بازدیدها؛ همه با برچسب `MODELLED MAPPING`.
 - [x] افزودن حالت‌های `RESTING` و `EXPLORING` با جست‌وجوی deterministic و محدود، بدون تغییر source topology یا نسبت‌دادن اراده/حیات به کرم.
 - [x] بهبود smoothing حرکت و وزن موج بدن بر اساس حالت رفتاری؛ هدف، خوانایی و طبیعی‌ترشدن presentation است نه ادعای biomechanics معتبر.
 - [x] نمایش حداقلی food target/ارزش، memory و علت حالت در UI؛ اعتبارسنجی مرورگر، console، TypeScript، ۳۲ test، build و screenshot پیش از checkpoint.
+
+## C. elegans Network-First Motion and Obstacle Removal
+
+- [x] بازتولید برخورد/بازنشانی در forage-rock و حذف mesh، collision correction و cueهای وابسته به آن از مسیر C. elegans.
+- [x] ممیزی و حذف turn/forward steering مستقل از خروجی موتور شبکه؛ فقط motor decoder آشکار و smoothingی که از MotorFrame صفر حرکت نمی‌سازد باقی مانده است.
+- [x] بررسی پروژه‌های متن‌باز مرتبط با C. elegans برای روش/دادهٔ دارای مجوز و provenance؛ `openworm/c302` با MIT فقط مرجع معماری است و `CE_locomotion` به‌دلیل نبود license metadata استفاده نشد.
+- [x] بازنگری UI برای نشان‌دادن اینکه حرکت از C. elegans source topology + MODELLED MOTOR DECODER می‌آید و هیچ تصمیم navigation مستقل فعال نیست.
+- [ ] اعتبارسنجی حرکت بدون reset، تعویض گونه، console، TypeScript، tests، build و checkpoint.

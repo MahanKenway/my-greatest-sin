@@ -59,10 +59,9 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
   const controlPath = flywireStaged
     ? "Display gait only. Garden and field controls do not drive FlyWire, a scientific motor decoder, or the fly body."
     : usesSourceTopology
-      ? "Modelled field encoding → 279 N / 6,261 E source topology → modelled motor grouping → body wave."
+      ? "Modelled field encoding → 279 N / 6,261 E source topology → disclosed motor decoder → body wave. No autonomous navigation steering is active."
       : "Source topology is not active; no synthetic neural fallback is used.";
   const sky = skyLabel(snapshot?.environment.daylight ?? 0.34);
-  const wormNavigation = !showingFly ? snapshot?.wormNavigation : null;
 
   return (
     <div className="lab-hud" aria-live="polite">
@@ -100,8 +99,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
       <section className="world-caption">
         <p className="micro-label">{flywireStaged ? "FLYWIRE V783 / NETWORK PARKED" : "LIVE SOURCE LOOP / MODELLED EMBODIMENT"}</p>
         <div className="behavior-title"><span className="state-hash">//</span><strong>{flywireStaged ? "DISPLAY GAIT" : snapshot?.behavior ?? "INITIALIZING"}</strong></div>
-        {wormNavigation && <div className={`worm-navigation ${wormNavigation.mode.toLowerCase().replaceAll(" ", "-")}`}><span>MODELLED NAVIGATION</span><strong>{wormNavigation.mode}</strong><small>{wormNavigation.targetLabel} · VALUE {Math.round(wormNavigation.targetValue * 100)}% · {Number.isFinite(wormNavigation.foodDistance) ? wormNavigation.foodDistance.toFixed(1) : "—"} U</small><em>PATH {wormNavigation.memorySlots}/12 · VISIT {Number.isFinite(wormNavigation.memoryAgeSeconds) ? `${wormNavigation.memoryAgeSeconds.toFixed(1)} S` : "—"}</em></div>}
-        <p>{flywireStaged ? "A visual specimen in a presentation garden. No FlyWire network, body-control claim, or hidden substitute is active." : "The source topology is active; field encoding and body decode remain explicitly modelled."}</p>
+        <p>{flywireStaged ? "A visual specimen in a presentation garden. No FlyWire network, body-control claim, or hidden substitute is active." : "The source topology is active; field encoding and body decode remain explicitly modelled. No independent target, obstacle or route-memory policy is active."}</p>
       </section>
 
       <aside className="observation-rail right-rail">
