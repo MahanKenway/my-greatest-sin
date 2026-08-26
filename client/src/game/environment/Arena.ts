@@ -9,6 +9,16 @@ import type { Scene } from "@babylonjs/core/scene";
 import type { EnvironmentPresentation, SensorFrame } from "@/game/shared/types";
 import { GardenScenery } from "./GardenScenery";
 
+export type WormNavigationObservation = Readonly<{
+  foodX: number;
+  foodZ: number;
+  foodSignal: number;
+  obstacleX: number;
+  obstacleZ: number;
+  obstacleRadius: number;
+  obstacleClearance: number;
+}>;
+
 export class Arena {
   private foodAmount = 0.76;
   private windAmount = 0.14;
@@ -17,6 +27,8 @@ export class Arena {
   private temperatureShift = 0;
   private readonly environment: EnvironmentPresentation = { daylight: 0.68, waterfall: 0.62, provenance: "MODELLED MAPPING" };
   private readonly foodPosition = new Vector3(2.35, 0.14, 1.5);
+  private readonly forageRockPosition = new Vector3(1.45, 0.22, 0.66);
+  private readonly forageRockRadius = 0.5;
   private readonly lightPosition = new Vector3(-2.8, 0.06, -1.1);
   private readonly foodMesh;
   private readonly lightMesh;
@@ -38,6 +50,15 @@ export class Arena {
     foodMaterial.diffuseColor = Color3.FromHexString("#E7B854");
     foodMaterial.emissiveColor = Color3.FromHexString("#5D4210");
     this.foodMesh.material = foodMaterial;
+
+    const forageRock = MeshBuilder.CreateIcoSphere("c-elegans-forage-rock", { radius: this.forageRockRadius, subdivisions: 2 }, scene);
+    forageRock.position.copyFrom(this.forageRockPosition);
+    forageRock.scaling.set(1.12, 0.62, 0.92);
+    const forageRockMaterial = new StandardMaterial("c-elegans-forage-rock-material", scene);
+    forageRockMaterial.diffuseColor = Color3.FromHexString("#66584A");
+    forageRockMaterial.emissiveColor = Color3.FromHexString("#201912");
+    forageRockMaterial.specularColor = Color3.Black();
+    forageRock.material = forageRockMaterial;
 
     this.lightMesh = MeshBuilder.CreateCylinder("light-pool", { diameter: 1.25, height: 0.018, tessellation: 48 }, scene);
     this.lightMesh.position.copyFrom(this.lightPosition);
@@ -107,6 +128,8 @@ export class Arena {
     const lightAngle = Math.atan2(this.lightPosition.z - position.z, this.lightPosition.x - position.x) - heading;
     const direction = Math.sin(foodAngle) * foodField + Math.sin(lightAngle) * lightField * 0.35;
     const boundaryTouch = Math.max(0, Math.abs(position.x) - 4.35, Math.abs(position.z) - 3.75) * 4;
+    const obstacleClearance = this.forageRockClearance(position);
+    const obstacleTouch = Math.max(0, Math.min(1, (0.62 - obstacleClearance) / 0.62));
     this.foodMesh.scaling.setAll(0.45 + this.foodAmount * 0.7);
     this.lightMesh.scaling.setAll(0.55 + this.lightAmount * 0.65);
 
@@ -117,15 +140,43 @@ export class Arena {
       leftCue: Math.max(0, direction),
       rightCue: Math.max(0, -direction),
       wind: this.windAmount * (0.55 + 0.45 * Math.sin(heading + position.x * 0.7)),
-      touch: Math.min(1, this.touchPulse + boundaryTouch),
+      touch: Math.min(1, this.touchPulse + boundaryTouch + obstacleTouch),
       temperature: this.temperatureShift,
       taste: foodField > 0.85 ? foodField : 0,
       provenance: "MODELLED MAPPING",
     };
   }
 
+  wormNavigation(position: Vector3): WormNavigationObservation {
+    return {
+      foodX: this.foodPosition.x,
+      foodZ: this.foodPosition.z,
+      foodSignal: this.fieldAt(position, this.foodPosition, 6.2) * this.foodAmount,
+      obstacleX: this.forageRockPosition.x,
+      obstacleZ: this.forageRockPosition.z,
+      obstacleRadius: this.forageRockRadius,
+      obstacleClearance: this.forageRockClearance(position),
+    };
+  }
+
+  constrainWormPosition(position: Vector3): void {
+    const dx = position.x - this.forageRockPosition.x;
+    const dz = position.z - this.forageRockPosition.z;
+    const distance = Math.hypot(dx, dz);
+    const safeDistance = this.forageRockRadius + 0.14;
+    if (distance >= safeDistance) return;
+    const unitX = distance > 0.0001 ? dx / distance : 1;
+    const unitZ = distance > 0.0001 ? dz / distance : 0;
+    position.x = this.forageRockPosition.x + unitX * safeDistance;
+    position.z = this.forageRockPosition.z + unitZ * safeDistance;
+  }
+
   private fieldAt(position: Vector3, source: Vector3, radius: number): number {
     return Math.max(0, 1 - Vector3.Distance(position, source) / radius);
+  }
+
+  private forageRockClearance(position: Vector3): number {
+    return Math.hypot(position.x - this.forageRockPosition.x, position.z - this.forageRockPosition.z) - this.forageRockRadius;
   }
 
   private applyDaylight(daylight: number): void {

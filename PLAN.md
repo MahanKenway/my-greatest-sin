@@ -75,3 +75,9 @@ The interface follows the visual target: a central specimen arena, a left brain 
 - **Why isolated:** The same static controls currently appear for two materially different execution states. Rearranging the HUD could accidentally imply that the staged FlyWire graph drives the fly.
 - **Approach:** Derive compact, species-specific operation copy from `SimulationSnapshot`; label the sky control explicitly as presentation; surface the causal boundary next to the active body readout; reserve operational buttons for their actual supported path.
 - **Verify:** Fly remains visibly `0 N / 0 E` and display-only. C. elegans remains visibly source topology `279 N / 6,261 E` with modelled sensor/motor boundaries. UI has no overflow or console errors on desktop and compact layouts.
+
+### 8. C. elegans food-seeking and obstacle-avoidance behaviour
+
+- **Why isolated:** The source graph contains real connected cells, but the mapping from the Garden’s food field, decorative obstacles and body mechanics is not a source-proven behavioural experiment. A navigation layer must not overwrite the graph or make the worm appear autonomous beyond the disclosed model.
+- **Approach:** Keep the 279-neuron / 6,261-edge source topology immutable. `Arena` exposes a food target plus one visible forage-rock zone as `MODELLED MAPPING`; the existing odor/left/right/reactive drives enter the existing routing. A deterministic `WormNavigator` merges only a bounded steering bias and collision correction into the modelled motor decoder, with status `SEEKING FOOD`, `AVOIDING OBSTACLE` or `FEEDING` visible in the HUD.
+- **Verify:** With food active, the worm turns toward the target. When its approach intersects the forage-rock zone, it steers away and never remains inside it. FlyWire-staged fly behaviour remains unchanged. Tests cover the pure navigator; browser verification shows the target, avoidance state and C. elegans source-topology count without console errors.

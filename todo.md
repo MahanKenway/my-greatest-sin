@@ -341,3 +341,11 @@
 - [x] جایگزینی هدر فعلی با نشان شناورِ کم‌حجم liquid-glass، هویت بصری روشن و حذف telemetry تکراری.
 - [x] حذف یا فشرده‌سازی کنترل‌ها و متن‌های غیرضروری؛ وضعیت گونه، کنترل‌های واقعی، گیت‌های علمی و feedback اجرایی حفظ شدند.
 - [x] اعتبارسنجی Sky صبح/شب، تعویض گونه، console خالی، TypeScript، ۲۸ test، build و screenshot پیش از checkpoint.
+
+## C. elegans Food Seeking and Obstacle Avoidance Revision
+
+- [x] بررسی مسیر موجود مدل‌سازی‌شدهٔ food/wind/light/touch، خروجی موتور و محدودیت‌های Garden برای تعیین نقطه‌های صحیح رفتار C. elegans.
+- [x] تعریف قرارداد رفتاریِ صریح و قابل‌مشاهده برای food-seeking و obstacle-avoidance، با برچسب `MODELLED MAPPING` و بدون دست‌کاری در topology منبع ۲۷۹ N / ۶٬۲۶۱ E.
+- [x] پیاده‌سازی steering، حالت رفتاری و حس مرز/مانع فقط برای C. elegans؛ مسیر FlyWire staged مگس ثابت ماند.
+- [x] افزودن بازخورد UI حداقلی برای علت رفتار، مقصد غذا و avoid شدن مانع، بدون نسبت دادن شناخت یا اراده به کرم.
+- [x] اعتبارسنجی رفتارها در مرورگر، تعویض گونه، console، TypeScript، ۳۱ test، build و screenshot پیش از checkpoint.

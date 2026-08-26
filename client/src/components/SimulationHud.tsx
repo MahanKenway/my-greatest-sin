@@ -62,6 +62,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
       ? "Modelled field encoding → 279 N / 6,261 E source topology → modelled motor grouping → body wave."
       : "Source topology is not active; no synthetic neural fallback is used.";
   const sky = skyLabel(snapshot?.environment.daylight ?? 0.34);
+  const wormNavigation = !showingFly ? snapshot?.wormNavigation : null;
 
   return (
     <div className="lab-hud" aria-live="polite">
@@ -99,6 +100,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
       <section className="world-caption">
         <p className="micro-label">{flywireStaged ? "FLYWIRE V783 / NETWORK PARKED" : "LIVE SOURCE LOOP / MODELLED EMBODIMENT"}</p>
         <div className="behavior-title"><span className="state-hash">//</span><strong>{flywireStaged ? "DISPLAY GAIT" : snapshot?.behavior ?? "INITIALIZING"}</strong></div>
+        {wormNavigation && <div className={`worm-navigation ${wormNavigation.mode.toLowerCase().replaceAll(" ", "-")}`}><span>MODELLED NAVIGATION</span><strong>{wormNavigation.mode}</strong><small>{wormNavigation.targetLabel} {wormNavigation.foodDistance.toFixed(1)} U · {wormNavigation.obstacleLabel} {Math.max(0, wormNavigation.obstacleClearance).toFixed(1)} U</small></div>}
         <p>{flywireStaged ? "A visual specimen in a presentation garden. No FlyWire network, body-control claim, or hidden substitute is active." : "The source topology is active; field encoding and body decode remain explicitly modelled."}</p>
       </section>
 

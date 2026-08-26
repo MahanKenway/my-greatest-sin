@@ -17,6 +17,7 @@ React frame (one full-screen GameCanvas)
        ├── WormBody (segmented procedural mesh + modelled undulation)
        ├── Arena (food, light, wind, wall, touch, temperature, odor fields)
        │    └── GardenScenery (procedural habitat + sky rig; visual-only `MODELLED MAPPING`)
+       ├── WormNavigator (C. elegans-only food target, forage-rock avoidance and bounded modelled steering)
        ├── BrainView (sampled thin instances, region summaries, selection)
        └── ExperimentStore (commands, seeded events, export/replay metadata)
 ```
@@ -83,3 +84,7 @@ Simulation time advances in fixed `dt` increments under a seeded PRNG. Rendering
 ## Garden Presentation Contract
 
 `Arena` owns the `EnvironmentPresentation` bridge. Its daylight value drives only the `GardenScenery` sky rig and named presentation lights: dawn panorama, night panorama, sun, moon, stars, fireflies and material tint. `GardenScenery` owns all decorative meshes and must not call `Arena.sample`, `GameWorld`, neural code or body controllers. `SimulationHud` only dispatches the existing typed `environment` command and reads the species/runtime state from `SimulationSnapshot`.
+
+## C. elegans Navigation Contract
+
+`WormNavigator` runs only after the active C. elegans source topology produces its ordinary `MotorFrame`. It receives a modelled food-bearing/target-distance observation and a modelled forage-rock proximity observation from `Arena`, then limits its steering correction and forward speed before `WormBody` updates. The same obstacle proximity also contributes to the existing reactive sensory input. The source graph, edge columns and neuron counts are never changed; food seeking, collision zone, motor merge and body translation are all visibly `MODELLED MAPPING`.
