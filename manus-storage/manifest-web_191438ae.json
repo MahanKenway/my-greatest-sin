@@ -1,0 +1,259 @@
+{
+  "chunks": [
+    {
+      "bytes": 1114040,
+      "column": "root_id",
+      "elementCount": 139255,
+      "elementOffset": 0,
+      "id": "root_id:0",
+      "sha256": "a91e82d45c0d30f2eba42bd5f811a4f87edad5916635963a1bc27646dfebffde",
+      "url": "./manus-storage/root_id-00000_d2558197.bin"
+    },
+    {
+      "bytes": 557024,
+      "column": "incoming_offsets",
+      "elementCount": 139256,
+      "elementOffset": 0,
+      "id": "incoming_offsets:0",
+      "sha256": "ea133f60df49c70a8f63205ac7bec5030f164c68bac677a5fa58dc848a26530f",
+      "url": "./manus-storage/incoming_offsets-00000_ab914822.bin"
+    },
+    {
+      "bytes": 33554432,
+      "column": "source_index",
+      "elementCount": 8388608,
+      "elementOffset": 0,
+      "id": "source_index:0",
+      "sha256": "84ed7ba903bf1d9ad2433ebd0b16d460ef1bc2c4529989920b4c4d20a53ad6ef",
+      "url": "./manus-storage/source_index-00000_db428c11.bin"
+    },
+    {
+      "bytes": 33554432,
+      "column": "source_index",
+      "elementCount": 8388608,
+      "elementOffset": 8388608,
+      "id": "source_index:1",
+      "sha256": "fb0c4c771d1fab8274d228132e0c67645944c787a3b5ace6f62b776a266eb0c9",
+      "url": "./manus-storage/source_index-00001_472b52d4.bin"
+    },
+    {
+      "bytes": 283124,
+      "column": "source_index",
+      "elementCount": 70781,
+      "elementOffset": 16777216,
+      "id": "source_index:2",
+      "sha256": "2d779be449a0c4aef124a47b2143c69dc89cc90163e1caee8c94836fcd8fd29d",
+      "url": "./manus-storage/source_index-00002_cbe29da9.bin"
+    },
+    {
+      "bytes": 33554432,
+      "column": "synapse_count",
+      "elementCount": 8388608,
+      "elementOffset": 0,
+      "id": "synapse_count:0",
+      "sha256": "d95a2bd30c0e3741d6324d8fb14f15cbf39ba5320753db66c90f73e719168e08",
+      "url": "./manus-storage/synapse_count-00000_ff15d272.bin"
+    },
+    {
+      "bytes": 33554432,
+      "column": "synapse_count",
+      "elementCount": 8388608,
+      "elementOffset": 8388608,
+      "id": "synapse_count:1",
+      "sha256": "eadefe9c7178d8bc1f56f453bf4f4abcb0766c0fd7b5913cefbea416f77af958",
+      "url": "./manus-storage/synapse_count-00001_4010fd07.bin"
+    },
+    {
+      "bytes": 283124,
+      "column": "synapse_count",
+      "elementCount": 70781,
+      "elementOffset": 16777216,
+      "id": "synapse_count:2",
+      "sha256": "d89b6abd388a519d1554ab7d416485ad29ffa4e693864da2acd839b519dc57e8",
+      "url": "./manus-storage/synapse_count-00002_c17ba475.bin"
+    },
+    {
+      "bytes": 33554432,
+      "column": "neuropil_index",
+      "elementCount": 16777216,
+      "elementOffset": 0,
+      "id": "neuropil_index:0",
+      "sha256": "8a5802766bd05f7037b5ac05ab3a69c21337e7d91f2dd8d6e09727f5b0b3fb1b",
+      "url": "./manus-storage/neuropil_index-00000_eb5d9968.bin"
+    },
+    {
+      "bytes": 141562,
+      "column": "neuropil_index",
+      "elementCount": 70781,
+      "elementOffset": 16777216,
+      "id": "neuropil_index:1",
+      "sha256": "e04ffd6d977e1355e244e493b93d54d4d8febf4acbc4e7f35539804d23c36c82",
+      "url": "./manus-storage/neuropil_index-00001_6d510d5c.bin"
+    }
+  ],
+  "columns": {
+    "incoming_offsets": {
+      "chunks": [
+        "incoming_offsets:0"
+      ],
+      "elementCount": 139256,
+      "scalarType": "u32",
+      "semanticStatus": "SOURCE DATA",
+      "stride": 1
+    },
+    "neuropil_index": {
+      "chunks": [
+        "neuropil_index:0",
+        "neuropil_index:1"
+      ],
+      "elementCount": 16847997,
+      "scalarType": "u16",
+      "semanticStatus": "SOURCE DATA",
+      "stride": 1
+    },
+    "root_id": {
+      "chunks": [
+        "root_id:0"
+      ],
+      "elementCount": 139255,
+      "scalarType": "u64",
+      "semanticStatus": "SOURCE DATA",
+      "stride": 1
+    },
+    "source_index": {
+      "chunks": [
+        "source_index:0",
+        "source_index:1",
+        "source_index:2"
+      ],
+      "elementCount": 16847997,
+      "scalarType": "u32",
+      "semanticStatus": "SOURCE DATA",
+      "stride": 1
+    },
+    "synapse_count": {
+      "chunks": [
+        "synapse_count:0",
+        "synapse_count:1",
+        "synapse_count:2"
+      ],
+      "elementCount": 16847997,
+      "scalarType": "u32",
+      "semanticStatus": "SOURCE DATA",
+      "stride": 1
+    }
+  },
+  "datasetId": "flywire-v783-proofread-connections",
+  "dictionaries": {
+    "neuropils": [
+      "AVLP_R",
+      "SLP_R",
+      "SMP_R",
+      "SMP_L",
+      "LAL_R",
+      "AL_L",
+      "SIP_R",
+      "AVLP_L",
+      "AOTU_L",
+      "LA_R",
+      "MB_ML_R",
+      "CRE_L",
+      "GNG",
+      "CRE_R",
+      "EB",
+      "PRW",
+      "MB_ML_L",
+      "AL_R",
+      "MB_VL_R",
+      "MB_VL_L",
+      "GA_L",
+      "GA_R",
+      "AOTU_R",
+      "FLA_R",
+      "LAL_L",
+      "FLA_L",
+      "MB_PED_R",
+      "SAD",
+      "AMMC_R",
+      "SIP_L",
+      "PVLP_R",
+      "MB_PED_L",
+      "UNASGD",
+      "AMMC_L",
+      "LO_L",
+      "ME_R",
+      "LOP_L",
+      "LO_R",
+      "PLP_R",
+      "SCL_L",
+      "ME_L",
+      "LOP_R",
+      "LH_L",
+      "VES_R",
+      "LH_R",
+      "MB_CA_L",
+      "IPS_L",
+      "SLP_L",
+      "PLP_L",
+      "SPS_L",
+      "IPS_R",
+      "GOR_R",
+      "FB",
+      "SPS_R",
+      "PVLP_L",
+      "ICL_L",
+      "SCL_R",
+      "ICL_R",
+      "ATL_R",
+      "IB_R",
+      "NO",
+      "AME_L",
+      "VES_L",
+      "WED_L",
+      "MB_CA_R",
+      "WED_R",
+      "LA_L",
+      "ATL_L",
+      "EPA_R",
+      "PB",
+      "IB_L",
+      "EPA_L",
+      "GOR_L",
+      "CAN_R",
+      "AME_R",
+      "OCG",
+      "CAN_L",
+      "BU_R",
+      "BU_L"
+    ]
+  },
+  "format": "DFLY",
+  "formatVersion": 1,
+  "license": "CC BY 4.0",
+  "neuronCount": 139255,
+  "origin": "https://zenodo.org/records/10676866",
+  "provenance": {
+    "citations": [
+      "Dorkenwald et al. (2024), Neuronal wiring diagram of an adult brain, Nature.",
+      "FlyWire Whole-brain Connectome Connectivity Data, release 783.0, Zenodo DOI 10.5281/zenodo.10676866."
+    ],
+    "sourceFiles": [
+      {
+        "name": "proofread_root_ids_783.npy",
+        "sha256": "7c7b7e818e9232e5ab64793d52ba20574dbe9da3a6509fbc74193b0f259a01be"
+      },
+      {
+        "name": "proofread_connections_783.feather",
+        "sha256": "24f960ae3e7d4f8cd30db3b62e99fb5179cc3d1e76d8c155bfb441e9737d3faf"
+      }
+    ],
+    "transform": {
+      "featherRecordBatches": 258,
+      "name": "digital-fly-build-v783-pack",
+      "neurotransmitterColumnOrder": [],
+      "version": "1"
+    }
+  },
+  "release": "783",
+  "synapseCount": 16847997
+}

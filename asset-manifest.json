@@ -1,0 +1,150 @@
+{
+  "assetCount": 29,
+  "assets": [
+    {
+      "path": "/manus-storage/bridge_woodRound_31f2ae7d.glb",
+      "bytes": 21192,
+      "sha256": "3b8593e6f50ae78f0f3f5d51ef5ac4751808fd5cbd462f35d09bbde5388f1034"
+    },
+    {
+      "path": "/manus-storage/celegans-modelled-continuous-presentation-v3_00dd7cb4.glb",
+      "bytes": 347960,
+      "sha256": "276b1955b08a361cb9086c9c97209087d9074950b8cfe788e1ab299dcc2ff7d9"
+    },
+    {
+      "path": "/manus-storage/connectome-aperture-mark-v2_4089ca2b.png",
+      "bytes": 765048,
+      "sha256": "090638dcaac0c62ddcdf05182b1f153d443a1e8bff6dbb4b2e86a820d9a7ec1d"
+    },
+    {
+      "path": "/manus-storage/cpu-corridor_743833eb.json",
+      "bytes": 146002,
+      "sha256": "237e23b3f2ea9a32cc9650aadc376b348f0d98ecdcd9c24242c4a54cd1322c67"
+    },
+    {
+      "path": "/manus-storage/digital-fly-brain-map_8c20bc49.png",
+      "bytes": 811020,
+      "sha256": "246edd97e367458e85cc31fa9e6b6f3100311f0bb1a0252166d8613a6b8307df"
+    },
+    {
+      "path": "/manus-storage/flower_purpleA_db3cc681.glb",
+      "bytes": 7112,
+      "sha256": "f6fc34c96a03420a74fe36d4c2d0ec88f15204fcad99cd1416c3c4ecb22e48c4"
+    },
+    {
+      "path": "/manus-storage/flower_redB_d58217af.glb",
+      "bytes": 8080,
+      "sha256": "1ed430a4ee2be9e86649e1ce22ec23162814a3f8c2ad133117315db19293fc16"
+    },
+    {
+      "path": "/manus-storage/flower_yellowC_35b25b2b.glb",
+      "bytes": 7616,
+      "sha256": "4115c017390b3e157466a8719e9e2af6c5385505135e7012982b9410760ba9f3"
+    },
+    {
+      "path": "/manus-storage/flybody-articulated-presentation_4068d305.glb",
+      "bytes": 7578212,
+      "sha256": "b51e0f7cf9d845fc7315080bf04745991c02e69672c1dc997267b500538d7605"
+    },
+    {
+      "path": "/manus-storage/garden-dawn-panorama_712067d9.png",
+      "bytes": 365714,
+      "sha256": "c09ac2aba95adcb5b250f1ac81f0ff5e50a36f8ca6be3fac8a89e239553f7230"
+    },
+    {
+      "path": "/manus-storage/garden-sky-dawn-equirectangular_4ab22523.png",
+      "bytes": 113570,
+      "sha256": "6c4057260ea3454693ac94068db0ee9d58863824bfcfc45239d7e4cbdba18f38"
+    },
+    {
+      "path": "/manus-storage/garden-sky-night-equirectangular_59dee875.png",
+      "bytes": 265406,
+      "sha256": "095af3a92ac595cca840d38a3c17924210b2b926f512ae63c2ebe0f3c073886b"
+    },
+    {
+      "path": "/manus-storage/grass_3eb421ad.glb",
+      "bytes": 11496,
+      "sha256": "260e41d3e5f2472492ed7b475c5b92a30b13ce2bad408535b5ff50574d4575e7"
+    },
+    {
+      "path": "/manus-storage/grass_leafsLarge_4372d832.glb",
+      "bytes": 13988,
+      "sha256": "a68b9b3d9639afaeb4ace840d5a8e3f21ffc4e8afc1eab15566500fbb2bee3e3"
+    },
+    {
+      "path": "/manus-storage/lily_large_181c05b2.glb",
+      "bytes": 8044,
+      "sha256": "c8f7080df0ae3166e9d33f523b66360c2ac7556dff36cc9c8ee78b6a676c7db2"
+    },
+    {
+      "path": "/manus-storage/log_large_4d9cd662.glb",
+      "bytes": 7924,
+      "sha256": "e7a92369062d491e5a31a163d390e07db04ee573605bbfa84c00660d18896b4c"
+    },
+    {
+      "path": "/manus-storage/manifest-web_191438ae.json",
+      "bytes": 6435,
+      "sha256": "ac9587b15a4525f74f60ad71738a634914dba87109a474ee795d653f71e51e2c"
+    },
+    {
+      "path": "/manus-storage/manifest.base_d3830795.json",
+      "bytes": 7835,
+      "sha256": "e9f9ca69af5262e54dcc2bad64284aadd0b9351a002cee29893e73fef5134b3f"
+    },
+    {
+      "path": "/manus-storage/mushroom_redGroup_d0504fa5.glb",
+      "bytes": 14960,
+      "sha256": "29f02df0589dd2b09e8d2aff6a4662394dac5cfcf1fec701640dcbd6127e0802"
+    },
+    {
+      "path": "/manus-storage/path_stoneCircle_dae573d4.glb",
+      "bytes": 13100,
+      "sha256": "d3f2044acdaeb7100d82aca702207e9c2f198aa0f03b9aef79a714e3a4a563f5"
+    },
+    {
+      "path": "/manus-storage/path_stone_fde6ed5e.glb",
+      "bytes": 12392,
+      "sha256": "06f2eb4f914df4dd419b7fb33e81059bc0b1a5b941a193b7c9f8ffd8851146c5"
+    },
+    {
+      "path": "/manus-storage/plant_bushDetailed_efb98a94.glb",
+      "bytes": 10172,
+      "sha256": "2e0487020d68ccf664435db9d829c78ae00e6d2785ee3ec10b9f89cc70a10406"
+    },
+    {
+      "path": "/manus-storage/rock_largeB_eb4266dc.glb",
+      "bytes": 8560,
+      "sha256": "caa8b025833d4dabf6d98fe2e96cf2fbd886693ac990df0db75f9d827194374b"
+    },
+    {
+      "path": "/manus-storage/rock_smallD_66f5bfa0.glb",
+      "bytes": 4012,
+      "sha256": "d5a09ec917231fbaf5a0d6868e1c0320fd4cb139851dcefbe9e3794eec73ee6c"
+    },
+    {
+      "path": "/manus-storage/sugar-mn9-evidence_06b7fcc1.json",
+      "bytes": 2560,
+      "sha256": "60809bba02fbc6d34d0e50a3bb1ff067949619e5c2ef7674dbc22838ca09593e"
+    },
+    {
+      "path": "/manus-storage/sugar-mn9-two-hop_6d3b2fde.json",
+      "bytes": 3981,
+      "sha256": "d30076f45dd2f9a949b716117a269b121109ea1dcde2c0c4b16a1c35f42edf10"
+    },
+    {
+      "path": "/manus-storage/tree_oak_9d2301a6.glb",
+      "bytes": 14644,
+      "sha256": "d7fd8773674928c50c11b66d12c636d49bdcc15a8b1c7fbb98e6f63a3439a3f3"
+    },
+    {
+      "path": "/manus-storage/tree_pineTallA_af64a6cf.glb",
+      "bytes": 7200,
+      "sha256": "e0a56eb196d8a64ba86c7304d607136e17e6f9ad748dffcf86bd53b18b91b196"
+    },
+    {
+      "path": "/manus-storage/tree_small_17c2d646.glb",
+      "bytes": 6500,
+      "sha256": "d26c0eeed65cc681667f50042ef23ec72ce47ae3b39837bfeec170b05ba6ab6a"
+    }
+  ]
+}
