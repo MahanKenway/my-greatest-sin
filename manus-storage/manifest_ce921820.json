@@ -1,0 +1,76 @@
+{
+  "classificationRule": {
+    "cleftScoreCutoff": 50.0,
+    "excitatoryValue": 1,
+    "inhibitoryCondition": "strictly more than half of qualifying presynaptic sites",
+    "inhibitoryValue": -1,
+    "inhibitoryWinners": [
+      "gaba",
+      "glut"
+    ],
+    "siteWinnerOrder": [
+      "gaba",
+      "ach",
+      "glut",
+      "oct",
+      "ser",
+      "da"
+    ],
+    "unclassifiedValue": 0
+  },
+  "columns": {
+    "inhibitory_presynaptic_sites": {
+      "elementCount": 139255,
+      "path": "inhibitory-presynaptic-sites.u32.bin",
+      "scalarType": "u32",
+      "sha256": "70008c1bffb9fb145ae62591d9b557e092d2952caeeabe94a8e33ba1eddf176c"
+    },
+    "neuron_sign": {
+      "elementCount": 139255,
+      "path": "neuron-sign.i32.bin",
+      "scalarType": "i32",
+      "sha256": "09ad16773a6ebc127ebe521b93edebbb021c82ea22ff9a3212d166139ff8c8c2"
+    },
+    "root_id": {
+      "elementCount": 139255,
+      "path": "root-id.u64.bin",
+      "scalarType": "u64",
+      "sha256": "a91e82d45c0d30f2eba42bd5f811a4f87edad5916635963a1bc27646dfebffde"
+    },
+    "total_presynaptic_sites": {
+      "elementCount": 139255,
+      "path": "total-presynaptic-sites.u32.bin",
+      "scalarType": "u32",
+      "sha256": "fb95d915a0e402741a89e5c71b98c7a32827c4314563564f5a34b62bd1bc2229"
+    }
+  },
+  "counts": {
+    "excitatory": 94640,
+    "inhibitory": 44011,
+    "unclassified": 604
+  },
+  "datasetId": "flywire-v783-site-level-neuron-sign",
+  "format": "DFLY-NEURON-SIGN",
+  "formatVersion": 1,
+  "neuronCount": 139255,
+  "provenance": {
+    "license": "CC BY 4.0",
+    "source": "https://zenodo.org/records/10676866",
+    "sourceFiles": [
+      {
+        "name": "proofread_root_ids_783.npy",
+        "sha256": "7c7b7e818e9232e5ab64793d52ba20574dbe9da3a6509fbc74193b0f259a01be"
+      },
+      {
+        "name": "flywire_synapses_783.feather",
+        "sha256": "b597601805b31a04f3a90730ae3b6319f89e9f1c2795dd132e4c3f87fb32f44c"
+      }
+    ],
+    "transform": {
+      "name": "digital-fly-build-v783-neuron-sign",
+      "status": "SOURCE DATA DERIVATIVE; LIF KERNEL NOT YET EXECUTED",
+      "version": "1"
+    }
+  },
+  "release": "783"
+}

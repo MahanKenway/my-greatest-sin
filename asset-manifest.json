@@ -1,5 +1,5 @@
 {
-  "assetCount": 34,
+  "assetCount": 36,
   "assets": [
     {
       "path": "/manus-storage/bridge_woodRound_31f2ae7d.glb",
@@ -87,9 +87,19 @@
       "sha256": "ac9587b15a4525f74f60ad71738a634914dba87109a474ee795d653f71e51e2c"
     },
     {
+      "path": "/manus-storage/manifest-web_3e9bbe2c.json",
+      "bytes": 7456,
+      "sha256": "60729a97a8b04366ef6a3c044962aecca7597cc19d10d040885348c8239afac5"
+    },
+    {
       "path": "/manus-storage/manifest.base_d3830795.json",
       "bytes": 7835,
       "sha256": "e9f9ca69af5262e54dcc2bad64284aadd0b9351a002cee29893e73fef5134b3f"
+    },
+    {
+      "path": "/manus-storage/manifest_ce921820.json",
+      "bytes": 2134,
+      "sha256": "8d65c759a393e5618712d9dfff890a336027b761a08593ced7789da43f182412"
     },
     {
       "path": "/manus-storage/mushroom_redGroup_d0504fa5.glb",

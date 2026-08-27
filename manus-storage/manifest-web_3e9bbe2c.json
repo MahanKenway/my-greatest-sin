@@ -1,0 +1,242 @@
+{
+  "chunks": [
+    {
+      "bytes": 1114040,
+      "column": "root_id",
+      "elementCount": 139255,
+      "elementOffset": 0,
+      "id": "root_id:0",
+      "sha256": "a91e82d45c0d30f2eba42bd5f811a4f87edad5916635963a1bc27646dfebffde",
+      "url": "./manus-storage/root_id-00000_a45d923c.bin"
+    },
+    {
+      "bytes": 557024,
+      "column": "incoming_offsets",
+      "elementCount": 139256,
+      "elementOffset": 0,
+      "id": "incoming_offsets:0",
+      "sha256": "ea133f60df49c70a8f63205ac7bec5030f164c68bac677a5fa58dc848a26530f",
+      "url": "./manus-storage/incoming_offsets-00000_09ca2d80.bin"
+    },
+    {
+      "bytes": 33554432,
+      "column": "source_index",
+      "elementCount": 8388608,
+      "elementOffset": 0,
+      "id": "source_index:0",
+      "sha256": "84ed7ba903bf1d9ad2433ebd0b16d460ef1bc2c4529989920b4c4d20a53ad6ef",
+      "url": "./manus-storage/source_index-00000_098cacb0.bin"
+    },
+    {
+      "bytes": 33554432,
+      "column": "source_index",
+      "elementCount": 8388608,
+      "elementOffset": 8388608,
+      "id": "source_index:1",
+      "sha256": "fb0c4c771d1fab8274d228132e0c67645944c787a3b5ace6f62b776a266eb0c9",
+      "url": "./manus-storage/source_index-00001_4d563f77.bin"
+    },
+    {
+      "bytes": 283124,
+      "column": "source_index",
+      "elementCount": 70781,
+      "elementOffset": 16777216,
+      "id": "source_index:2",
+      "sha256": "2d779be449a0c4aef124a47b2143c69dc89cc90163e1caee8c94836fcd8fd29d",
+      "url": "./manus-storage/source_index-00002_cd61d20c.bin"
+    },
+    {
+      "bytes": 33554432,
+      "column": "synapse_count",
+      "elementCount": 8388608,
+      "elementOffset": 0,
+      "id": "synapse_count:0",
+      "sha256": "d95a2bd30c0e3741d6324d8fb14f15cbf39ba5320753db66c90f73e719168e08",
+      "url": "./manus-storage/synapse_count-00000_42e9a73f.bin"
+    },
+    {
+      "bytes": 33554432,
+      "column": "synapse_count",
+      "elementCount": 8388608,
+      "elementOffset": 8388608,
+      "id": "synapse_count:1",
+      "sha256": "eadefe9c7178d8bc1f56f453bf4f4abcb0766c0fd7b5913cefbea416f77af958",
+      "url": "./manus-storage/synapse_count-00001_da81999a.bin"
+    },
+    {
+      "bytes": 283124,
+      "column": "synapse_count",
+      "elementCount": 70781,
+      "elementOffset": 16777216,
+      "id": "synapse_count:2",
+      "sha256": "d89b6abd388a519d1554ab7d416485ad29ffa4e693864da2acd839b519dc57e8",
+      "url": "./manus-storage/synapse_count-00002_ae95082d.bin"
+    },
+    {
+      "bytes": 33554424,
+      "column": "nt_probabilities",
+      "elementCount": 2796202,
+      "elementOffset": 0,
+      "id": "nt_probabilities:0",
+      "sha256": "0904b995ad929753c2b4ad2bc8bdc1b28fbe5cfde8ac3a7777431d03a3f2233c",
+      "url": "./manus-storage/nt_probabilities-00000_d91ed03d.bin"
+    },
+    {
+      "bytes": 33554424,
+      "column": "nt_probabilities",
+      "elementCount": 2796202,
+      "elementOffset": 2796202,
+      "id": "nt_probabilities:1",
+      "sha256": "7e8d07d020f3f1d34ecf888bff581683f24b46e7a305f720baebe52e9c3fddd0",
+      "url": "./manus-storage/nt_probabilities-00001_9c87c219.bin"
+    },
+    {
+      "bytes": 33554424,
+      "column": "nt_probabilities",
+      "elementCount": 2796202,
+      "elementOffset": 5592404,
+      "id": "nt_probabilities:2",
+      "sha256": "20bd76ddb3f8e67a8321126b58bbf075c27f08d0b27f4682e44730f463625dd6",
+      "url": "./manus-storage/nt_probabilities-00002_bab2e9ef.bin"
+    },
+    {
+      "bytes": 33554424,
+      "column": "nt_probabilities",
+      "elementCount": 2796202,
+      "elementOffset": 8388606,
+      "id": "nt_probabilities:3",
+      "sha256": "717d0c67a5b09869b1e2e3e6863ec7baa409077a088330daf0e7b50a2226ab58",
+      "url": "./manus-storage/nt_probabilities-00003_094d890c.bin"
+    },
+    {
+      "bytes": 33554424,
+      "column": "nt_probabilities",
+      "elementCount": 2796202,
+      "elementOffset": 11184808,
+      "id": "nt_probabilities:4",
+      "sha256": "1ba777ea93dbb5dcc37766dda4e7c5009f7c44c2ef04b760a0836d20aa69d62d",
+      "url": "./manus-storage/nt_probabilities-00004_21c10383.bin"
+    },
+    {
+      "bytes": 33554424,
+      "column": "nt_probabilities",
+      "elementCount": 2796202,
+      "elementOffset": 13981010,
+      "id": "nt_probabilities:5",
+      "sha256": "0742d5749d7fcb2adf67470ec76722cd16b1191fe722727c25317dd47dd6c720",
+      "url": "./manus-storage/nt_probabilities-00005_adeefc35.bin"
+    },
+    {
+      "bytes": 849420,
+      "column": "nt_probabilities",
+      "elementCount": 70785,
+      "elementOffset": 16777212,
+      "id": "nt_probabilities:6",
+      "sha256": "b46918bae77a457c6afa2b843c43de77c38052b0d61057f5a52b4315a908bc07",
+      "url": "./manus-storage/nt_probabilities-00006_2853a521.bin"
+    }
+  ],
+  "columns": {
+    "incoming_offsets": {
+      "chunks": [
+        "incoming_offsets:0"
+      ],
+      "elementCount": 139256,
+      "scalarType": "u32",
+      "semanticStatus": "SOURCE DATA",
+      "stride": 1
+    },
+    "nt_probabilities": {
+      "chunks": [
+        "nt_probabilities:0",
+        "nt_probabilities:1",
+        "nt_probabilities:2",
+        "nt_probabilities:3",
+        "nt_probabilities:4",
+        "nt_probabilities:5",
+        "nt_probabilities:6"
+      ],
+      "elementCount": 16847997,
+      "scalarType": "f16",
+      "semanticStatus": "SOURCE DATA",
+      "stride": 6
+    },
+    "root_id": {
+      "chunks": [
+        "root_id:0"
+      ],
+      "elementCount": 139255,
+      "scalarType": "u64",
+      "semanticStatus": "SOURCE DATA",
+      "stride": 1
+    },
+    "source_index": {
+      "chunks": [
+        "source_index:0",
+        "source_index:1",
+        "source_index:2"
+      ],
+      "elementCount": 16847997,
+      "scalarType": "u32",
+      "semanticStatus": "SOURCE DATA",
+      "stride": 1
+    },
+    "synapse_count": {
+      "chunks": [
+        "synapse_count:0",
+        "synapse_count:1",
+        "synapse_count:2"
+      ],
+      "elementCount": 16847997,
+      "scalarType": "u32",
+      "semanticStatus": "SOURCE DATA",
+      "stride": 1
+    }
+  },
+  "datasetId": "flywire-v783-proofread-connections-lif-candidate",
+  "format": "DFLY",
+  "formatVersion": 1,
+  "license": "CC BY 4.0",
+  "neuronCount": 139255,
+  "origin": "https://zenodo.org/records/10676866",
+  "provenance": {
+    "citations": [
+      "Dorkenwald et al. (2024), Neuronal wiring diagram of an adult brain, Nature.",
+      "FlyWire Whole-brain Connectome Connectivity Data, release 783.0, Zenodo DOI 10.5281/zenodo.10676866."
+    ],
+    "sourceFiles": [
+      {
+        "name": "proofread_root_ids_783.npy",
+        "sha256": "7c7b7e818e9232e5ab64793d52ba20574dbe9da3a6509fbc74193b0f259a01be"
+      },
+      {
+        "name": "proofread_connections_783.feather",
+        "sha256": "24f960ae3e7d4f8cd30db3b62e99fb5179cc3d1e76d8c155bfb441e9737d3faf"
+      }
+    ],
+    "transform": {
+      "baseManifestSha256": "162d4da65ddaee581207ea1993d0dbf1eeb97aa2a3a76487c09f3ac5247dd2ff",
+      "featherRecordBatches": 258,
+      "name": "digital-fly-derive-v783-lif-candidate",
+      "neurotransmitterColumnOrder": [
+        "gaba_avg",
+        "ach_avg",
+        "glut_avg",
+        "oct_avg",
+        "ser_avg",
+        "da_avg"
+      ],
+      "selectedColumns": [
+        "root_id",
+        "incoming_offsets",
+        "source_index",
+        "synapse_count",
+        "nt_probabilities"
+      ],
+      "status": "SOURCE DATA COLUMNS; LIF EXECUTION NOT YET VALIDATED",
+      "version": "1"
+    }
+  },
+  "release": "783",
+  "synapseCount": 16847997
+}
