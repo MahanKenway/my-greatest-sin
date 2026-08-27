@@ -147,27 +147,27 @@
       "sha256": "d26c0eeed65cc681667f50042ef23ec72ce47ae3b39837bfeec170b05ba6ab6a"
     },
     {
-      "path": "//manus-storage/cell_index-00000_4a72024a.bin",
+      "path": "/manus-storage/cell_index-00000_4a72024a.bin",
       "bytes": 1116,
       "sha256": "b9bc0b579891e8458a7486c40aa7f824758e8cf61aa79ec7df09aae9ea55671d"
     },
     {
-      "path": "//manus-storage/incoming_offsets-00000_2f1a30ff.bin",
+      "path": "/manus-storage/incoming_offsets-00000_2f1a30ff.bin",
       "bytes": 1120,
       "sha256": "37cf22c071bbb7be459c892712367ed4a2bb2b52fe5fad778435ea8453bdd802"
     },
     {
-      "path": "//manus-storage/source_index-00000_9679f30c.bin",
+      "path": "/manus-storage/source_index-00000_9679f30c.bin",
       "bytes": 25044,
       "sha256": "d50e32ea15639603511bebe34a7ec2ce4b617ff74437884c38706a133ae2b91b"
     },
     {
-      "path": "//manus-storage/connection_weight-00000_5aacda9f.bin",
+      "path": "/manus-storage/connection_weight-00000_5aacda9f.bin",
       "bytes": 25044,
       "sha256": "a9ec382c0df3a4db111469db5668c36b0a26ad0d99428481b5a7fe43abef5d7e"
     },
     {
-      "path": "//manus-storage/connection_kind-00000_6f8dc05a.bin",
+      "path": "/manus-storage/connection_kind-00000_6f8dc05a.bin",
       "bytes": 12522,
       "sha256": "f245c2c5d263ce0ca874f5844546d3cf7944f01276098569e6b1fa9ca4725e8e"
     }
