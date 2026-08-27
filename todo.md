@@ -392,3 +392,15 @@
 - [x] اندازه‌گیری جداگانهٔ رندر WebGL2 برای FlyWire staged و C. elegans live؛ WebGL2 در canvas فعال بود اما renderer SwiftShader نرم‌افزاری است، پس FPS/benchmark سخت‌افزاری گزارش نشد.
 - [x] اجرای preflight و استعلام مستقیم WebGPU در Chromium؛ API موجود اما `requestAdapter()` rejected است، بنابراین هیچ مسیر FlyWire فعال یا عدد performance ساختگی ثبت نشد.
 - [x] تولید گزارش نتایج و محدودیت‌ها در `BROWSER_GRAPHICS_VALIDATION.md`؛ console پاک و reload تازه تأیید شد، و checkpoint در گام نهایی ثبت می‌شود.
+
+## GitHub Pages Deployment
+
+- [ ] ممیزی remote، visibility، وضعیت Pages و سازگاری build/output/assetهای `/manus-storage` با دامنهٔ GitHub Pages.
+- [ ] افزودن workflow قابل‌تکرار GitHub Actions برای build و deploy نسخهٔ static به Pages بدون قراردادن secret یا asset حجیم در مخزن.
+- [ ] ارسال تغییرات به branch اصلی، فعال‌سازی Pages و تأیید URL عمومی پس از اجرای workflow.
+
+## Cloudflare Pages Deployment
+
+- [x] ممیزی حساب Cloudflare و اعتبار artifact self-contained با ۲۹ asset پایه و ۵ chunk checksum-verified لازم C. elegans، بدون Worker یا secret غیرضروری.
+- [x] ایجاد پروژهٔ Git-integrated Cloudflare Pages `my-greatest-sin` و انتشار artifact static از branch `gh-pages`.
+- [x] بررسی URL عمومی، مسیرهای GLB/texture و رندر Babylon؛ deployment `19d3d30e` موفق است و C. elegans در production با ۲۷۹ N / ۶٬۲۶۱ E hydrate می‌شود.
