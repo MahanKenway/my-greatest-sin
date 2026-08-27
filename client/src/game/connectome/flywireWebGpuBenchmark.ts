@@ -33,8 +33,6 @@ export async function runFlywireWebGpuBenchmark(manifestUrl: string): Promise<Fl
   const response = await fetch(manifestUrl, { cache: "no-store", headers: { Accept: "application/json" } });
   if (!response.ok) throw new Error(`Official benchmark manifest returned HTTP ${response.status}.`);
   const manifest = validateRealPackManifest(await response.json());
-  const columns = await loadRequiredColumns(manifestUrl, manifest);
-  const decodeMs = performance.now() - started;
 
   const gpu = (navigator as GpuNavigator).gpu;
   if (!gpu) throw new Error("WebGPU is unavailable in this browser.");
@@ -43,85 +41,46 @@ export async function runFlywireWebGpuBenchmark(manifestUrl: string): Promise<Fl
   const device = await adapter.requestDevice();
   const maxStorageBufferBindingSize = Number(device.limits.maxStorageBufferBindingSize ?? 0);
 
+  const expectedColumnBytes = Object.fromEntries(REQUIRED_COLUMNS.map((column) => [column, getColumnBytes(manifest, column)])) as Record<(typeof REQUIRED_COLUMNS)[number], number>;
   const stateBytes = manifest.neuronCount * Float32Array.BYTES_PER_ELEMENT;
-  const residentBytes = columns.rootId.byteLength + columns.offsets.byteLength + columns.source.byteLength + columns.synapse.byteLength + stateBytes * 2;
-  const largestColumn = Math.max(columns.source.byteLength, columns.synapse.byteLength, columns.offsets.byteLength);
+  const residentBytes = Object.values(expectedColumnBytes).reduce((total, bytes) => total + bytes, 0) + stateBytes * 2;
+  const largestColumn = Math.max(expectedColumnBytes.source_index, expectedColumnBytes.synapse_count, expectedColumnBytes.incoming_offsets);
   if (maxStorageBufferBindingSize && largestColumn > maxStorageBufferBindingSize) {
+    device.destroy();
     throw new Error(`Largest source column is ${(largestColumn / 1_048_576).toFixed(1)} MiB, above this adapter's ${(maxStorageBufferBindingSize / 1_048_576).toFixed(1)} MiB storage-buffer limit.`);
   }
 
-  const uploadStarted = performance.now();
-  const usage = (globalThis as any).GPUBufferUsage;
-  const offsetsBuffer = createStorageBuffer(device, columns.offsets, usage);
-  const sourceBuffer = createStorageBuffer(device, columns.source, usage);
-  const synapseBuffer = createStorageBuffer(device, columns.synapse, usage);
-  const state = new Float32Array(manifest.neuronCount);
-  // Benchmark seed only: this is not a sensory stimulus or a scientific neural state.
-  state[0] = 1;
-  const stateBuffer = createStorageBuffer(device, state.buffer, usage);
-  const nextBuffer = device.createBuffer({ size: stateBytes, usage: usage.STORAGE | usage.COPY_DST });
-  const params = new ArrayBuffer(16);
-  new DataView(params).setUint32(0, manifest.neuronCount, true);
-  new DataView(params).setUint32(4, manifest.synapseCount, true);
-  new DataView(params).setFloat32(8, 0.0005, true);
-  const paramsBuffer = device.createBuffer({ size: params.byteLength, usage: usage.UNIFORM | usage.COPY_DST });
-  device.queue.writeBuffer(paramsBuffer, 0, params);
-  const uploadMs = performance.now() - uploadStarted;
-
-  const pipeline = device.createComputePipeline({
-    layout: "auto",
-    compute: {
-      module: device.createShaderModule({ code: SPARSE_STEP_WGSL }),
-      entryPoint: "main",
-    },
-  });
-  const bindGroup = device.createBindGroup({
-    layout: pipeline.getBindGroupLayout(0),
-    entries: [
-      { binding: 0, resource: { buffer: offsetsBuffer } },
-      { binding: 1, resource: { buffer: sourceBuffer } },
-      { binding: 2, resource: { buffer: synapseBuffer } },
-      { binding: 3, resource: { buffer: stateBuffer } },
-      { binding: 4, resource: { buffer: nextBuffer } },
-      { binding: 5, resource: { buffer: paramsBuffer } },
-    ],
-  });
-  const dispatch = () => {
-    const encoder = device.createCommandEncoder();
-    const pass = encoder.beginComputePass();
-    pass.setPipeline(pipeline);
-    pass.setBindGroup(0, bindGroup);
-    pass.dispatchWorkgroups(Math.ceil(manifest.neuronCount / 128));
-    pass.end();
-    device.queue.submit([encoder.finish()]);
-  };
-
-  const warmupStarted = performance.now();
-  dispatch();
-  await device.queue.onSubmittedWorkDone();
-  const warmupMs = performance.now() - warmupStarted;
-  const measuredSteps = 4;
-  const measuredStarted = performance.now();
-  for (let step = 0; step < measuredSteps; step += 1) dispatch();
-  await device.queue.onSubmittedWorkDone();
-  const meanStepMs = (performance.now() - measuredStarted) / measuredSteps;
-
-  for (const buffer of [offsetsBuffer, sourceBuffer, synapseBuffer, stateBuffer, nextBuffer, paramsBuffer]) buffer.destroy();
-  device.destroy();
-  return {
-    manifestUrl,
-    neuronCount: manifest.neuronCount,
-    edgeCount: manifest.synapseCount,
-    fetchedMiB: roundMiB(columns.rootId.byteLength + columns.offsets.byteLength + columns.source.byteLength + columns.synapse.byteLength),
-    residentGpuMiB: roundMiB(residentBytes),
-    adapterName: (adapter.info?.description || adapter.info?.vendor || "WebGPU adapter") as string,
-    maxStorageBufferBindingMiB: roundMiB(maxStorageBufferBindingSize),
-    decodeMs,
-    uploadMs,
-    warmupMs,
-    meanStepMs,
-    measuredSteps,
-  };
+  try {
+    // Only a real adapter with adequate limits reaches the large checksum-verified fetch.
+    const columns = await loadRequiredColumns(manifestUrl, manifest);
+    const decodeMs = performance.now() - started;
+    const uploadStarted = performance.now();
+    const usage = (globalThis as any).GPUBufferUsage;
+    const offsetsBuffer = createStorageBuffer(device, columns.offsets, usage);
+    const sourceBuffer = createStorageBuffer(device, columns.source, usage);
+    const synapseBuffer = createStorageBuffer(device, columns.synapse, usage);
+    const state = new Float32Array(manifest.neuronCount);
+    // Benchmark seed only: this is not a sensory stimulus or a scientific neural state.
+    state[0] = 1;
+    const stateBuffer = createStorageBuffer(device, state.buffer, usage);
+    const nextBuffer = device.createBuffer({ size: stateBytes, usage: usage.STORAGE | usage.COPY_DST });
+    const params = new ArrayBuffer(16);
+    new DataView(params).setUint32(0, manifest.neuronCount, true);
+    new DataView(params).setUint32(4, manifest.synapseCount, true);
+    new DataView(params).setFloat32(8, 0.0005, true);
+    const paramsBuffer = device.createBuffer({ size: params.byteLength, usage: usage.UNIFORM | usage.COPY_DST });
+    device.queue.writeBuffer(paramsBuffer, 0, params);
+    const uploadMs = performance.now() - uploadStarted;
+    const pipeline = device.createComputePipeline({ layout: "auto", compute: { module: device.createShaderModule({ code: SPARSE_STEP_WGSL }), entryPoint: "main" } });
+    const bindGroup = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: offsetsBuffer } }, { binding: 1, resource: { buffer: sourceBuffer } }, { binding: 2, resource: { buffer: synapseBuffer } }, { binding: 3, resource: { buffer: stateBuffer } }, { binding: 4, resource: { buffer: nextBuffer } }, { binding: 5, resource: { buffer: paramsBuffer } }] });
+    const dispatch = () => { const encoder = device.createCommandEncoder(); const pass = encoder.beginComputePass(); pass.setPipeline(pipeline); pass.setBindGroup(0, bindGroup); pass.dispatchWorkgroups(Math.ceil(manifest.neuronCount / 128)); pass.end(); device.queue.submit([encoder.finish()]); };
+    const warmupStarted = performance.now(); dispatch(); await device.queue.onSubmittedWorkDone(); const warmupMs = performance.now() - warmupStarted;
+    const measuredSteps = 4; const measuredStarted = performance.now(); for (let step = 0; step < measuredSteps; step += 1) dispatch(); await device.queue.onSubmittedWorkDone(); const meanStepMs = (performance.now() - measuredStarted) / measuredSteps;
+    for (const buffer of [offsetsBuffer, sourceBuffer, synapseBuffer, stateBuffer, nextBuffer, paramsBuffer]) buffer.destroy();
+    return { manifestUrl, neuronCount: manifest.neuronCount, edgeCount: manifest.synapseCount, fetchedMiB: roundMiB(columns.rootId.byteLength + columns.offsets.byteLength + columns.source.byteLength + columns.synapse.byteLength), residentGpuMiB: roundMiB(residentBytes), adapterName: (adapter.info?.description || adapter.info?.vendor || "WebGPU adapter") as string, maxStorageBufferBindingMiB: roundMiB(maxStorageBufferBindingSize), decodeMs, uploadMs, warmupMs, meanStepMs, measuredSteps };
+  } finally {
+    device.destroy();
+  }
 }
 
 async function loadRequiredColumns(manifestUrl: string, manifest: ConnectomeManifest) {
@@ -168,6 +127,16 @@ function concatenate(pieces: ArrayBuffer[]): ArrayBuffer {
 
 function roundMiB(bytes: number) {
   return Math.round((bytes / 1_048_576) * 100) / 100;
+}
+
+function getColumnBytes(manifest: ConnectomeManifest, column: (typeof REQUIRED_COLUMNS)[number]): number {
+  const descriptor = manifest.columns?.[column];
+  if (!descriptor) throw new Error(`Official benchmark manifest lacks required ${column} column.`);
+  return descriptor.chunks.reduce((total, chunkId) => {
+    const chunk = manifest.chunks.find((candidate) => candidate.id === chunkId);
+    if (!chunk) throw new Error(`Official benchmark manifest lacks chunk ${chunkId} for ${column}.`);
+    return total + chunk.bytes;
+  }, 0);
 }
 
 const SPARSE_STEP_WGSL = /* wgsl */ `

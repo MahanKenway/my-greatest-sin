@@ -412,3 +412,11 @@
 - [x] تعریف معیار پذیرش «C. elegans ۱۰۰٪ در scope فعلی»: topology checksum-verified، encoder/decoder/body کاملاً disclosed، فرمان صفر بدون حرکت، DB/VB telemetry و intervention مدل‌سازی‌شده بدون navigation مستقل.
 - [x] افزودن کنترل آزمایشی و آزمون‌های deterministic لازم برای مشاهدهٔ اثر DB/VB در scope مدل‌سازی‌شده، سپس اجرای حالت‌های NONE/MASK DB/MASK VB و ثبت نتایج.
 - [x] تکمیل سند پروندهٔ scoped completion، TypeScript، آزمون‌ها، build و اعتبارسنجی production؛ checkpoint در گام نهایی ثبت می‌شود.
+
+## FlyWire Site-Level Sign/Weight, Settings and WebGPU Readiness
+
+- [x] ممیزی checksum، provenance، schema و coverage دادهٔ site-level/cleft-score و derivative sign موجود؛ Zenodo/Shiu و artifactهای managed در `docs/FLYWIRE_SITE_LEVEL_LIF_READINESS.md` ثبت شده‌اند. ۶۰۴ sign طبقه‌بندی‌نشده مسیر signed-LIF کامل را BLOCKED می‌کند.
+- [x] تعریف قرارداد تنظیمات LIF/weight با defaultهای نسخه‌دار، حدهای معتبر و برچسب روشنِ modelled/source؛ weight=۰٫۲۷۵ mV (۰٫۰۵–۰٫۵۰) و input=۲۵۰ (۰–۵۰۰) هیچ FlyBody یا نمایش fly را کنترل نمی‌کنند.
+- [x] ساخت پنل تنظیمات دسترس‌پذیر و مقیاس‌پذیر برای دادهٔ بزرگ با readout محدود، بدون رندر full graph یا قرار دادن pack حجیم در app؛ panel فقط counter/budget/chart محدود نگه می‌دارد.
+- [x] پیاده‌سازی مسیر WebGPU فقط با adapter قابل‌دسترسی، preflight، buffer budget و گزارش BLOCKED درست در نبود adapter؛ benchmark اکنون adapter/budget را پیش از fetch pack حجیم می‌سنجد و CPU fallback کامل ندارد.
+- [x] افزودن آزمون‌های deterministic و اعتبارسنجی browser/TypeScript/tests/build/console/checkpoint برای این مرحله؛ ۳۷ آزمون، `tsc`، build و diff-check گذشتند، panel در browser با ۶۰۴ sign باز BLOCKED شد، sliders اعمال شدند و regression C. elegans با ۲۷۹ N / ۶٬۲۶۱ E و console خالی تأیید شد.

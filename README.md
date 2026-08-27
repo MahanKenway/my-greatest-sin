@@ -14,6 +14,8 @@
 
 The current browser exposes `navigator.gpu`, but the target environment rejects `requestAdapter()`. The application therefore blocks real FlyWire execution rather than inventing a full-graph CPU fallback, a timing value, neural activity, or body command.
 
+The site-level sign/weight LIF panel is a **readiness and settings surface**, not evidence of a dispatched full-brain model. Its release-783 sign derivative records 94,640 excitatory, 44,011 inhibitory and **604 unclassified** proofread neurons after the documented `cleft_score ≥ 50` source rule. Those unresolved signs block any full signed-LIF dispatch before device allocation; they are never silently assigned a sign. The panel’s 0.05–0.50 mV weight and 0–500 input-scale controls are explicitly `MODELLED` settings for a future gated experiment and do not drive FlyBody, walking, wings, or `GameWorld`. The UI keeps counters, a compact budget and bounded charts rather than rendering 139,255 nodes or 16,847,997 edges. [3] [6]
+
 ## Public deployment and scoped completion
 
 The public static release is available at **[my-greatest-sin.pages.dev](https://my-greatest-sin.pages.dev/)**. Cloudflare Pages deploys the self-contained `gh-pages` artifact. The artifact contains the application, presentation assets, both specimen bodies, and the five checksum-verified chunks required to hydrate the C. elegans source topology; it does not distribute the large FlyWire v783 pack.
@@ -103,6 +105,7 @@ See the project records for detail:
 
 - [`docs/FLYWIRE_ACTIVATION_PATH.md`](docs/FLYWIRE_ACTIVATION_PATH.md) — end-to-end v783 activation gates.
 - [`docs/FLYWIRE_LIF_MODEL_BOUNDARY.md`](docs/FLYWIRE_LIF_MODEL_BOUNDARY.md) — LIF assumptions, transmitter signs and corridor results.
+- [`docs/FLYWIRE_SITE_LEVEL_LIF_READINESS.md`](docs/FLYWIRE_SITE_LEVEL_LIF_READINESS.md) — sign coverage, settings contract, buffer budget and the full-dispatch gate.
 - [`docs/FLYWIRE_SENSORY_EXPANSION.md`](docs/FLYWIRE_SENSORY_EXPANSION.md) — source versus modelled sensory expansion.
 - [`docs/GITHUB_FLYWIRE_OPTIONS.md`](docs/GITHUB_FLYWIRE_OPTIONS.md) — reviewed query and GPU/server options.
 - [`docs/BRIAN2CUDA_NVIDIA_RUNBOOK.md`](docs/BRIAN2CUDA_NVIDIA_RUNBOOK.md) — pinned NVIDIA/Colab smoke-test path and its hardware gates.
@@ -124,3 +127,5 @@ Original project code is licensed under the repository licence. FlyWire data, pu
 [4]: https://github.com/flyconnectome/flywire_annotations "FlyWire systematic annotations for release 783"
 
 [5]: https://github.com/navis-org/fafbseg-py "fafbseg-py"
+
+[6]: https://zenodo.org/records/10676866 "FlyWire Whole-brain Connectome Connectivity Data, release 783"

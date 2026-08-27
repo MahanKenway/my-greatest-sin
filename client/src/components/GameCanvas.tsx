@@ -12,6 +12,7 @@ import { runFlywireWebGpuBenchmark, type FlywireWebGpuBenchmark } from "@/game/c
 import { decodeMn9StructuralScoreForProboscis, runSugarMn9Pilot, type SugarMn9PilotResult } from "@/game/connectome/sugarMn9PilotRuntime";
 import { DEFAULT_SUGAR_MN9_PILOT_PROTOCOL, type SugarMn9InputAblation } from "@/game/connectome/sugarMn9Pilot";
 import { runBoundedCpuSugarCorridor, type BoundedCpuCorridorResult } from "@/game/connectome/boundedCpuCorridor";
+import { DEFAULT_FLYWIRE_LIF_SETTINGS, preflightFlywireSiteLevelLif, type FlywireLifSettings, type FlywireSiteLevelLifReadiness } from "@/game/connectome/flywireSiteLevelLif";
 import { createGameScene, type GameHandle } from "@/game/scene";
 import type { DflyPackStatus, FlywireStageStatus, SimulationCommand, SimulationSnapshot } from "@/game/shared/types";
 import { commandForSimulationShortcut } from "@/game/simulationShortcuts";
@@ -31,6 +32,8 @@ export default function GameCanvas() {
   const [pilot, setPilot] = useState<{ state: "IDLE" | "RUNNING" | "MEASURED" | "ERROR"; message: string; result?: SugarMn9PilotResult }>({ state: "IDLE", message: "The selected pilot is armed but cannot run until a verified WebGPU adapter is available." });
   const [cpuCorridor, setCpuCorridor] = useState<{ state: "IDLE" | "RUNNING" | "MEASURED" | "ERROR"; message: string; result?: BoundedCpuCorridorResult }>({ state: "IDLE", message: "No bounded CPU corridor validation has run in this browser session." });
   const [pilotProtocol, setPilotProtocol] = useState(() => ({ ...DEFAULT_SUGAR_MN9_PILOT_PROTOCOL }));
+  const [lifSettings, setLifSettings] = useState<FlywireLifSettings>(DEFAULT_FLYWIRE_LIF_SETTINGS);
+  const [lifReadiness, setLifReadiness] = useState<FlywireSiteLevelLifReadiness>({ state: "IDLE", stage: "NONE", message: "Site-level sign/weight LIF has not been checked in this browser session." });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -117,8 +120,12 @@ export default function GameCanvas() {
   };
   const runOfficialBenchmark = () => {
     if (benchmark.state === "RUNNING") return;
-    setBenchmark({ state: "RUNNING", message: "Fetching checksum-verified v783 CSR columns and measuring a sparse WebGPU step. This does not activate FlyWire or body control." });
-    void runFlywireWebGpuBenchmark("/manus-storage/manifest-web_191438ae.json")
+    if (!packUrl || (packStatus.state !== "VALIDATED" && packStatus.state !== "CACHED")) {
+      setBenchmark({ state: "ERROR", message: "Select and validate a CORS-enabled checksum-verified DFLY manifest before any full-pack WebGPU download. The public app does not ship the 163 MiB pack." });
+      return;
+    }
+    setBenchmark({ state: "RUNNING", message: "Checking the WebGPU adapter and storage limits before fetching any checksum-verified v783 CSR columns. This does not activate FlyWire or body control." });
+    void runFlywireWebGpuBenchmark(packUrl)
       .then((result) => setBenchmark({ state: "MEASURED", result, message: `Measured ${result.meanStepMs.toFixed(2)} ms per sparse step across ${result.edgeCount.toLocaleString()} proofread connections.` }))
       .catch((error: unknown) => setBenchmark({ state: "ERROR", message: error instanceof Error ? error.message : "Official WebGPU benchmark failed." }));
   };
@@ -146,6 +153,13 @@ export default function GameCanvas() {
       .finally(() => { if (cpuAbortRef.current === controller) cpuAbortRef.current = null; });
   };
   const cancelCpuCorridor = () => cpuAbortRef.current?.abort();
+  const runSiteLevelLifPreflight = () => {
+    if (lifReadiness.state === "CHECKING") return;
+    setLifReadiness({ state: "CHECKING", stage: "SIGN", message: "Checking v783 site-level sign coverage, then WebGPU adapter and sign-aware buffer budget. No CPU fallback or body output can run." });
+    void preflightFlywireSiteLevelLif(lifSettings)
+      .then(setLifReadiness)
+      .catch((error: unknown) => setLifReadiness({ state: "ERROR", stage: "NONE", message: error instanceof Error ? error.message : "Site-level LIF preflight failed." }));
+  };
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -164,6 +178,6 @@ export default function GameCanvas() {
     <div className="scene-primer" aria-hidden="true"><span>OBSERVATION GARDEN / INITIALIZING</span></div>
     <canvas ref={canvasRef} className="lab-canvas" aria-label={`${snapshot?.species.displayName ?? "Specimen"} live simulation canvas`} />
     <svg className="axon-overlay" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true"><path d="M122 266C270 270 344 352 522 436S750 614 927 572" /><path d="M169 314C318 332 406 409 571 446S804 561 1095 422" /></svg>
-    <SimulationHud snapshot={snapshot} onCommand={onCommand} packStatus={packStatus} cacheProgress={cacheProgress} flywireStage={flywireStage} onConfigurePack={configurePack} onCachePack={cachePack} benchmark={benchmark} onRunOfficialBenchmark={runOfficialBenchmark} pilot={pilot} cpuCorridor={cpuCorridor} pilotProtocol={pilotProtocol} onPilotActivationRateChange={(activationRateHz) => setPilotProtocol((current) => ({ ...current, activationRateHz }))} onPilotInputAblationChange={(inputAblation: SugarMn9InputAblation) => setPilotProtocol((current) => ({ ...current, inputAblation }))} onRunPilot={runPilot} onRunCpuCorridor={runCpuCorridor} onCancelCpuCorridor={cancelCpuCorridor} />
+    <SimulationHud snapshot={snapshot} onCommand={onCommand} packStatus={packStatus} cacheProgress={cacheProgress} flywireStage={flywireStage} onConfigurePack={configurePack} onCachePack={cachePack} benchmark={benchmark} onRunOfficialBenchmark={runOfficialBenchmark} lifSettings={lifSettings} lifReadiness={lifReadiness} onLifSettingChange={(key, value) => setLifSettings((current) => ({ ...current, [key]: value }))} onRunSiteLevelLifPreflight={runSiteLevelLifPreflight} pilot={pilot} cpuCorridor={cpuCorridor} pilotProtocol={pilotProtocol} onPilotActivationRateChange={(activationRateHz) => setPilotProtocol((current) => ({ ...current, activationRateHz }))} onPilotInputAblationChange={(inputAblation: SugarMn9InputAblation) => setPilotProtocol((current) => ({ ...current, inputAblation }))} onRunPilot={runPilot} onRunCpuCorridor={runCpuCorridor} onCancelCpuCorridor={cancelCpuCorridor} />
   </main>;
 }
