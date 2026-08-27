@@ -26,4 +26,18 @@ describe("network-first C. elegans motor decoder", () => {
     expect(activity.dorsalDB).toBeCloseTo(0.12, 6);
     expect(activity.ventralVB).toBeCloseTo(0.04, 6);
   });
+
+  it("masks only a disclosed decoder readout and leaves raw DB/VB observation separate", () => {
+    const rates = new Float32Array([0.16, 0.08, 0, 0]);
+    const normal = decodeMotorFrame("C_ELEGANS", routing, rates);
+    const maskedDb = decodeMotorFrame("C_ELEGANS", routing, rates, "MASK_DB");
+    const maskedVb = decodeMotorFrame("C_ELEGANS", routing, rates, "MASK_VB");
+    expect(maskedDb.forward).toBeLessThan(normal.forward);
+    expect(maskedDb.turn).toBeLessThan(0);
+    expect(maskedVb.forward).toBeGreaterThan(0);
+    expect(maskedVb.turn).toBeGreaterThan(normal.turn);
+    const rawActivity = readCElegansMotorActivity(routing, rates);
+    expect(rawActivity.dorsalDB).toBeCloseTo(0.16, 6);
+    expect(rawActivity.ventralVB).toBeCloseTo(0.08, 6);
+  });
 });

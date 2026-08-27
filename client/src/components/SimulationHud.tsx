@@ -105,9 +105,10 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
 
       <aside className="observation-rail right-rail">
         <section className="lab-pane control-pane">
-          <div className="pane-heading"><div><p className="micro-label">02 / OBSERVATION CONTROLS</p><h2>Field console</h2></div><button className={snapshot?.paused ? "primary-button armed" : "primary-button"} onClick={() => onCommand({ type: "toggle" })}>{snapshot?.paused ? "RESUME" : "PAUSE"}</button></div>
-          <div className="species-selector" role="group" aria-label="Select an observation specimen"><button className={snapshot?.species.id === "DROSOPHILA" ? "selected" : ""} onClick={() => onCommand({ type: "species", species: "DROSOPHILA" })}>FLY / STAGED</button><button className={snapshot?.species.id === "C_ELEGANS" ? "selected" : ""} onClick={() => onCommand({ type: "species", species: "C_ELEGANS" })}>C. ELEGANS / LIVE</button></div>
-          <div className="control-actions"><button onClick={() => onCommand({ type: "reset" })}>RESET CAMERA</button><button className="demo-button" onClick={() => onCommand({ type: "demo" })}>{snapshot?.paused ? "ARM DEMO" : "AUTO DEMO"}</button></div>
+          <div className="pane-heading"><div><p className="micro-label">02 / OBSERVATION CONTROLS</p><h2>Field console</h2></div><button className={snapshot?.paused ? "primary-button armed" : "primary-button"} aria-keyshortcuts="Space" title="Shortcut: Space" onClick={() => onCommand({ type: "toggle" })}>{snapshot?.paused ? "RESUME" : "PAUSE"}</button></div>
+          <div className="species-selector" role="group" aria-label="Select an observation specimen"><button className={snapshot?.species.id === "DROSOPHILA" ? "selected" : ""} aria-keyshortcuts="1" title="Shortcut: 1" onClick={() => onCommand({ type: "species", species: "DROSOPHILA" })}>FLY / STAGED</button><button className={snapshot?.species.id === "C_ELEGANS" ? "selected" : ""} aria-keyshortcuts="2" title="Shortcut: 2" onClick={() => onCommand({ type: "species", species: "C_ELEGANS" })}>C. ELEGANS / LIVE</button></div>
+          <div className="control-actions"><button aria-keyshortcuts="R" title="Shortcut: R" onClick={() => onCommand({ type: "reset" })}>RESET CAMERA</button><button className="demo-button" aria-keyshortcuts="D" title="Shortcut: D" onClick={() => onCommand({ type: "demo" })}>{snapshot?.paused ? "ARM DEMO" : "AUTO DEMO"}</button></div>
+          <p className="shortcut-note">KEYS · SPACE PAUSE · 1 FLY · 2 WORM · R RESET · D DEMO</p>
           <div className="section-rule"><span>{flywireStaged ? "WORLD PROBES / VISUAL ONLY" : "FIELD PROBES / MODELLED INPUT"}</span></div>
           <Stimulus label="FOOD / ODOR" value={sensor?.odor ?? 0} color="gold" onChange={(amount) => onCommand({ type: "stimulus", stimulus: "food", amount })} />
           <Stimulus label="LIGHT FIELD" value={sensor?.light ?? 0} color="gold" onChange={(amount) => onCommand({ type: "stimulus", stimulus: "light", amount })} />
@@ -122,7 +123,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
           <DecodeBar label="FORWARD" value={motor?.forward ?? 0} />
           <DecodeBar label="TURN" value={Math.abs(motor?.turn ?? 0)} />
           <DecodeBar label={snapshot?.species.id === "C_ELEGANS" ? "BODY WAVE" : "WING LIFT"} value={motor?.wingLift ?? 0} />
-          {snapshot?.species.id === "C_ELEGANS" ? <><MotorGroupChart db={snapshot.motorGroupTimeline.db} vb={snapshot.motorGroupTimeline.vb} dorsalDB={snapshot.motorGroups.dorsalDB} ventralVB={snapshot.motorGroups.ventralVB} /><p className="motor-calibration">{CELEGANS_DECODER_CALIBRATION.referenceCrawlSpeedMmPerSec.toFixed(2)} MM/S CRAWL REFERENCE · {CELEGANS_DECODER_CALIBRATION.continuousCurveRadiansPerSecondAtFullDrive.toFixed(2)} RAD/S CURVE CAP</p></> : <div className="motor-group-empty"><span>DB / VB ACTIVITY</span><strong>STAGED UNAVAILABLE</strong></div>}
+          {snapshot?.species.id === "C_ELEGANS" ? <><MotorGroupChart db={snapshot.motorGroupTimeline.db} vb={snapshot.motorGroupTimeline.vb} dorsalDB={snapshot.motorGroups.dorsalDB} ventralVB={snapshot.motorGroups.ventralVB} /><DecoderReadoutCheck intervention={snapshot.decoderReadoutIntervention} onChange={(intervention) => onCommand({ type: "decoder-readout-intervention", intervention })} /><p className="motor-calibration">{CELEGANS_DECODER_CALIBRATION.referenceCrawlSpeedMmPerSec.toFixed(2)} MM/S CRAWL REFERENCE · {CELEGANS_DECODER_CALIBRATION.continuousCurveRadiansPerSecondAtFullDrive.toFixed(2)} RAD/S CURVE CAP</p></> : <div className="motor-group-empty"><span>DB / VB ACTIVITY</span><strong>STAGED UNAVAILABLE</strong></div>}
           <p className="pane-note">{controlPath}</p>
         </section>
       </aside>
@@ -162,5 +163,13 @@ function MotorGroupChart({ db, vb, dorsalDB, ventralVB }: { db: Float32Array; vb
     <div className="motor-group-heading"><span>DB / VB ACTIVITY</span><em>MODELLED LIF READOUT</em></div>
     <svg viewBox="0 0 180 40" preserveAspectRatio="none" role="img" aria-label="DB cyan and VB magenta motor-group activity over the latest 48 simulation samples"><path className="motor-chart-grid" d="M0 10H180M0 25H180M0 39H180" /><polyline className="motor-chart-db" points={chartPoints(db)} /><polyline className="motor-chart-vb" points={chartPoints(vb)} /><line className="motor-chart-now" x1="178" y1="2" x2="178" y2="38" /></svg>
     <div className="motor-group-key"><span><i className="db" />DB / DORSAL <strong>{numeric(dorsalDB, 3)}</strong></span><span><i className="vb" />VB / VENTRAL <strong>{numeric(ventralVB, 3)}</strong></span></div>
+  </div>;
+}
+
+function DecoderReadoutCheck({ intervention, onChange }: { intervention: SimulationSnapshot["decoderReadoutIntervention"]; onChange: (intervention: SimulationSnapshot["decoderReadoutIntervention"]) => void }) {
+  return <div className="decoder-check" role="group" aria-label="Modelled DB VB decoder readout check">
+    <div><span>DECODER READOUT CHECK</span><strong>MODELLED</strong></div>
+    <div className="decoder-check-actions"><button className={intervention === "NONE" ? "selected" : ""} onClick={() => onChange("NONE")}>NONE</button><button className={intervention === "MASK_DB" ? "selected" : ""} onClick={() => onChange("MASK_DB")}>MASK DB</button><button className={intervention === "MASK_VB" ? "selected" : ""} onClick={() => onChange("MASK_VB")}>MASK VB</button></div>
+    <p>Changes decoder input only; source activity, topology and body policy are unchanged.</p>
   </div>;
 }

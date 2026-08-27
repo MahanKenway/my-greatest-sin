@@ -150,11 +150,15 @@ export type SimulationSnapshot = {
   motor: MotorFrame;
   motorGroups: MotorGroupReadout;
   motorGroupTimeline: { db: Float32Array; vb: Float32Array };
+  decoderReadoutIntervention: DecoderReadoutIntervention;
   environment: EnvironmentPresentation;
   behavior: "ORIENTING" | "FORAGING" | "BRACING" | "IDLE";
   neuronActivity: Float32Array;
   timeline: Float32Array;
 };
+
+/** A disclosed display-decoder intervention; it does not lesion, silence, or alter source neurons. */
+export type DecoderReadoutIntervention = "NONE" | "MASK_DB" | "MASK_VB";
 
 export type SimulationCommand =
   | { type: "toggle" }
@@ -162,5 +166,6 @@ export type SimulationCommand =
   | { type: "reset" }
   | { type: "stimulus"; stimulus: "food" | "wind" | "light" | "touch" | "temperature"; amount: number }
   | { type: "environment"; setting: "daylight" | "waterfall"; amount: number }
+  | { type: "decoder-readout-intervention"; intervention: DecoderReadoutIntervention }
   | { type: "demo" }
   | { type: "species"; species: SpeciesId };

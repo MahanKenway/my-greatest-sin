@@ -10,7 +10,7 @@ import { Arena } from "@/game/environment/Arena";
 import { NeuralEngine } from "@/game/neural/engine";
 import { decodeMotorFrame, readCElegansMotorActivity } from "@/game/neural/motorDecoder";
 import { SPECIES_PROFILES } from "@/game/species/profiles";
-import type { ConnectomeColumns, ConnectomeExecution, MotorFrame, NeuralRouting, SensorFrame, SimulationCommand, SimulationSnapshot, SpeciesId } from "@/game/shared/types";
+import type { ConnectomeColumns, ConnectomeExecution, DecoderReadoutIntervention, MotorFrame, NeuralRouting, SensorFrame, SimulationCommand, SimulationSnapshot, SpeciesId } from "@/game/shared/types";
 import { BrainView } from "@/game/visualization/BrainView";
 
 const DT = 0.005;
@@ -40,6 +40,7 @@ export class GameWorld {
   private species: SpeciesId = "DROSOPHILA";
   private celegansActivation: Promise<void> | null = null;
   private connectomeExecution: ConnectomeExecution = stagedFlywireExecution();
+  private decoderReadoutIntervention: DecoderReadoutIntervention = "NONE";
   private lastSensor: SensorFrame = { food: 0, odor: 0, light: 0, leftCue: 0, rightCue: 0, wind: 0, touch: 0, temperature: 0, taste: 0, provenance: "MODELLED MAPPING" };
   private lastMotor: MotorFrame = { forward: 0, turn: 0, wingLift: 0, gait: 0, provenance: "MODELLED MAPPING" };
   private lastMotorGroups = { dorsalDB: 0, ventralVB: 0, provenance: "MODELLED MAPPING" as const };
@@ -83,6 +84,7 @@ export class GameWorld {
     if (command.type === "demo") this.demo = !this.demo;
     if (command.type === "stimulus") this.arena.apply(command.stimulus, command.amount);
     if (command.type === "environment") this.arena.setPresentation(command.setting, command.amount);
+    if (command.type === "decoder-readout-intervention") this.decoderReadoutIntervention = command.intervention;
     if (command.type === "species") this.selectSpecies(command.species);
     this.emit();
   }
@@ -145,7 +147,7 @@ export class GameWorld {
   }
 
   private decodeMotor(): MotorFrame {
-    return decodeMotorFrame(this.species, this.neural.routing, this.neural.cpu.firingRate);
+    return decodeMotorFrame(this.species, this.neural.routing, this.neural.cpu.firingRate, this.decoderReadoutIntervention);
   }
 
   private runDemoSchedule(): void {
@@ -198,6 +200,7 @@ export class GameWorld {
       motor: this.lastMotor,
       motorGroups: this.lastMotorGroups,
       motorGroupTimeline: { db: this.dbMotorTimeline, vb: this.vbMotorTimeline },
+      decoderReadoutIntervention: this.decoderReadoutIntervention,
       environment: this.arena.getPresentation(),
       behavior,
       neuronActivity: this.neural.cpu.firingRate,

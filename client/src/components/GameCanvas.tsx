@@ -14,6 +14,7 @@ import { DEFAULT_SUGAR_MN9_PILOT_PROTOCOL, type SugarMn9InputAblation } from "@/
 import { runBoundedCpuSugarCorridor, type BoundedCpuCorridorResult } from "@/game/connectome/boundedCpuCorridor";
 import { createGameScene, type GameHandle } from "@/game/scene";
 import type { DflyPackStatus, FlywireStageStatus, SimulationCommand, SimulationSnapshot } from "@/game/shared/types";
+import { commandForSimulationShortcut } from "@/game/simulationShortcuts";
 import SimulationHud from "./SimulationHud";
 
 export default function GameCanvas() {
@@ -145,6 +146,19 @@ export default function GameCanvas() {
       .finally(() => { if (cpuAbortRef.current === controller) cpuAbortRef.current = null; });
   };
   const cancelCpuCorridor = () => cpuAbortRef.current?.abort();
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (event.altKey || event.ctrlKey || event.metaKey || target?.closest("button, input, select, textarea, [contenteditable='true']")) return;
+      const command = commandForSimulationShortcut(event.code);
+      if (!command) return;
+      event.preventDefault();
+      handleRef.current?.world.command(command);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   return <main className="digital-fly-shell">
     <div className="scene-primer" aria-hidden="true"><span>OBSERVATION GARDEN / INITIALIZING</span></div>

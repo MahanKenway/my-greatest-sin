@@ -371,7 +371,7 @@
 - [x] بازتولید و اندازه‌گیری علت صفرماندن گروه‌های موتور در source runtime با ورودی‌های field موجود؛ مسیر source تا AVB/PVC و DB/VB وجود داشت اما scale خطی activity موتور تولید نمی‌کرد.
 - [x] طراحی decoder فقط با فعالیت گروه‌های نورونی و اتصال‌های source topology؛ DB/VB منبع forward و عدم‌تقارن DB/VB turn را می‌سازند و هیچ forward floor، steering هدف، wind turn یا policy مستقل افزوده نشد.
 - [x] پیاده‌سازی مسیر motor output قابل‌مشاهده و regression test برای سکون در خروجی صفر و حرکت در خروجی شبکهٔ غیرصفر؛ ۳۰ آزمون گذشت و preview خروجی motor غیرصفر نشان داد.
-- [ ] اعتبارسنجی مرورگر، TypeScript، آزمون‌ها، build، console و checkpoint پس از مشاهدهٔ حرکت C. elegans.
+- [x] اعتبارسنجی مرورگر، TypeScript، آزمون‌ها، build، console و checkpoint پس از مشاهدهٔ حرکت C. elegans؛ سپس در production Cloudflare نیز تکرار شد.
 
 ## C. elegans DB/VB Live Readout and Behavioural Decoder Calibration
 
@@ -404,3 +404,11 @@
 - [x] ممیزی حساب Cloudflare و اعتبار artifact self-contained با ۲۹ asset پایه و ۵ chunk checksum-verified لازم C. elegans، بدون Worker یا secret غیرضروری.
 - [x] ایجاد پروژهٔ Git-integrated Cloudflare Pages `my-greatest-sin` و انتشار artifact static از branch `gh-pages`.
 - [x] بررسی URL عمومی، مسیرهای GLB/texture و رندر Babylon؛ deployment `19d3d30e` موفق است و C. elegans در production با ۲۷۹ N / ۶٬۲۶۱ E hydrate می‌شود.
+
+## Scoped Completion — Public Product and C. elegans
+
+- [x] ثبت معیار پذیرش «محصول ۱۰۰٪» شامل production URL، مسیرهای asset، desktop/mobile، keyboard/reduced-motion، browser console و مستندات deployment بدون وابستگی به preview.
+- [x] بستن gapهای نسخهٔ public و تأیید دوبارهٔ FlyWire staged / C. elegans live در Cloudflare Pages.
+- [x] تعریف معیار پذیرش «C. elegans ۱۰۰٪ در scope فعلی»: topology checksum-verified، encoder/decoder/body کاملاً disclosed، فرمان صفر بدون حرکت، DB/VB telemetry و intervention مدل‌سازی‌شده بدون navigation مستقل.
+- [x] افزودن کنترل آزمایشی و آزمون‌های deterministic لازم برای مشاهدهٔ اثر DB/VB در scope مدل‌سازی‌شده، سپس اجرای حالت‌های NONE/MASK DB/MASK VB و ثبت نتایج.
+- [x] تکمیل سند پروندهٔ scoped completion، TypeScript، آزمون‌ها، build و اعتبارسنجی production؛ checkpoint در گام نهایی ثبت می‌شود.

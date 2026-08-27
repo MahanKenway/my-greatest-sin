@@ -14,6 +14,14 @@
 
 The current browser exposes `navigator.gpu`, but the target environment rejects `requestAdapter()`. The application therefore blocks real FlyWire execution rather than inventing a full-graph CPU fallback, a timing value, neural activity, or body command.
 
+## Public deployment and scoped completion
+
+The public static release is available at **[my-greatest-sin.pages.dev](https://my-greatest-sin.pages.dev/)**. Cloudflare Pages deploys the self-contained `gh-pages` artifact. The artifact contains the application, presentation assets, both specimen bodies, and the five checksum-verified chunks required to hydrate the C. elegans source topology; it does not distribute the large FlyWire v783 pack.
+
+The public controls are operable with buttons or keyboard: `Space` toggles pause, `1` selects FlyWire staged, `2` selects C. elegans live, `R` resets the active specimen, and `D` toggles the demo. Keyboard shortcuts ignore form controls and do not create a new simulation policy. Cosmetic animation respects `prefers-reduced-motion`.
+
+For C. elegans, the **DECODER READOUT CHECK** provides `NONE`, `MASK DB`, and `MASK VB`. It masks only the selected DB/VB contribution after source activity is read and before the disclosed motor decoder maps it to the display body. It does not modify the source topology, neuron state, body policy, or constitute biological ablation.
+
 ## Bounded CPU validation, not a full-graph fallback
 
 The HUD provides one separate **CPU OFFLINE SUBGRAPH VALIDATION** control for a checksum-verified sugar corridor stored outside the repository. It fetches only **1,115 nodes / 13,346 signed edges**, verifies SHA-256 `237e23b3f2ea9a32cc9650aadc376b348f0d98ecdcd9c24242c4a54cd1322c67`, enforces hard browser caps of 2,000 nodes and 25,000 edges, and performs four signed structural-propagation steps. The readout is deliberately **not LIF**, a firing rate, an animal measurement, a WebGPU benchmark, or a FlyBody command.
