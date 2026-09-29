@@ -138,6 +138,7 @@ export default function SimulationHud({ snapshot, onCommand, packStatus, cachePr
         {flywireStaged ? <div className="timeline-empty"><i /><span>NO FLYWIRE EVENTS ARE EXECUTING IN THIS VIEW.</span><em>DISPLAY MOTION ONLY</em></div> : <svg viewBox="0 0 640 76" preserveAspectRatio="none" aria-label="Recent neural spike timeline"><path className="timeline-grid" d="M0 18H640M0 38H640M0 58H640" /><polyline className="timeline-path" points={Array.from({ length: timeline.length }, (_, index) => `${index * (640 / (timeline.length - 1))},${66 - timeline[index] * 52}`).join(" ")} /><line className="timeline-now" x1="638" y1="5" x2="638" y2="71" /></svg>}
         <div className="timeline-key"><span className="key-dot spike" />{flywireStaged ? "NETWORK PARKED" : "SPIKE DENSITY"}<span className="key-dot stimulus" />{flywireStaged ? "MODELLED GARDEN" : "STIMULUS"}</div>
       </section>
+      <a className="pointer-events-auto fixed bottom-2 right-3 z-50 text-[10px] tracking-widest text-white/50 underline underline-offset-2 hover:text-white" href="./privacy/">PRIVACY</a>
     </div>
   );
 }
